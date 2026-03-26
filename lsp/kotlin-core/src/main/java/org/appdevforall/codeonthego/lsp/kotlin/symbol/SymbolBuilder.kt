@@ -887,7 +887,15 @@ class SymbolBuilder private constructor(
             "emptyList" -> TypeReference.generic("List", TypeReference.ANY)
             "emptySet" -> TypeReference.generic("Set", TypeReference.ANY)
             "emptyMap" -> TypeReference.generic("Map", TypeReference.ANY, TypeReference.ANY)
-            else -> null
+            else -> {
+                // For constructor calls like `TextView(this)`, the callee name is the class name.
+                // Return a TypeReference so the symbol builder records the inferred type.
+                if (calleeName != null && calleeName[0].isUpperCase()) {
+                    TypeReference(calleeName)
+                } else {
+                    null
+                }
+            }
         }
     }
 

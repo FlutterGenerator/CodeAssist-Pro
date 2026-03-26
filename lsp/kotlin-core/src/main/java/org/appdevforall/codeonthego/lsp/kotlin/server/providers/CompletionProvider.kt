@@ -220,7 +220,8 @@ class CompletionProvider(
         val items = mutableListOf<CompletionItem>()
 
         val typeRef = resolveReceiverType(receiver, symbolTable, analysisContext, line, character)
-        val typeName = typeRef?.name ?: receiver
+        // Strip nullable '?' suffix so "Bundle?" resolves the same as "Bundle" in index lookups.
+        val typeName = (typeRef?.name ?: receiver).trimEnd('?')
 
         if (symbolTable != null) {
             val position = Position(line, character)
@@ -290,6 +291,47 @@ class CompletionProvider(
         stdlibExtensions.forEach { ext ->
             if (items.none { it.label == ext.name }) {
                 items.add(createCompletionItemFromIndexed(ext, CompletionItemPriority.STDLIB))
+            }
+        }
+
+        // Classpath member completion: look up methods/fields stored for this class in ClasspathIndex.
+        // This covers Android SDK classes (e.g. android.widget.TextView) and other AAR/JAR dependencies.
+        val classpathIndex = projectIndex.getClasspathIndex()
+        if (classpathIndex != null) {
+            // Resolve the fully-qualified name: the typeName may already be FQ, or may be a simple name.
+            val resolvedFqName = when {
+                classpathIndex.findByFqName(typeName) != null -> typeName
+                else -> classpathIndex.findBySimpleName(typeName.substringAfterLast('.'))
+                    .firstOrNull { it.kind.isClass }?.fqName
+                    ?: classpathIndex.findBySimpleName(typeName)
+                        .firstOrNull { it.kind.isClass }?.fqName
+            }
+
+            if (resolvedFqName != null) {
+                // BFS over the supertype chain so inherited members are included.
+                val visited = mutableSetOf<String>()
+                val queue = ArrayDeque<String>()
+                queue.add(resolvedFqName)
+
+                while (queue.isNotEmpty()) {
+                    val currentFqName = queue.removeFirst()
+                    if (!visited.add(currentFqName)) continue
+
+                    val members = classpathIndex.findMembers(currentFqName)
+                    members.forEach { member ->
+                        if (items.none { it.label == member.name }) {
+                            items.add(createCompletionItemFromIndexed(member, CompletionItemPriority.MEMBER))
+                        }
+                    }
+
+                    // Enqueue supertypes for inherited member resolution.
+                    val classSymbol = classpathIndex.findByFqName(currentFqName)
+                    classSymbol?.superTypes?.forEach { superType ->
+                        if (superType !in visited) {
+                            queue.add(superType)
+                        }
+                    }
+                }
             }
         }
 
