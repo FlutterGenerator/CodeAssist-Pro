@@ -88,3 +88,6 @@ lint/tmp/
 # lint/reports/
 /build/
 /build-logic/build/
+/lsp/kotlin-stdlib-generator/build/
+/lsp/kotlin-core/build/
+/lsp/kotlin/build/
