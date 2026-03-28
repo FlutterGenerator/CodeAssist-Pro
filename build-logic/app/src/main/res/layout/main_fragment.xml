@@ -52,6 +52,6 @@
         android:layout_width="300dp"
         android:layout_height="match_parent"
         android:background="@drawable/nav_background"
-        android:layout_gravity="start" />
+        android:layout_gravity="left" />
 
 </com.tyron.code.util.AllowChildInterceptDrawerLayout>

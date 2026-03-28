@@ -7,6 +7,7 @@
     android:clickable="true"
     android:fitsSystemWindows="true"
     android:orientation="horizontal"
+    tools:openDrawer="left"
     android:weightSum="100">
 
     <androidx.fragment.app.FragmentContainerView
@@ -14,6 +15,7 @@
         android:name="com.tyron.code.ui.file.tree.TreeFileManagerFragment"
         android:layout_width="0dp"
         android:layout_height="match_parent"
+        android:layoutDirection="ltr"
         android:layout_weight="25" />
 
     <View
@@ -31,6 +33,7 @@
             android:id="@+id/app_bar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layoutDirection="ltr"
             app:elevation="0dp">
 
             <com.tyron.actions.impl.ActionToolbar

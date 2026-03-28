@@ -1,5 +1,8 @@
 package com.tyron.code.ui.main;
 
+import static android.view.Gravity.LEFT;
+
+import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -9,6 +12,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -182,6 +186,7 @@ public class MainFragment extends Fragment implements ProjectManager.OnProjectOp
     return mRoot;
   }
 
+  @SuppressLint("RtlHardcoded")
   @Override
   public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
     super.onViewCreated(view, savedInstanceState);
@@ -191,9 +196,9 @@ public class MainFragment extends Fragment implements ProjectManager.OnProjectOp
       mToolbar.setNavigationOnClickListener(
           v -> {
             if (mRoot instanceof DrawerLayout) {
-              if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
+              if (drawerLayout.isDrawerOpen(LEFT)) {
                 mMainViewModel.setDrawerState(false);
-              } else if (!drawerLayout.isDrawerOpen(GravityCompat.START)) {
+              } else if (!drawerLayout.isDrawerOpen(LEFT)) {
                 mMainViewModel.setDrawerState(true);
               }
             }
@@ -267,9 +272,9 @@ public class MainFragment extends Fragment implements ProjectManager.OnProjectOp
               getViewLifecycleOwner(),
               isOpen -> {
                 if (isOpen) {
-                  ((DrawerLayout) mRoot).open();
+                  ((DrawerLayout) mRoot).openDrawer(LEFT);
                 } else {
-                  ((DrawerLayout) mRoot).close();
+                  ((DrawerLayout) mRoot).closeDrawer(LEFT);
                 }
               });
     }

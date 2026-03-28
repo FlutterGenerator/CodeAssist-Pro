@@ -7,6 +7,7 @@
     android:clickable="true"
     android:fitsSystemWindows="true"
     android:orientation="horizontal"
+    tools:openDrawer="left"
     android:weightSum="100">
 
     <androidx.fragment.app.FragmentContainerView
@@ -31,6 +32,7 @@
             android:id="@+id/app_bar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layoutDirection="ltr"
             app:elevation="0dp">
 
             <com.tyron.actions.impl.ActionToolbar
@@ -49,6 +51,7 @@
             android:name="com.tyron.code.ui.editor.EditorContainerFragment"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layoutDirection="ltr"
             tools:layout="@layout/editor_container_fragment" />
     </LinearLayout>
 </LinearLayout>

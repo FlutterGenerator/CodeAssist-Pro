@@ -411,7 +411,7 @@ public class MainFragment extends Fragment implements ProjectManager.OnProjectOp
     saveAll();
     if (mRoot instanceof DrawerLayout) {
       outState.putBoolean(
-          "start_drawer_state", ((DrawerLayout) mRoot).isDrawerOpen(GravityCompat.START));
+          "start_drawer_state", ((DrawerLayout) mRoot).isDrawerOpen(Gravity.LEFT));
     }
     super.onSaveInstanceState(outState);
   }

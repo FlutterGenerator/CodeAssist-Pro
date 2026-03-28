@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    tools:openDrawer="left"
     android:clickable="true">
 
     <LinearLayout
@@ -14,6 +15,7 @@
             android:id="@+id/app_bar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layoutDirection="ltr"
             app:elevation="0dp">
 
             <com.tyron.actions.impl.ActionToolbar
@@ -52,6 +54,7 @@
         android:layout_width="300dp"
         android:layout_height="match_parent"
         android:background="@drawable/nav_background"
+        android:layoutDirection="ltr"
         android:layout_gravity="start" />
 
 </com.tyron.code.util.AllowChildInterceptDrawerLayout>
