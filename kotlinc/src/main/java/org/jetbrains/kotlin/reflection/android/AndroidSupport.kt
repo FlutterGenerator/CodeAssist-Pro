@@ -1,4 +1,6 @@
 /*
+ *  Modifications Copyright 2026 KodTik-Innovations
+ *
  *  Licensed to the Apache Software Foundation (ASF) under one
  *  or more contributor license agreements.  See the NOTICE file
  *  distributed with this work for additional information
@@ -20,6 +22,7 @@
 package org.jetbrains.kotlin.reflection.android
 
 object AndroidSupport {
+    @Suppress("RECEIVER_NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
     @JvmStatic
     fun isDalvik(): Boolean = System.getProperty("java.vm.name", "").contains("Dalvik")
 }
