@@ -8,9 +8,7 @@ import com.tyron.completion.DefaultInsertHandler
 import com.tyron.completion.model.CompletionItem
 import com.tyron.completion.model.CompletionList
 import com.tyron.completion.model.DrawableKind
-import com.tyron.builder.project.api.JavaModule
 import com.tyron.builder.project.impl.JavaModuleImpl
-import android.util.Log
 import org.jetbrains.kotlin.com.intellij.psi.PsiElement
 import org.jetbrains.kotlin.com.intellij.psi.tree.TokenSet
 import org.jetbrains.kotlin.com.intellij.openapi.util.Key
@@ -21,13 +19,11 @@ import com.tyron.kotlin.completion.util.getResolutionScope
 import com.tyron.kotlin.completion.util.importableFqName
 import com.tyron.kotlin.completion.util.isVisible
 import com.tyron.kotlin.completion.util.logTime
-import com.tyron.kotlin_completion.util.PsiUtils
 import com.tyron.kotlin_completion.util.PsiUtilsKt
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.jetbrains.kotlin.analyzer.AnalysisResult
-import org.jetbrains.kotlin.cli.common.CLIConfigurationKeys
 //import org.jetbrains.kotlin.cli.common.CommonCompilerPerformanceManager
 import org.jetbrains.kotlin.cli.common.environment.setIdeaIoUseFallback
 import org.jetbrains.kotlin.cli.common.messages.AnalyzerWithCompilerReport
@@ -43,7 +39,6 @@ import org.jetbrains.kotlin.cli.jvm.config.JvmClasspathRoot
 import org.jetbrains.kotlin.cli.jvm.config.addJvmClasspathRoots
 import org.jetbrains.kotlin.config.AnalysisFlags
 import org.jetbrains.kotlin.config.ApiVersion
-import org.jetbrains.kotlin.config.CommonConfigurationKeys
 import org.jetbrains.kotlin.config.CompilerConfiguration
 import org.jetbrains.kotlin.config.JVMConfigurationKeys
 import org.jetbrains.kotlin.config.LanguageFeature
@@ -52,7 +47,6 @@ import org.jetbrains.kotlin.config.LanguageVersionSettingsImpl
 import org.jetbrains.kotlin.container.ComponentProvider
 import org.jetbrains.kotlin.container.getService
 import org.jetbrains.kotlin.descriptors.ClassDescriptor
-import org.jetbrains.kotlin.descriptors.ConstructorDescriptor
 import org.jetbrains.kotlin.descriptors.DeclarationDescriptor
 import org.jetbrains.kotlin.descriptors.DeclarationDescriptorWithVisibility
 import org.jetbrains.kotlin.descriptors.FunctionDescriptor
@@ -88,7 +82,6 @@ import java.io.File
 import kotlin.collections.set
 import com.tyron.common.Prefs
 import com.tyron.common.SharedPreferenceKeys
-import org.jetbrains.kotlin.diagnostics.Severity
 import com.tyron.builder.BuildModule
 import org.jetbrains.kotlin.descriptors.impl.LocalVariableDescriptor
 import org.jetbrains.kotlin.descriptors.impl.TypeParameterDescriptorImpl
@@ -96,9 +89,8 @@ import org.jetbrains.kotlin.descriptors.ValueParameterDescriptor
 import org.jetbrains.kotlin.descriptors.PackageFragmentDescriptor
 import org.jetbrains.kotlin.config.IrVerificationMode
 import com.tyron.builder.model.DiagnosticWrapper
-import dev.mutwakil.completion.kotlin.diagnostic.getDiagnostics
-import org.jetbrains.kotlin.cli.jvm.config.addJavaSourceRoot 
-import com.tyron.common.util.FilesUtil
+import org.jetbrains.kotlin.cli.jvm.config.addJavaSourceRoot
+import org.jetbrains.kotlin.config.CommonConfigurationKeys
 
 data class KotlinEnvironment(
     val kotlinEnvironment: KotlinCoreEnvironment
@@ -120,7 +112,7 @@ data class KotlinEnvironment(
         return kotlinFiles[name]
     }
     
-    var diagnostics : MutableList<DiagnosticWrapper> = mutableListOf<DiagnosticWrapper>() 
+    var diagnostics : MutableList<DiagnosticWrapper> = mutableListOf()
 
     private data class DescriptorInfo(
         val isTipsManagerCompletion: Boolean,
@@ -184,7 +176,7 @@ data class KotlinEnvironment(
 
     init {
         kotlinEnvironment.configuration.put(
-            CLIConfigurationKeys.MESSAGE_COLLECTOR_KEY,
+            CommonConfigurationKeys.MESSAGE_COLLECTOR_KEY,
             messageCollector
         )
     }
@@ -406,12 +398,12 @@ data class KotlinEnvironment(
                 )
             }
             logTime("analyzeDeclarations") {
-                analysis = componentProvider!!
+                analysis = componentProvider
                     .getService(LazyTopDownAnalyzer::class.java)
                     .analyzeDeclarations(TopDownAnalysisMode.TopLevelDeclarations, files)
             }
 
-            val moduleDescriptor = componentProvider!!.getService(ModuleDescriptor::class.java)
+            val moduleDescriptor = componentProvider.getService(ModuleDescriptor::class.java)
             AnalysisHandlerExtension.getInstances(project).find {
                 it.analysisCompleted(
                     project,
@@ -423,7 +415,7 @@ data class KotlinEnvironment(
 //            diagnostics = getDiagnostics(bindingTrace.bindingContext).toMutableList() 
             return@analyzeAndReport AnalysisResult.success(
                 bindingTrace.bindingContext,
-                componentProvider!!.getService(ModuleDescriptor::class.java)
+                componentProvider.getService(ModuleDescriptor::class.java)
             )
         }
         return Analysis(
@@ -553,6 +545,7 @@ data class KotlinEnvironment(
         
         private val MAX_ITEMS_COUNT = Prefs.get().getString(SharedPreferenceKeys.KOTLIN_MAX_ITEMS_COUNT,"50")?.toIntOrNull()?:50
 
+        @Suppress("MISSING_DEPENDENCY_IN_INFERRED_TYPE_ANNOTATION_WARNING")
         val ENVIRONMENT_KEY = Key.create<KotlinEnvironment>("kotlinEnvironmentKey")
 
         private val excludedFromCompletion: List<String> =
@@ -634,15 +627,9 @@ data class KotlinEnvironment(
             )
         }
 
-        fun get(module: Module, reIndex : Boolean): KotlinEnvironment? {
-//            val androidModule = module as? AndroidModuleImpl ?: return null
-            val javaModule = module as? JavaModuleImpl ?: return null
-            var currentModule = javaModule;
-           if(module is AndroidModuleImpl){
-             currentModule = module as AndroidModuleImpl
-           }else if(module is JavaModuleImpl){
-             currentModule = module as JavaModuleImpl
-           }
+        fun get(module: Module, reIndex : Boolean): KotlinEnvironment {
+            //            val androidModule = module as? AndroidModuleImpl ?: return null
+            val currentModule: JavaModuleImpl = module as? AndroidModuleImpl ?: module as JavaModuleImpl
 
             val existingEnvironment = currentModule.getUserData(ENVIRONMENT_KEY)
             if (existingEnvironment != null && !reIndex) { 
@@ -650,12 +637,12 @@ data class KotlinEnvironment(
             }
 
             val jars = currentModule.getLibraries().toMutableList()
-              jars.add(BuildModule.getLambdaStubs())
-              jars.add(BuildModule.getAndroidJar()) 
+            jars.add(BuildModule.getLambdaStubs())
+            jars.add(BuildModule.getAndroidJar())
             val javaSourceRoots = listOf(
-              //    File(currentModule.rootFile, "/src/main/java"),
-              //    File(currentModule.rootFile, "/src/main/kotlin"),
-              //    File(currentModule.rootFile, "/build/gen"),
+                  File(currentModule.rootFile, "/src/main/java"),
+                  File(currentModule.rootFile, "/src/main/kotlin"),
+                  File(currentModule.rootFile, "/build/gen"),
                   File(currentModule.rootFile, "/build/view_binding")
                ).filter { it.exists() }
             val environment = with(jars,javaSourceRoots )
@@ -669,7 +656,7 @@ data class KotlinEnvironment(
             return environment
         }
         
-        fun get(module: Module): KotlinEnvironment? {
+        fun get(module: Module): KotlinEnvironment {
           return get(module,false)
         }
     }
