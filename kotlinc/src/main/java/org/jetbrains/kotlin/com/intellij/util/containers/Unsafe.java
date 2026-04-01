@@ -2,6 +2,16 @@
 // Apache 2.0 license.
 package org.jetbrains.kotlin.com.intellij.util.containers;
 
+/*
+ * Modifications Copyright 2026 KodTik-Innovations
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ */
+
 import java.lang.reflect.Field;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;

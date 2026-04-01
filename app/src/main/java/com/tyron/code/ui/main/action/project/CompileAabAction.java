@@ -17,6 +17,7 @@ import com.tyron.code.ui.editor.Savable;
 import com.tyron.code.ui.main.CompileCallback;
 import com.tyron.code.ui.main.MainFragment;
 import com.tyron.code.ui.main.MainViewModel;
+import com.tyron.code.ui.project.ProjectManager;
 import com.tyron.completion.progress.ProgressManager;
 import com.tyron.fileeditor.api.FileEditor;
 import com.tyron.resources.R;
@@ -56,6 +57,9 @@ public class CompileAabAction extends AnAction {
 
     Module module = project.getMainModule();
     List<String> plugins = module.getPlugins();
+    if (plugins==null){
+      ProjectManager.getInstance().addOnProjectOpenListener(p->update(event));
+    }
     String pluginType = plugins.toString();
     if (!pluginType.contains("com.android.application")) {
       presentation.setVisible(false);
