@@ -37,6 +37,7 @@ import com.tyron.completion.index.CompilerService;
 import com.tyron.completion.java.CompletionModule;
 import com.tyron.completion.java.JavaCompilerProvider;
 import com.tyron.completion.java.JavaCompletionProvider;
+import com.tyron.completion.gradle.GradleCompletionModule;
 import com.tyron.completion.main.CompletionEngine;
 import com.tyron.completion.xml.XmlCompletionModule;
 import com.tyron.completion.xml.XmlIndexProvider;
@@ -93,6 +94,7 @@ public class ApplicationLoader extends Application {
 
     CompletionModule.initialize(applicationContext);
     XmlCompletionModule.initialize(applicationContext);
+    GradleCompletionModule.initialize(applicationContext);
     BuildModule.initialize(applicationContext);
 
     CrashConfig.Builder.create()

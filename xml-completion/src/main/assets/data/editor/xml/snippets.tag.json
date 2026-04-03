@@ -1,0 +1,71 @@
+{
+  "LinearLayout": {
+    "desc": "LinearLayout tag",
+    "body": [
+      "<LinearLayout",
+      "\txmlns:android=\"http://schemas.android.com/apk/res/android\"",
+      "\tandroid:layout_width=\"${1:match_parent}\"",
+      "\tandroid:layout_height=\"${2:wrap_content}\"",
+      "\tandroid:orientation=\"${3:vertical}\">",
+      "\t$0",
+      "</LinearLayout>"
+    ]
+  },
+  "RelativeLayout": {
+    "desc": "RelativeLayout tag",
+    "body": [
+      "<RelativeLayout",
+      "\txmlns:android=\"http://schemas.android.com/apk/res/android\"",
+      "\tandroid:layout_width=\"${1:match_parent}\"",
+      "\tandroid:layout_height=\"${2:match_parent}\">",
+      "\t$0",
+      "</RelativeLayout>"
+    ]
+  },
+  "FrameLayout": {
+    "desc": "FrameLayout tag",
+    "body": [
+      "<FrameLayout",
+      "\txmlns:android=\"http://schemas.android.com/apk/res/android\"",
+      "\tandroid:layout_width=\"${1:match_parent}\"",
+      "\tandroid:layout_height=\"${2:match_parent}\">",
+      "\t$0",
+      "</FrameLayout>"
+    ]
+  },
+  "TextView": {
+    "desc": "TextView tag",
+    "body": [
+      "<TextView",
+      "\tandroid:layout_width=\"${1:wrap_content}\"",
+      "\tandroid:layout_height=\"${2:wrap_content}\"",
+      "\tandroid:text=\"${3:Text}\" />"
+    ]
+  },
+  "Button": {
+    "desc": "Button tag",
+    "body": [
+      "<Button",
+      "\tandroid:layout_width=\"${1:wrap_content}\"",
+      "\tandroid:layout_height=\"${2:wrap_content}\"",
+      "\tandroid:text=\"${3:Button}\" />"
+    ]
+  },
+  "ImageView": {
+    "desc": "ImageView tag",
+    "body": [
+      "<ImageView",
+      "\tandroid:layout_width=\"${1:wrap_content}\"",
+      "\tandroid:layout_height=\"${2:wrap_content}\"",
+      "\tandroid:src=\"@drawable/${3:image_name}\" />"
+    ]
+  },
+  "<!DOCTYPE": {
+    "desc": "New XML with SYSTEM DOCTYPE",
+    "body": [
+      "<!DOCTYPE ${1:root-element} SYSTEM \"${2:file}.dtd\">",
+      "<${1:root-element}>${0}",
+      "</${1:root-element}>"
+    ]
+  }
+}

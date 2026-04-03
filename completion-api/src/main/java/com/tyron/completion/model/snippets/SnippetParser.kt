@@ -42,17 +42,16 @@ object SnippetParser {
     snippetFactory: (String, String, List<String>) -> ISnippet,
     snippets: MutableList<ISnippet>
   ) {
-    executeAsyncProvideError({
-      val content =
-        try {
-          Prefs.getApplication()
-            .assets
-            .open(assetsPath(lang, type))
-            .reader()
-        } catch (e: IOException) {
-          // snippet file probably does not exist
-          return@executeAsyncProvideError
-        }
+    try {
+      val app = Prefs.getApplication()
+      if (app == null) {
+        log.error("Prefs.getApplication() is null. Cannot load snippets.")
+        return
+      }
+      
+      val content = app.assets
+          .open(assetsPath(lang, type))
+          .reader()
 
       JsonReader(content).use {
         it.beginObject()
@@ -62,10 +61,11 @@ object SnippetParser {
         }
         it.endObject()
       }
-    }) { result, err ->
-      if (result == null || err != null) {
-        log.error("Failed to load '{}' snippets", type, err)
-      }
+    } catch (e: IOException) {
+      // snippet file probably does not exist
+      log.warn("Snippet file for {}/{} not found", lang, type)
+    } catch (e: Exception) {
+      log.error("Failed to load '{}' snippets", type, e)
     }
   }
 

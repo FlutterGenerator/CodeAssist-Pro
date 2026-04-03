@@ -12,8 +12,10 @@ import com.tyron.completion.CompletionProvider;
 import com.tyron.completion.model.CompletionList;
 import com.tyron.completion.xml.util.AndroidResourcesUtils;
 import com.tyron.completion.xml.v2.aar.FrameworkResourceRepository;
+import com.tyron.completion.xml.v2.handler.AndroidDrawableHandlerKt;
 import com.tyron.completion.xml.v2.handler.AndroidLayoutHandlerKt;
 import com.tyron.completion.xml.v2.handler.AndroidManifestHandlerKt;
+import com.tyron.completion.xml.v2.handler.AndroidValuesHandlerKt;
 import java.io.File;
 import java.util.Objects;
 import org.jetbrains.kotlin.com.intellij.openapi.util.Key;
@@ -78,6 +80,10 @@ public class AndroidXmlCompletionProvider extends CompletionProvider {
       return AndroidManifestHandlerKt.handleManifest(frameworkResourceRepository, parameters);
     } else if (fileType == XmlFileType.LAYOUT) {
       return AndroidLayoutHandlerKt.handleLayout(frameworkResourceRepository, parameters);
+    } else if (fileType == XmlFileType.VALUES) {
+      return AndroidValuesHandlerKt.handleValues(frameworkResourceRepository, parameters);
+    } else if (fileType == XmlFileType.DRAWABLE) {
+      return AndroidDrawableHandlerKt.handleDrawable(frameworkResourceRepository, parameters);
     }
     return CompletionList.EMPTY;
   }
@@ -100,6 +106,10 @@ public class AndroidXmlCompletionProvider extends CompletionProvider {
       return XmlFileType.MANIFEST;
     } else if (AndroidResourcesUtils.isLayoutXMLFile(file)) {
       return XmlFileType.LAYOUT;
+    } else if (AndroidResourcesUtils.isDrawableXMLFile(file)) {
+      return XmlFileType.DRAWABLE;
+    } else if (AndroidResourcesUtils.isResourceXMLFile(file)) {
+      return XmlFileType.VALUES;
     }
     return XmlFileType.UNKNOWN;
   }

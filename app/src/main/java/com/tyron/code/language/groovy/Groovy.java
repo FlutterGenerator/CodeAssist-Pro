@@ -8,12 +8,11 @@ import java.io.File;
 public class Groovy implements Language {
   @Override
   public boolean isApplicable(File ext) {
-    return ext.getName().endsWith(".groovy") || ext.getName().endsWith(".gradle");
+    return ext.getName().endsWith(".groovy");
   }
 
   @Override
   public io.github.rosemoe.sora.lang.Language get(Editor editor) {
-    // return new GroovyLanguage(editor);
-    return LanguageManager.createTextMateLanguage("source.groovy", true);
+    return new GroovyLanguage(editor);
   }
 }

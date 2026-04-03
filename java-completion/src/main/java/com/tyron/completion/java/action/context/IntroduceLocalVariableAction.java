@@ -52,7 +52,7 @@ public class IntroduceLocalVariableAction extends AnAction {
     }
 
     File file = event.getData(CommonDataKeys.FILE);
-    if (file == null) {
+    if (file == null || !file.getName().endsWith(".java")) {
       return;
     }
 

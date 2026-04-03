@@ -1,0 +1,56 @@
+{
+  "android:id": {
+    "desc": "android:id attribute",
+    "body": [
+      "android:id=\"@+id/${1:id_name}\""
+    ]
+  },
+  "android:layout_width": {
+    "desc": "android:layout_width attribute",
+    "body": [
+      "android:layout_width=\"${1|match_parent,wrap_content,0dp|}\""
+    ]
+  },
+  "android:layout_height": {
+    "desc": "android:layout_height attribute",
+    "body": [
+      "android:layout_height=\"${1|match_parent,wrap_content,0dp|}\""
+    ]
+  },
+  "android:orientation": {
+    "desc": "android:orientation attribute",
+    "body": [
+      "android:orientation=\"${1|vertical,horizontal|}\""
+    ]
+  },
+  "android:text": {
+    "desc": "android:text attribute",
+    "body": [
+      "android:text=\"${1:Text}\""
+    ]
+  },
+  "android:src": {
+    "desc": "android:src attribute",
+    "body": [
+      "android:src=\"@drawable/${1:image_name}\""
+    ]
+  },
+  "android:padding": {
+    "desc": "android:padding attribute",
+    "body": [
+      "android:padding=\"${1:16dp}\""
+    ]
+  },
+  "android:layout_margin": {
+    "desc": "android:layout_margin attribute",
+    "body": [
+      "android:layout_margin=\"${1:16dp}\""
+    ]
+  },
+  "tools:listitem": {
+    "desc": "tools:listitem attribute",
+    "body": [
+      "tools:listitem=\"@layout/${1:layout_name}\""
+    ]
+  }
+}

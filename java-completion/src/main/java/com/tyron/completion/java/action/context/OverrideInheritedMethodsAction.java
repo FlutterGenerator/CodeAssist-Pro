@@ -87,7 +87,7 @@ public class OverrideInheritedMethodsAction extends AnAction {
     Editor editor = event.getRequiredData(CommonDataKeys.EDITOR);
     if (editor == null) return;
     File file = event.getRequiredData(CommonDataKeys.FILE);
-    if (file == null) return;
+    if (file == null || !file.getName().endsWith(".java")) return;
 
     CompilationInfo compilationInfo = event.getData(CompilationInfo.COMPILATION_INFO_KEY);
     if (compilationInfo == null) return;
