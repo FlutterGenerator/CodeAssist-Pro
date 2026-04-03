@@ -5,6 +5,9 @@ import com.android.resources.ResourceType.STYLEABLE
 import com.tyron.builder.project.api.AndroidModule
 import com.tyron.completion.CompletionParameters
 import com.tyron.completion.model.CompletionList
+import com.tyron.completion.xml.insert.NamespaceInsertHandler
+import com.tyron.completion.model.CompletionItem
+import com.tyron.completion.model.DrawableKind
 import com.tyron.completion.xml.model.XmlCompletionType
 import com.tyron.completion.xml.util.AndroidXmlTagUtils.addManifestTagItems
 import com.tyron.completion.xml.util.AndroidXmlTagUtils.getManifestStyleName
@@ -40,6 +43,24 @@ fun handleManifest(
     when (completionType) {
         XmlCompletionType.TAG -> addManifestTagItems(prefix, completionBuilder)
         XmlCompletionType.ATTRIBUTE -> {
+            if (prefix.startsWith("xmlns:")) {
+                val namespaces = listOf(
+                    "xmlns:android=\"http://schemas.android.com/apk/res/android\"",
+                    "xmlns:app=\"http://schemas.android.com/apk/res-auto\"",
+                    "xmlns:tools=\"http://schemas.android.com/tools\""
+                )
+                for (ns in namespaces) {
+                    val label = ns.substring(0, ns.indexOf('='))
+                    val value = ns.substring(ns.indexOf('=') + 2, ns.length - 1)
+                    if (label.startsWith(prefix)) {
+                        val item = CompletionItem.create(label, "Namespace", label, DrawableKind.Attribute)
+                        item.commitText = label
+                        item.setInsertHandler(NamespaceInsertHandler(item))
+                        item.data = value
+                        completionBuilder.addItem(item)
+                    }
+                }
+            }
             addManifestAttributes(
                 completionBuilder,
                 frameworkResRepository,

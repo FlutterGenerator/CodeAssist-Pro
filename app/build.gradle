@@ -124,10 +124,12 @@ dependencies {
     // TODO: completion providers should not be included on the main module
     implementation project(path: ':code-editor')
     implementation project(path: ':xml-completion')
+    implementation project(path: ':gradle-completion')
     implementation project(path: ':viewbinding-inject')
     implementation project(path: ':xml-repository')
     implementation project(path: ':java-completion')
-    implementation project(path: ':event-manager') 
+    implementation project(path: ':event-manager')
+    implementation project(path:':gradle-completion')
 	
     // not used for compilation, but for analysis
     implementation project(path: ':javac')

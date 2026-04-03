@@ -6,6 +6,8 @@ import android.os.Looper;
 import com.tyron.actions.ActionManager;
 import com.tyron.completion.xml.action.context.AndroidManifestAddPermissionsAction;
 
+import com.tyron.completion.xml.v2.handler.XmlSnippetRepository;
+
 public class XmlCompletionModule {
 
   private static Context sApplicationContext;
@@ -18,6 +20,7 @@ public class XmlCompletionModule {
 
   public static void initialize(Context context) {
     sApplicationContext = context.getApplicationContext();
+    XmlSnippetRepository.INSTANCE.init();
   }
 
   public static Context getContext() {

@@ -18,8 +18,11 @@ import com.tyron.xml.completion.util.DOMUtils
 import org.eclipse.lemminx.dom.DOMElement
 import org.eclipse.lemminx.dom.DOMParser
 import org.eclipse.lemminx.uriresolver.URIResolverExtensionManager
-import com.tyron.completion.xml.v2.LayoutRepo
+import com.tyron.completion.xml.insert.NamespaceInsertHandler
+import com.tyron.completion.model.CompletionItem
+import com.tyron.completion.model.DrawableKind
 import com.tyron.completion.xml.util.AndroidXmlTagUtils
+import com.tyron.completion.xml.v2.LayoutRepo
 
 private const val UNKNOWN_TAG = "\$__UnknownTag__\$"
 
@@ -46,6 +49,7 @@ fun handleLayout(
     when (completionType) {
         XmlCompletionType.TAG -> {
           AndroidXmlTagUtils.addTagItemsV2(LayoutRepo.get(params.module as AndroidModule), prefix, completionBuilder, params.module )
+          XmlSnippetHandler.addSnippets(completionBuilder, XmlSnippetScope.TAG, prefix)
         }
         XmlCompletionType.ATTRIBUTE -> {
             val nodeAt = parsedNode.findNodeAt(params.index.toInt()) as DOMElement
@@ -55,6 +59,7 @@ fun handleLayout(
                 repositoryManager,
                 nodeAt
             )
+            XmlSnippetHandler.addSnippets(completionBuilder, XmlSnippetScope.ATTRIBUTE, prefix)
         }
         XmlCompletionType.ATTRIBUTE_VALUE -> {
             val attr = parsedNode.findAttrAt(params.index.toInt())
@@ -86,6 +91,7 @@ fun handleLayout(
                     classes.toList() + parentLayoutParams
                 }
             }
+            XmlSnippetHandler.addSnippets(completionBuilder, XmlSnippetScope.VALUE, prefix)
         }
         XmlCompletionType.UNKNOWN -> {
 
@@ -107,6 +113,25 @@ fun addLayoutAttributes(
     val parentView = node.parentElement
 
     // TODO: Suggest NS
+    val prefix = builder.prefix
+    if (prefix.startsWith("xmlns:")) {
+        val namespaces = listOf(
+            "xmlns:android=\"http://schemas.android.com/apk/res/android\"",
+            "xmlns:app=\"http://schemas.android.com/apk/res-auto\"",
+            "xmlns:tools=\"http://schemas.android.com/tools\""
+        )
+        for (ns in namespaces) {
+            val label = ns.substring(0, ns.indexOf('='))
+            val value = ns.substring(ns.indexOf('=') + 2, ns.length - 1)
+            if (label.startsWith(prefix)) {
+                val item = CompletionItem.create(label, "Namespace", label, DrawableKind.Attribute)
+                item.commitText = label
+                item.setInsertHandler(NamespaceInsertHandler(item))
+                item.data = value
+                builder.addItem(item)
+            }
+        }
+    }
 
     val simpleTagName = StyleUtils.getSimpleName(node.tagName)
     val styleNames = buildList {

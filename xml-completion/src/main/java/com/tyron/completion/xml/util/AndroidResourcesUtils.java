@@ -37,4 +37,19 @@ public class AndroidResourcesUtils {
 
     return false;
   }
+
+  public static boolean isDrawableXMLFile(@NonNull File file) {
+    if (!file.getName().endsWith(".xml")) {
+      return false;
+    }
+
+    if (file.getParentFile() != null) {
+      File parent = file.getParentFile();
+      if (parent.isDirectory() && parent.getName().startsWith("drawable")) {
+        return isResourceXMLFile(file);
+      }
+    }
+
+    return false;
+  }
 }

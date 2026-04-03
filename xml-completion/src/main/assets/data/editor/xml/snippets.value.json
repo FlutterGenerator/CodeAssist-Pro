@@ -1,0 +1,68 @@
+{
+  "match_parent": {
+    "desc": "match_parent value",
+    "body": [
+      "match_parent"
+    ]
+  },
+  "wrap_content": {
+    "desc": "wrap_content value",
+    "body": [
+      "wrap_content"
+    ]
+  },
+  "vertical": {
+    "desc": "vertical orientation",
+    "body": [
+      "vertical"
+    ]
+  },
+  "horizontal": {
+    "desc": "horizontal orientation",
+    "body": [
+      "horizontal"
+    ]
+  },
+  "true": {
+    "desc": "true boolean",
+    "body": [
+      "true"
+    ]
+  },
+  "false": {
+    "desc": "false boolean",
+    "body": [
+      "false"
+    ]
+  },
+  "@+id/": {
+    "desc": "new id reference",
+    "body": [
+      "@+id/${1:id_name}"
+    ]
+  },
+  "@string/": {
+    "desc": "string reference",
+    "body": [
+      "@string/${1:string_name}"
+    ]
+  },
+  "@dimen/": {
+    "desc": "dimen reference",
+    "body": [
+      "@dimen/${1:dimen_name}"
+    ]
+  },
+  "@color/": {
+    "desc": "color reference",
+    "body": [
+      "@color/${1:color_name}"
+    ]
+  },
+  "@drawable/": {
+    "desc": "drawable reference",
+    "body": [
+      "@drawable/${1:drawable_name}"
+    ]
+  }
+}

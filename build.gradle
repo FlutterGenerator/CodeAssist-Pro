@@ -4,14 +4,13 @@ buildscript {
     ext.kotlin_version = '2.3.0'
     repositories {
         google()
-        maven { url =
-'https://jitpack.io' }
+        maven { url = 'https://jitpack.io' }
     	maven { url = "https://plugins.gradle.org/m2/" }
-        maven { url =
-'https://mvnrepository.com/' }
+        maven { url = 'https://mvnrepository.com/' }
         maven { url = 'https://central.sonatype.com/repository/maven-snapshots' } 
         mavenCentral()
         maven { url = 'https://www.jetbrains.com/intellij-repository/releases/'}
+        maven { url = 'https://packages.jetbrains.team/maven/p/ij/intellij-dependencies/' }
     }
 
     dependencies {
@@ -31,6 +30,7 @@ allprojects {
     	maven { url = "https://plugins.gradle.org/m2/" }
         maven { url = 'https://mvnrepository.com/' }
         maven { url = 'https://central.sonatype.com/repository/maven-snapshots' } 
+        maven { url = 'https://packages.jetbrains.team/maven/p/ij/intellij-dependencies/' }
         mavenCentral()
     }
 }
@@ -46,5 +46,5 @@ ext {
     minSdkVersion = 26   
     applicationId = "dev.mutwakil.codeassist"
     versionCode = 1
-    versionName = "0.1 Initial Version"
+    versionName = "0.2.0-ALPHA01"
 }

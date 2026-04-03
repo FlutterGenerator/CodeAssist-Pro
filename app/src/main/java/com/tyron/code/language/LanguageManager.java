@@ -1,5 +1,6 @@
 package com.tyron.code.language;
 
+import com.tyron.code.language.gradle.Gradle;
 import com.tyron.code.language.groovy.Groovy;
 import com.tyron.code.language.java.Java;
 import com.tyron.code.language.json.Json;
@@ -32,7 +33,8 @@ public class LanguageManager {
   }
 
   private void initLanguages() {
-    mLanguages.addAll(Arrays.asList(new Xml(), new Java(), new Kotlin(), new Groovy(), new Json()));
+    mLanguages.addAll(
+        Arrays.asList(new Xml(), new Java(), new Kotlin(), new Json(), new Gradle()));
   }
 
   public boolean supports(File file) {
