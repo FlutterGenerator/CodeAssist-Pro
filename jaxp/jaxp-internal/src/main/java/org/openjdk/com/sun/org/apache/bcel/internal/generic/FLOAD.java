@@ -62,10 +62,9 @@ import org.openjdk.com.sun.org.apache.bcel.internal.Constants;
 
 /**
  * FLOAD - Load float from local variable
- *
  * <PRE>Stack ... -&gt; ..., result</PRE>
  *
- * @author <A HREF="mailto:markus.dahm@berlin.de">M. Dahm</A>
+ * @author  <A HREF="mailto:markus.dahm@berlin.de">M. Dahm</A>
  */
 public class FLOAD extends LoadInstruction {
   /**
@@ -76,9 +75,7 @@ public class FLOAD extends LoadInstruction {
     super(Constants.FLOAD, Constants.FLOAD_0);
   }
 
-  /**
-   * Load float from local variable
-   *
+  /** Load float from local variable
    * @param n index of local variable
    */
   public FLOAD(int n) {
@@ -86,9 +83,10 @@ public class FLOAD extends LoadInstruction {
   }
 
   /**
-   * Call corresponding visitor method(s). The order is: Call visitor methods of implemented
-   * interfaces first, then call methods according to the class hierarchy in descending order, i.e.,
-   * the most specific visitXXX() call comes last.
+   * Call corresponding visitor method(s). The order is:
+   * Call visitor methods of implemented interfaces first, then
+   * call methods according to the class hierarchy in descending order,
+   * i.e., the most specific visitXXX() call comes last.
    *
    * @param v Visitor object
    */

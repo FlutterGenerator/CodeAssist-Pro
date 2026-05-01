@@ -4,6 +4,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import com.tyron.builder.model.CodeAssistLibrary;
 import com.tyron.builder.project.util.PackageTrie;
+
+import org.jetbrains.kotlin.resolve.jvm.modules.JavaModuleKt;
+
 import java.io.File;
 import java.util.List;
 import java.util.Map;

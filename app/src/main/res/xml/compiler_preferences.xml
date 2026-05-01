@@ -27,4 +27,12 @@
             android:title="@string/use_fir_title"
             android:summary="@string/use_fir_desc"/>
     </PreferenceCategory>
+    <PreferenceCategory
+        app:iconSpaceReserved="false"
+        app:title="@string/environment_title">
+      <Preference android:title="@string/settings_openjdk_title"
+          android:key="openjdk"
+          android:summary="@string/settings_openjdk_desc"
+          />
+    </PreferenceCategory>
 </PreferenceScreen>

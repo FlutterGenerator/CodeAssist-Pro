@@ -1,8 +1,8 @@
 package com.tyron.code.ui.editor
 
+import com.itsaky.androidide.models.Position
+import com.itsaky.androidide.models.Range
 import com.tyron.code.ui.editor.IDEEditor.Companion.log
-import com.tyron.completion.model.Position
-import com.tyron.completion.model.Range
 import io.github.rosemoe.sora.widget.SelectionMovement
 import java.io.File
 

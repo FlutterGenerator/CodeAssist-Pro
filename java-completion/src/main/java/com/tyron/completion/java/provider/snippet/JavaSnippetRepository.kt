@@ -17,8 +17,9 @@
 
 package com.tyron.completion.java.provider.snippet
 
-import com.tyron.completion.model.snippets.ISnippet
-import com.tyron.completion.model.snippets.SnippetParser
+import com.itsaky.androidide.lsp.snippets.ISnippet
+import com.itsaky.androidide.lsp.snippets.SnippetRegistry
+
 
 /**
  * Repository to store various snippets for Java.
@@ -27,10 +28,12 @@ import com.tyron.completion.model.snippets.SnippetParser
  */
 object JavaSnippetRepository {
 
-  lateinit var snippets: Map<JavaSnippetScope, List<ISnippet>>
-    private set
+  val snippets: Map<JavaSnippetScope, List<ISnippet>>
+    get() = JavaSnippetScope.entries.associateWith { scope ->
+      SnippetRegistry.getSnippets("java",scope.filename)
+    }
 
   fun init() {
-    this.snippets = SnippetParser.parse("java", JavaSnippetScope.values())
+    SnippetRegistry.initBuiltIn("java", JavaSnippetScope.entries)
   }
 }

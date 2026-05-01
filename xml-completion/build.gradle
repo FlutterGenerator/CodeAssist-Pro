@@ -66,12 +66,14 @@ dependencies {
     implementation project(path: ':common')
     implementation project(path: ':java-completion')
     compileOnly project(path: ':javac')
-    implementation project(':kotlinc')
+   // implementation project(':kotlinc')
+    implementation(project(":kotlin-analysis-api"))
 
     implementation project(path: ':project')
     implementation project(path: ':manifmerger')
     implementation project(path: ':xml-repository')
     implementation project(path: ':android-common-resources')
+    implementation(projects.lsp.api)
     
     implementation("com.google.code.findbugs:jsr305:3.0.2")
 }

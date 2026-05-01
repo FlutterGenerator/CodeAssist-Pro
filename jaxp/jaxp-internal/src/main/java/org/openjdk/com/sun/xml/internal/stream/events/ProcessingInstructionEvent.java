@@ -27,64 +27,74 @@ package org.openjdk.com.sun.xml.internal.stream.events;
 
 import org.openjdk.javax.xml.stream.Location;
 import org.openjdk.javax.xml.stream.XMLStreamConstants;
+import org.openjdk.javax.xml.stream.XMLStreamException;
 import org.openjdk.javax.xml.stream.events.ProcessingInstruction;
 
-/**
- * Implements Processing Instruction Event
+/** Implements Processing Instruction Event
  *
- * @author Neeraj Bajaj, Sun Microsystems.
+ *@author Neeraj Bajaj, Sun Microsystems.
+ *
  */
-public class ProcessingInstructionEvent extends DummyEvent implements ProcessingInstruction {
 
-  /** Processing Instruction Name */
-  private String fName;
 
-  /** Processsing instruction content */
-  private String fContent;
+public class ProcessingInstructionEvent extends DummyEvent
+implements ProcessingInstruction {
 
-  public ProcessingInstructionEvent() {
-    init();
-  }
+    /** Processing Instruction Name */
+    private String fName;
+    /** Processsing instruction content */
+    private String fContent;
 
-  public ProcessingInstructionEvent(String targetName, String data) {
-    this(targetName, data, null);
-  }
+    public ProcessingInstructionEvent() {
+        init();
+    }
 
-  public ProcessingInstructionEvent(String targetName, String data, Location loc) {
-    init();
-    this.fName = targetName;
-    fContent = data;
-    setLocation(loc);
-  }
+    public ProcessingInstructionEvent(String targetName, String data) {
+        this(targetName,data,null);
+    }
 
-  protected void init() {
-    setEventType(XMLStreamConstants.PROCESSING_INSTRUCTION);
-  }
+    public ProcessingInstructionEvent(String targetName, String data,Location loc) {
+        init();
+        this.fName = targetName;
+        fContent = data;
+        setLocation(loc);
+    }
 
-  public String getTarget() {
-    return fName;
-  }
+    protected void init() {
+        setEventType(XMLStreamConstants.PROCESSING_INSTRUCTION);
+    }
 
-  public void setTarget(String targetName) {
-    fName = targetName;
-  }
+    public String getTarget() {
+        return fName;
+    }
 
-  public void setData(String data) {
-    fContent = data;
-  }
+    public void setTarget(String targetName) {
+        fName = targetName;
+    }
 
-  public String getData() {
-    return fContent;
-  }
+    public void setData(String data) {
+        fContent = data;
+    }
 
-  public String toString() {
-    if (fContent != null && fName != null) return "<?" + fName + " " + fContent + "?>";
-    if (fName != null) return "<?" + fName + "?>";
-    if (fContent != null) return "<?" + fContent + "?>";
-    else return "<??>";
-  }
+    public String getData() {
+        return fContent;
+    }
 
-  protected void writeAsEncodedUnicodeEx(java.io.Writer writer) throws java.io.IOException {
-    writer.write(toString());
-  }
+    public String toString() {
+        if(fContent != null && fName != null)
+            return "<?" + fName + " " + fContent + "?>";
+        if(fName != null)
+            return "<?" + fName + "?>";
+        if(fContent != null)
+            return "<?" + fContent + "?>";
+        else
+            return "<??>";
+    }
+
+    protected void writeAsEncodedUnicodeEx(java.io.Writer writer)
+    throws java.io.IOException
+    {
+        writer.write(toString());
+    }
+
 }

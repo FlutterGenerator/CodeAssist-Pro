@@ -23,35 +23,32 @@
 package org.openjdk.com.sun.org.apache.xml.internal.utils;
 
 /**
- * A very simple table that stores a list of strings, optimized for small lists.
- *
+ * A very simple table that stores a list of strings, optimized
+ * for small lists.
  * @xsl.usage internal
  */
-public class StringVector implements java.io.Serializable {
-  static final long serialVersionUID = 4995234972032919748L;
+public class StringVector implements java.io.Serializable
+{
+    static final long serialVersionUID = 4995234972032919748L;
 
-  /**
-   * @serial Size of blocks to allocate
-   */
+  /** @serial Size of blocks to allocate           */
   protected int m_blocksize;
 
-  /**
-   * @serial Array of strings this contains
-   */
+  /** @serial Array of strings this contains          */
   protected String m_map[];
 
-  /**
-   * @serial Number of strings this contains
-   */
+  /** @serial Number of strings this contains          */
   protected int m_firstFree = 0;
 
-  /**
-   * @serial Size of the array
-   */
+  /** @serial Size of the array          */
   protected int m_mapSize;
 
-  /** Default constructor. Note that the default block size is very small, for small lists. */
-  public StringVector() {
+  /**
+   * Default constructor.  Note that the default
+   * block size is very small, for small lists.
+   */
+  public StringVector()
+  {
 
     m_blocksize = 8;
     m_mapSize = m_blocksize;
@@ -63,7 +60,8 @@ public class StringVector implements java.io.Serializable {
    *
    * @param blocksize Size of the blocks to allocate
    */
-  public StringVector(int blocksize) {
+  public StringVector(int blocksize)
+  {
 
     m_blocksize = blocksize;
     m_mapSize = blocksize;
@@ -75,7 +73,8 @@ public class StringVector implements java.io.Serializable {
    *
    * @return Number of strings in the list
    */
-  public int getLength() {
+  public int getLength()
+  {
     return m_firstFree;
   }
 
@@ -84,7 +83,8 @@ public class StringVector implements java.io.Serializable {
    *
    * @return Number of strings in the list
    */
-  public final int size() {
+  public final int size()
+  {
     return m_firstFree;
   }
 
@@ -93,9 +93,11 @@ public class StringVector implements java.io.Serializable {
    *
    * @param value Sting to add to the vector
    */
-  public final void addElement(String value) {
+  public final void addElement(String value)
+  {
 
-    if ((m_firstFree + 1) >= m_mapSize) {
+    if ((m_firstFree + 1) >= m_mapSize)
+    {
       m_mapSize += m_blocksize;
 
       String newMap[] = new String[m_mapSize];
@@ -114,9 +116,11 @@ public class StringVector implements java.io.Serializable {
    * Get the nth element.
    *
    * @param i Index of string to find
+   *
    * @return String at given index
    */
-  public final String elementAt(int i) {
+  public final String elementAt(int i)
+  {
     return m_map[i];
   }
 
@@ -124,14 +128,19 @@ public class StringVector implements java.io.Serializable {
    * Tell if the table contains the given string.
    *
    * @param s String to look for
+   *
    * @return True if the string is in this table
    */
-  public final boolean contains(String s) {
+  public final boolean contains(String s)
+  {
 
-    if (null == s) return false;
+    if (null == s)
+      return false;
 
-    for (int i = 0; i < m_firstFree; i++) {
-      if (m_map[i].equals(s)) return true;
+    for (int i = 0; i < m_firstFree; i++)
+    {
+      if (m_map[i].equals(s))
+        return true;
     }
 
     return false;
@@ -141,14 +150,19 @@ public class StringVector implements java.io.Serializable {
    * Tell if the table contains the given string. Ignore case.
    *
    * @param s String to find
+   *
    * @return True if the String is in this vector
    */
-  public final boolean containsIgnoreCase(String s) {
+  public final boolean containsIgnoreCase(String s)
+  {
 
-    if (null == s) return false;
+    if (null == s)
+      return false;
 
-    for (int i = 0; i < m_firstFree; i++) {
-      if (m_map[i].equalsIgnoreCase(s)) return true;
+    for (int i = 0; i < m_firstFree; i++)
+    {
+      if (m_map[i].equalsIgnoreCase(s))
+        return true;
     }
 
     return false;
@@ -159,9 +173,11 @@ public class StringVector implements java.io.Serializable {
    *
    * @param s String to push into the vector
    */
-  public final void push(String s) {
+  public final void push(String s)
+  {
 
-    if ((m_firstFree + 1) >= m_mapSize) {
+    if ((m_firstFree + 1) >= m_mapSize)
+    {
       m_mapSize += m_blocksize;
 
       String newMap[] = new String[m_mapSize];
@@ -179,12 +195,14 @@ public class StringVector implements java.io.Serializable {
   /**
    * Pop the tail of this vector.
    *
-   * @return The String last added to this vector or null not found. The string is removed from the
-   *     vector.
+   * @return The String last added to this vector or null not found.
+   * The string is removed from the vector.
    */
-  public final String pop() {
+  public final String pop()
+  {
 
-    if (m_firstFree <= 0) return null;
+    if (m_firstFree <= 0)
+      return null;
 
     m_firstFree--;
 
@@ -200,7 +218,8 @@ public class StringVector implements java.io.Serializable {
    *
    * @return The string at the tail of this vector.
    */
-  public final String peek() {
+  public final String peek()
+  {
     return (m_firstFree <= 0) ? null : m_map[m_firstFree - 1];
   }
 }

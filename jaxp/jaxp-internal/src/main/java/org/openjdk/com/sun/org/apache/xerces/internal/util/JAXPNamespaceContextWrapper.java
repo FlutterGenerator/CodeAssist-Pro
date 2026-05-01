@@ -21,125 +21,130 @@
 
 package org.openjdk.com.sun.org.apache.xerces.internal.util;
 
+
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.TreeSet;
 import java.util.Vector;
-import org.openjdk.com.sun.org.apache.xerces.internal.xni.NamespaceContext;
+
 import org.openjdk.javax.xml.XMLConstants;
 
+import org.openjdk.com.sun.org.apache.xerces.internal.xni.NamespaceContext;
+
 /**
- * A read-only XNI wrapper around a JAXP NamespaceContext.
+ * <p>A read-only XNI wrapper around a JAXP NamespaceContext.</p>
  *
  * @author Michael Glavassevich, IBM
+ *
  * @version $Id: JAXPNamespaceContextWrapper.java,v 1.2 2010-10-26 23:01:13 joehw Exp $
  */
 public final class JAXPNamespaceContextWrapper implements NamespaceContext {
 
-  private org.openjdk.javax.xml.namespace.NamespaceContext fNamespaceContext;
-  private SymbolTable fSymbolTable;
-  private List fPrefixes;
-  private final Vector fAllPrefixes = new Vector();
+    private org.openjdk.javax.xml.namespace.NamespaceContext fNamespaceContext;
+    private SymbolTable fSymbolTable;
+    private List fPrefixes;
+    private final Vector fAllPrefixes = new Vector();
 
-  private int[] fContext = new int[8];
-  private int fCurrentContext;
+    private int[] fContext = new int[8];
+    private int fCurrentContext;
 
-  public JAXPNamespaceContextWrapper(SymbolTable symbolTable) {
-    setSymbolTable(symbolTable);
-  }
-
-  public void setNamespaceContext(org.openjdk.javax.xml.namespace.NamespaceContext context) {
-    fNamespaceContext = context;
-  }
-
-  public org.openjdk.javax.xml.namespace.NamespaceContext getNamespaceContext() {
-    return fNamespaceContext;
-  }
-
-  public void setSymbolTable(SymbolTable symbolTable) {
-    fSymbolTable = symbolTable;
-  }
-
-  public SymbolTable getSymbolTable() {
-    return fSymbolTable;
-  }
-
-  public void setDeclaredPrefixes(List prefixes) {
-    fPrefixes = prefixes;
-  }
-
-  public List getDeclaredPrefixes() {
-    return fPrefixes;
-  }
-
-  /*
-   * NamespaceContext methods
-   */
-
-  public String getURI(String prefix) {
-    if (fNamespaceContext != null) {
-      String uri = fNamespaceContext.getNamespaceURI(prefix);
-      if (uri != null && !XMLConstants.NULL_NS_URI.equals(uri)) {
-        return (fSymbolTable != null) ? fSymbolTable.addSymbol(uri) : uri.intern();
-      }
+    public JAXPNamespaceContextWrapper(SymbolTable symbolTable) {
+        setSymbolTable(symbolTable);
     }
-    return null;
-  }
 
-  public String getPrefix(String uri) {
-    if (fNamespaceContext != null) {
-      if (uri == null) {
-        uri = XMLConstants.NULL_NS_URI;
-      }
-      String prefix = fNamespaceContext.getPrefix(uri);
-      if (prefix == null) {
-        prefix = XMLConstants.DEFAULT_NS_PREFIX;
-      }
-      return (fSymbolTable != null) ? fSymbolTable.addSymbol(prefix) : prefix.intern();
+    public void setNamespaceContext(org.openjdk.javax.xml.namespace.NamespaceContext context) {
+        fNamespaceContext = context;
     }
-    return null;
-  }
 
-  public Enumeration getAllPrefixes() {
-    // There may be duplicate prefixes in the list so we
-    // first transfer them to a set to ensure uniqueness.
-    return Collections.enumeration(new TreeSet(fAllPrefixes));
-  }
-
-  public void pushContext() {
-    // extend the array, if necessary
-    if (fCurrentContext + 1 == fContext.length) {
-      int[] contextarray = new int[fContext.length * 2];
-      System.arraycopy(fContext, 0, contextarray, 0, fContext.length);
-      fContext = contextarray;
+    public org.openjdk.javax.xml.namespace.NamespaceContext getNamespaceContext() {
+        return fNamespaceContext;
     }
-    // push context
-    fContext[++fCurrentContext] = fAllPrefixes.size();
-    if (fPrefixes != null) {
-      fAllPrefixes.addAll(fPrefixes);
+
+    public void setSymbolTable(SymbolTable symbolTable) {
+        fSymbolTable = symbolTable;
     }
-  }
 
-  public void popContext() {
-    fAllPrefixes.setSize(fContext[fCurrentContext--]);
-  }
+    public SymbolTable getSymbolTable() {
+        return fSymbolTable;
+    }
 
-  public boolean declarePrefix(String prefix, String uri) {
-    return true;
-  }
+    public void setDeclaredPrefixes(List prefixes) {
+        fPrefixes = prefixes;
+    }
 
-  public int getDeclaredPrefixCount() {
-    return (fPrefixes != null) ? fPrefixes.size() : 0;
-  }
+    public List getDeclaredPrefixes() {
+        return fPrefixes;
+    }
 
-  public String getDeclaredPrefixAt(int index) {
-    return (String) fPrefixes.get(index);
-  }
+    /*
+     * NamespaceContext methods
+     */
 
-  public void reset() {
-    fCurrentContext = 0;
-    fContext[fCurrentContext] = 0;
-    fAllPrefixes.clear();
-  }
+    public String getURI(String prefix) {
+        if (fNamespaceContext != null) {
+            String uri = fNamespaceContext.getNamespaceURI(prefix);
+            if (uri != null && !XMLConstants.NULL_NS_URI.equals(uri)) {
+                return (fSymbolTable != null) ? fSymbolTable.addSymbol(uri) : uri.intern();
+            }
+        }
+        return null;
+    }
+
+    public String getPrefix(String uri) {
+        if (fNamespaceContext != null) {
+            if (uri == null) {
+                uri = XMLConstants.NULL_NS_URI;
+            }
+            String prefix = fNamespaceContext.getPrefix(uri);
+            if (prefix == null) {
+                prefix = XMLConstants.DEFAULT_NS_PREFIX;
+            }
+            return (fSymbolTable != null) ? fSymbolTable.addSymbol(prefix) : prefix.intern();
+        }
+        return null;
+    }
+
+    public Enumeration getAllPrefixes() {
+        // There may be duplicate prefixes in the list so we
+        // first transfer them to a set to ensure uniqueness.
+        return Collections.enumeration(new TreeSet(fAllPrefixes));
+    }
+
+    public void pushContext() {
+        // extend the array, if necessary
+        if (fCurrentContext + 1 == fContext.length) {
+            int[] contextarray = new int[fContext.length * 2];
+            System.arraycopy(fContext, 0, contextarray, 0, fContext.length);
+            fContext = contextarray;
+        }
+        // push context
+        fContext[++fCurrentContext] = fAllPrefixes.size();
+        if (fPrefixes != null) {
+            fAllPrefixes.addAll(fPrefixes);
+        }
+    }
+
+    public void popContext() {
+        fAllPrefixes.setSize(fContext[fCurrentContext--]);
+    }
+
+    public boolean declarePrefix(String prefix, String uri) {
+        return true;
+    }
+
+    public int getDeclaredPrefixCount() {
+        return (fPrefixes != null) ? fPrefixes.size() : 0;
+    }
+
+    public String getDeclaredPrefixAt(int index) {
+        return (String) fPrefixes.get(index);
+    }
+
+    public void reset() {
+        fCurrentContext = 0;
+        fContext[fCurrentContext] = 0;
+        fAllPrefixes.clear();
+    }
+
 } // JAXPNamespaceContextWrapper

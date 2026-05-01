@@ -29,7 +29,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.kotlin.com.intellij.openapi.util.Key;
 import org.jetbrains.kotlin.com.intellij.openapi.util.KeyWithDefaultValue;
 import org.jetbrains.kotlin.com.intellij.util.ReflectionUtil;
-// import com.intellij.util.concurrency.AtomicFieldUpdater;
+// import org.jetbrains.kotlin.com.intellij.util.concurrency.AtomicFieldUpdater;
 import org.jetbrains.kotlin.com.intellij.util.keyFMap.KeyFMap;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -87,6 +87,7 @@ public class ModuleImpl implements Module {
         kotlinSettings.put("isCompileRuntime", "false");
         kotlinSettings.put("isKotlinCompletionV2", "false");
         kotlinSettings.put("jvmTarget", "1.8");
+        kotlinSettings.put("language_version","1.9");
         kotlinSettings.put("applyKotlinFormat", "false");
         kotlinSettings.put("skipKotlinTask", "false");
         // kotlinSettings.put("languageVersion", "2.1");

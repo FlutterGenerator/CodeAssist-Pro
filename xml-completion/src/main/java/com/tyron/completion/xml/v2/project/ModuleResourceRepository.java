@@ -37,7 +37,7 @@ public class ModuleResourceRepository extends MultiResourceRepository implements
      * modules.
      *
      * <p>The returned repository needs to be registered with a
-     * {@link com.intellij.openapi.Disposable} parent.
+     * {@linkorg.jetbrains.kotlin.com.intellij.openapi.Disposable} parent.
      *
      * @param facet     the facet for the module
      * @param namespace the namespace for the repository

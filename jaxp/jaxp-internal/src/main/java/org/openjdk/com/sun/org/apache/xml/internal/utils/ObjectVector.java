@@ -25,28 +25,34 @@ package org.openjdk.com.sun.org.apache.xml.internal.utils;
 /**
  * A very simple table that stores a list of objects.
  *
- * <p>This version is based on a "realloc" strategy -- a simle array is used, and when more storage
- * is needed, a larger array is obtained and all existing data is recopied into it. As a result,
- * read/write access to existing nodes is O(1) fast but appending may be O(N**2) slow.
- *
+ * This version is based on a "realloc" strategy -- a simle array is
+ * used, and when more storage is needed, a larger array is obtained
+ * and all existing data is recopied into it. As a result, read/write
+ * access to existing nodes is O(1) fast but appending may be O(N**2)
+ * slow.
  * @xsl.usage internal
  */
-public class ObjectVector implements Cloneable {
+public class ObjectVector implements Cloneable
+{
 
-  /** Size of blocks to allocate */
+  /** Size of blocks to allocate          */
   protected int m_blocksize;
 
-  /** Array of objects */
+  /** Array of objects          */
   protected Object m_map[];
 
-  /** Number of ints in array */
+  /** Number of ints in array          */
   protected int m_firstFree = 0;
 
-  /** Size of array */
+  /** Size of array          */
   protected int m_mapSize;
 
-  /** Default constructor. Note that the default block size is very small, for small lists. */
-  public ObjectVector() {
+  /**
+   * Default constructor.  Note that the default
+   * block size is very small, for small lists.
+   */
+  public ObjectVector()
+  {
 
     m_blocksize = 32;
     m_mapSize = m_blocksize;
@@ -58,7 +64,8 @@ public class ObjectVector implements Cloneable {
    *
    * @param blocksize Size of block to allocate
    */
-  public ObjectVector(int blocksize) {
+  public ObjectVector(int blocksize)
+  {
 
     m_blocksize = blocksize;
     m_mapSize = blocksize;
@@ -70,7 +77,8 @@ public class ObjectVector implements Cloneable {
    *
    * @param blocksize Size of block to allocate
    */
-  public ObjectVector(int blocksize, int increaseSize) {
+  public ObjectVector(int blocksize, int increaseSize)
+  {
 
     m_blocksize = increaseSize;
     m_mapSize = blocksize;
@@ -82,12 +90,13 @@ public class ObjectVector implements Cloneable {
    *
    * @param v Existing ObjectVector to copy
    */
-  public ObjectVector(ObjectVector v) {
-    m_map = new Object[v.m_mapSize];
+  public ObjectVector(ObjectVector v)
+  {
+        m_map = new Object[v.m_mapSize];
     m_mapSize = v.m_mapSize;
     m_firstFree = v.m_firstFree;
-    m_blocksize = v.m_blocksize;
-    System.arraycopy(v.m_map, 0, m_map, 0, m_firstFree);
+        m_blocksize = v.m_blocksize;
+        System.arraycopy(v.m_map, 0, m_map, 0, m_firstFree);
   }
 
   /**
@@ -95,7 +104,8 @@ public class ObjectVector implements Cloneable {
    *
    * @return length of the list
    */
-  public final int size() {
+  public final int size()
+  {
     return m_firstFree;
   }
 
@@ -104,18 +114,22 @@ public class ObjectVector implements Cloneable {
    *
    * @return length of the list
    */
-  public final void setSize(int sz) {
+  public final void setSize(int sz)
+  {
     m_firstFree = sz;
   }
+
 
   /**
    * Append an object onto the vector.
    *
    * @param value Object to add to the list
    */
-  public final void addElement(Object value) {
+  public final void addElement(Object value)
+  {
 
-    if ((m_firstFree + 1) >= m_mapSize) {
+    if ((m_firstFree + 1) >= m_mapSize)
+    {
       m_mapSize += m_blocksize;
 
       Object newMap[] = new Object[m_mapSize];
@@ -135,10 +149,12 @@ public class ObjectVector implements Cloneable {
    *
    * @param value Object to add to the list
    */
-  public final void addElements(Object value, int numberOfElements) {
+  public final void addElements(Object value, int numberOfElements)
+  {
 
-    if ((m_firstFree + numberOfElements) >= m_mapSize) {
-      m_mapSize += (m_blocksize + numberOfElements);
+    if ((m_firstFree + numberOfElements) >= m_mapSize)
+    {
+      m_mapSize += (m_blocksize+numberOfElements);
 
       Object newMap[] = new Object[m_mapSize];
 
@@ -147,7 +163,8 @@ public class ObjectVector implements Cloneable {
       m_map = newMap;
     }
 
-    for (int i = 0; i < numberOfElements; i++) {
+    for (int i = 0; i < numberOfElements; i++)
+    {
       m_map[m_firstFree] = value;
       m_firstFree++;
     }
@@ -158,10 +175,12 @@ public class ObjectVector implements Cloneable {
    *
    * @param numberOfElements number of slots to append
    */
-  public final void addElements(int numberOfElements) {
+  public final void addElements(int numberOfElements)
+  {
 
-    if ((m_firstFree + numberOfElements) >= m_mapSize) {
-      m_mapSize += (m_blocksize + numberOfElements);
+    if ((m_firstFree + numberOfElements) >= m_mapSize)
+    {
+      m_mapSize += (m_blocksize+numberOfElements);
 
       Object newMap[] = new Object[m_mapSize];
 
@@ -173,17 +192,21 @@ public class ObjectVector implements Cloneable {
     m_firstFree += numberOfElements;
   }
 
+
   /**
-   * Inserts the specified object in this vector at the specified index. Each component in this
-   * vector with an index greater or equal to the specified index is shifted upward to have an index
-   * one greater than the value it had previously.
+   * Inserts the specified object in this vector at the specified index.
+   * Each component in this vector with an index greater or equal to
+   * the specified index is shifted upward to have an index one greater
+   * than the value it had previously.
    *
    * @param value Object to insert
    * @param at Index of where to insert
    */
-  public final void insertElementAt(Object value, int at) {
+  public final void insertElementAt(Object value, int at)
+  {
 
-    if ((m_firstFree + 1) >= m_mapSize) {
+    if ((m_firstFree + 1) >= m_mapSize)
+    {
       m_mapSize += m_blocksize;
 
       Object newMap[] = new Object[m_mapSize];
@@ -193,7 +216,8 @@ public class ObjectVector implements Cloneable {
       m_map = newMap;
     }
 
-    if (at <= (m_firstFree - 1)) {
+    if (at <= (m_firstFree - 1))
+    {
       System.arraycopy(m_map, at, m_map, at + 1, m_firstFree - at);
     }
 
@@ -202,10 +226,14 @@ public class ObjectVector implements Cloneable {
     m_firstFree++;
   }
 
-  /** Remove all elements objects from the list. */
-  public final void removeAllElements() {
+  /**
+   * Remove all elements objects from the list.
+   */
+  public final void removeAllElements()
+  {
 
-    for (int i = 0; i < m_firstFree; i++) {
+    for (int i = 0; i < m_firstFree; i++)
+    {
       m_map[i] = null;
     }
 
@@ -213,19 +241,27 @@ public class ObjectVector implements Cloneable {
   }
 
   /**
-   * Removes the first occurrence of the argument from this vector. If the object is found in this
-   * vector, each component in the vector with an index greater or equal to the object's index is
-   * shifted downward to have an index one smaller than the value it had previously.
+   * Removes the first occurrence of the argument from this vector.
+   * If the object is found in this vector, each component in the vector
+   * with an index greater or equal to the object's index is shifted
+   * downward to have an index one smaller than the value it had
+   * previously.
    *
    * @param s Object to remove from array
+   *
    * @return True if the object was removed, false if it was not found
    */
-  public final boolean removeElement(Object s) {
+  public final boolean removeElement(Object s)
+  {
 
-    for (int i = 0; i < m_firstFree; i++) {
-      if (m_map[i] == s) {
-        if ((i + 1) < m_firstFree) System.arraycopy(m_map, i + 1, m_map, i - 1, m_firstFree - i);
-        else m_map[i] = null;
+    for (int i = 0; i < m_firstFree; i++)
+    {
+      if (m_map[i] == s)
+      {
+        if ((i + 1) < m_firstFree)
+          System.arraycopy(m_map, i + 1, m_map, i - 1, m_firstFree - i);
+        else
+          m_map[i] = null;
 
         m_firstFree--;
 
@@ -237,31 +273,36 @@ public class ObjectVector implements Cloneable {
   }
 
   /**
-   * Deletes the component at the specified index. Each component in this vector with an index
-   * greater or equal to the specified index is shifted downward to have an index one smaller than
+   * Deletes the component at the specified index. Each component in
+   * this vector with an index greater or equal to the specified
+   * index is shifted downward to have an index one smaller than
    * the value it had previously.
    *
    * @param i index of where to remove an object
    */
-  public final void removeElementAt(int i) {
+  public final void removeElementAt(int i)
+  {
 
-    if (i > m_firstFree) System.arraycopy(m_map, i + 1, m_map, i, m_firstFree);
-    else m_map[i] = null;
+    if (i > m_firstFree)
+      System.arraycopy(m_map, i + 1, m_map, i, m_firstFree);
+    else
+      m_map[i] = null;
 
     m_firstFree--;
   }
 
   /**
-   * Sets the component at the specified index of this vector to be the specified object. The
-   * previous component at that position is discarded.
+   * Sets the component at the specified index of this vector to be the
+   * specified object. The previous component at that position is discarded.
    *
-   * <p>The index must be a value greater than or equal to 0 and less than the current size of the
-   * vector.
+   * The index must be a value greater than or equal to 0 and less
+   * than the current size of the vector.
    *
    * @param value object to set
    * @param index Index of where to set the object
    */
-  public final void setElementAt(Object value, int index) {
+  public final void setElementAt(Object value, int index)
+  {
     m_map[index] = value;
   }
 
@@ -269,9 +310,11 @@ public class ObjectVector implements Cloneable {
    * Get the nth element.
    *
    * @param i index of object to get
+   *
    * @return object at given index
    */
-  public final Object elementAt(int i) {
+  public final Object elementAt(int i)
+  {
     return m_map[i];
   }
 
@@ -279,64 +322,83 @@ public class ObjectVector implements Cloneable {
    * Tell if the table contains the given Object.
    *
    * @param s object to look for
+   *
    * @return true if the object is in the list
    */
-  public final boolean contains(Object s) {
+  public final boolean contains(Object s)
+  {
 
-    for (int i = 0; i < m_firstFree; i++) {
-      if (m_map[i] == s) return true;
+    for (int i = 0; i < m_firstFree; i++)
+    {
+      if (m_map[i] == s)
+        return true;
     }
 
     return false;
   }
 
   /**
-   * Searches for the first occurence of the given argument, beginning the search at index, and
-   * testing for equality using the equals method.
+   * Searches for the first occurence of the given argument,
+   * beginning the search at index, and testing for equality
+   * using the equals method.
    *
    * @param elem object to look for
    * @param index Index of where to begin search
-   * @return the index of the first occurrence of the object argument in this vector at position
-   *     index or later in the vector; returns -1 if the object is not found.
+   * @return the index of the first occurrence of the object
+   * argument in this vector at position index or later in the
+   * vector; returns -1 if the object is not found.
    */
-  public final int indexOf(Object elem, int index) {
+  public final int indexOf(Object elem, int index)
+  {
 
-    for (int i = index; i < m_firstFree; i++) {
-      if (m_map[i] == elem) return i;
+    for (int i = index; i < m_firstFree; i++)
+    {
+      if (m_map[i] == elem)
+        return i;
     }
 
     return java.lang.Integer.MIN_VALUE;
   }
 
   /**
-   * Searches for the first occurence of the given argument, beginning the search at index, and
-   * testing for equality using the equals method.
+   * Searches for the first occurence of the given argument,
+   * beginning the search at index, and testing for equality
+   * using the equals method.
    *
    * @param elem object to look for
-   * @return the index of the first occurrence of the object argument in this vector at position
-   *     index or later in the vector; returns -1 if the object is not found.
+   * @return the index of the first occurrence of the object
+   * argument in this vector at position index or later in the
+   * vector; returns -1 if the object is not found.
    */
-  public final int indexOf(Object elem) {
+  public final int indexOf(Object elem)
+  {
 
-    for (int i = 0; i < m_firstFree; i++) {
-      if (m_map[i] == elem) return i;
+    for (int i = 0; i < m_firstFree; i++)
+    {
+      if (m_map[i] == elem)
+        return i;
     }
 
     return java.lang.Integer.MIN_VALUE;
   }
 
   /**
-   * Searches for the first occurence of the given argument, beginning the search at index, and
-   * testing for equality using the equals method.
+   * Searches for the first occurence of the given argument,
+   * beginning the search at index, and testing for equality
+   * using the equals method.
    *
    * @param elem Object to look for
-   * @return the index of the first occurrence of the object argument in this vector at position
-   *     index or later in the vector; returns -1 if the object is not found.
+   * @return the index of the first occurrence of the object
+   * argument in this vector at position index or later in the
+   * vector; returns -1 if the object is not found.
    */
-  public final int lastIndexOf(Object elem) {
+  public final int lastIndexOf(Object elem)
+  {
 
-    for (int i = (m_firstFree - 1); i >= 0; i--) {
-      if (m_map[i] == elem) return i;
+    for (int i = (m_firstFree - 1); i >= 0; i--)
+    {
+      if (m_map[i] == elem)
+        return i;
     }
 
     return java.lang.Integer.MIN_VALUE;
@@ -355,6 +417,7 @@ public class ObjectVector implements Cloneable {
     m_mapSize = size;
 
     m_map = newMap;
+
   }
 
   /**
@@ -362,7 +425,9 @@ public class ObjectVector implements Cloneable {
    *
    * @return clone of current ObjectVector
    */
-  public Object clone() throws CloneNotSupportedException {
-    return new ObjectVector(this);
+  public Object clone()
+    throws CloneNotSupportedException
+  {
+        return new ObjectVector(this);
   }
 }

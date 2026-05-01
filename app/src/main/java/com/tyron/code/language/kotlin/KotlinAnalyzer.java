@@ -12,8 +12,8 @@ import com.tyron.code.ui.project.ProjectManager;
 import com.tyron.common.SharedPreferenceKeys;
 import com.tyron.completion.progress.ProgressManager;
 import com.tyron.editor.Editor;
-import com.tyron.kotlin.completion.KotlinEnvironment;
-import dev.mutwakil.completion.kotlin.util.KotlinSeverityMapper;
+//import com.tyron.kotlin.completion.KotlinEnvironment;
+//import dev.mutwakil.completion.kotlin.util.KotlinSeverityMapper;
 import io.github.rosemoe.sora.langs.textmate.registry.GrammarRegistry;
 import io.github.rosemoe.sora.langs.textmate.registry.ThemeRegistry;
 import java.util.ArrayList;
@@ -28,7 +28,7 @@ public class KotlinAnalyzer extends DiagnosticTextmateAnalyzer {
   private static final String SCOPENAME = "source.kotlin";
   private final String TAG = "KotlinAnalyzer";
   private ArrayList<DiagnosticWrapper> diagnostics = new ArrayList<>();
-  private KotlinEnvironment kotlinEnvironment;
+//  private KotlinEnvironment kotlinEnvironment;
   private Editor editor;
 
   public static KotlinAnalyzer create(Editor editor, EmptyTextMateLanguage lang) {
@@ -88,22 +88,22 @@ public class KotlinAnalyzer extends DiagnosticTextmateAnalyzer {
   }
 
   private void doAnalysis() {
-    if (kotlinEnvironment == null) {
-      Module currentModule =
-          ProjectManager.getInstance().getCurrentProject().getModule(editor.getCurrentFile());
-      kotlinEnvironment = KotlinEnvironment.Companion.get(currentModule);
-      kotlinEnvironment.addIssueListener(
-          issue -> {
-            DiagnosticWrapper wrapper = new DiagnosticWrapper();
-            wrapper.setStartPosition(issue.getStartOffset());
-            wrapper.setEndPosition(issue.getEndOffset());
-            wrapper.setMessage(issue.getMessage());
-            wrapper.setKind(KotlinSeverityMapper.toKind(issue.getSeverity()));
-            if (wrapper.getKind() == null) return kotlin.Unit.INSTANCE;
-            diagnostics.add(wrapper);
-            editor.setDiagnostics(diagnostics);
-            return kotlin.Unit.INSTANCE;
-          });
-    }
+//    if (kotlinEnvironment == null) {
+//      Module currentModule =
+//          ProjectManager.getInstance().getCurrentProject().getModule(editor.getCurrentFile());
+//      kotlinEnvironment = KotlinEnvironment.Companion.get(currentModule);
+//      kotlinEnvironment.addIssueListener(
+//          issue -> {
+//            DiagnosticWrapper wrapper = new DiagnosticWrapper();
+//            wrapper.setStartPosition(issue.getStartOffset());
+//            wrapper.setEndPosition(issue.getEndOffset());
+//            wrapper.setMessage(issue.getMessage());
+//            wrapper.setKind(KotlinSeverityMapper.toKind(issue.getSeverity()));
+//            if (wrapper.getKind() == null) return kotlin.Unit.INSTANCE;
+//            diagnostics.add(wrapper);
+//            editor.setDiagnostics(diagnostics);
+//            return kotlin.Unit.INSTANCE;
+//          });
+//    }
   }
 }

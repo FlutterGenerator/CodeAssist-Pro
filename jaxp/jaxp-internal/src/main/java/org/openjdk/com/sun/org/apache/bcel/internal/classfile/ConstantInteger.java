@@ -59,16 +59,18 @@ package org.openjdk.com.sun.org.apache.bcel.internal.classfile;
  * <http://www.apache.org/>.
  */
 
-import java.io.*;
+
 import org.openjdk.com.sun.org.apache.bcel.internal.Constants;
 
+import  java.io.*;
+
 /**
- * This class is derived from the abstract <A
- * HREF="org.openjdk.com.sun.org.apache.bcel.internal.classfile.Constant.html">Constant</A> class
+ * This class is derived from the abstract
+ * <A HREF="org.openjdk.com.sun.org.apache.bcel.internal.classfile.Constant.html">Constant</A> class
  * and represents a reference to an int object.
  *
- * @author <A HREF="mailto:markus.dahm@berlin.de">M. Dahm</A>
- * @see Constant
+ * @author  <A HREF="mailto:markus.dahm@berlin.de">M. Dahm</A>
+ * @see     Constant
  */
 public final class ConstantInteger extends Constant implements ConstantObject {
   private int bytes;
@@ -76,12 +78,15 @@ public final class ConstantInteger extends Constant implements ConstantObject {
   /**
    * @param bytes Data
    */
-  public ConstantInteger(int bytes) {
+  public ConstantInteger(int bytes)
+  {
     super(Constants.CONSTANT_Integer);
     this.bytes = bytes;
   }
 
-  /** Initialize from another object. */
+  /**
+   * Initialize from another object.
+   */
   public ConstantInteger(ConstantInteger c) {
     this(c.getBytes());
   }
@@ -92,14 +97,15 @@ public final class ConstantInteger extends Constant implements ConstantObject {
    * @param file Input stream
    * @throws IOException
    */
-  ConstantInteger(DataInputStream file) throws IOException {
+  ConstantInteger(DataInputStream file) throws IOException
+  {
     this(file.readInt());
   }
 
   /**
-   * Called by objects that are traversing the nodes of the tree implicitely defined by the contents
-   * of a Java class. I.e., the hierarchy of methods, fields, attributes, etc. spawns a tree of
-   * objects.
+   * Called by objects that are traversing the nodes of the tree implicitely
+   * defined by the contents of a Java class. I.e., the hierarchy of methods,
+   * fields, attributes, etc. spawns a tree of objects.
    *
    * @param v Visitor object
    */
@@ -113,7 +119,8 @@ public final class ConstantInteger extends Constant implements ConstantObject {
    * @param file Output file stream
    * @throws IOException
    */
-  public final void dump(DataOutputStream file) throws IOException {
+  public final void dump(DataOutputStream file) throws IOException
+  {
     file.writeByte(tag);
     file.writeInt(bytes);
   }
@@ -121,9 +128,7 @@ public final class ConstantInteger extends Constant implements ConstantObject {
   /**
    * @return data, i.e., 4 bytes.
    */
-  public final int getBytes() {
-    return bytes;
-  }
+  public final int getBytes() { return bytes; }
 
   /**
    * @param bytes.
@@ -139,8 +144,7 @@ public final class ConstantInteger extends Constant implements ConstantObject {
     return super.toString() + "(bytes = " + bytes + ")";
   }
 
-  /**
-   * @return Integer object
+  /** @return Integer object
    */
   public Object getConstantValue(ConstantPool cp) {
     return new Integer(bytes);

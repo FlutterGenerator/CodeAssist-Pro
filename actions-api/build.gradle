@@ -27,11 +27,12 @@ android {
 
 dependencies {
     implementation 'androidx.annotation:annotation:1.8.2'
-    implementation project(path: ':build-logic')
+    implementation project(path: ':building-logic')
     implementation project(path: ':project')
     implementation project(path: ':logging')
     // needed for UserDataHolder class
-    implementation project(path: ':kotlinc')
+   // implementation project(path: ':kotlinc')
+    implementation(project(":kotlin-analysis-api"))
     implementation project(path: ':fileeditor-api')
     implementation project(path: ':editor-api')
     compileOnly project(path: ':android-stubs')

@@ -99,6 +99,9 @@ android {
         pickFirst "*/*/*.kotlin_builtins"
         pickFirst "*/*/*/*.kotlin_builtins"
         pickFirst "kotlin/concurrent/atomics/atomics.kotlin_builtins"
+        pickFirst("META-INF/jandex.idx")
+        pickFirst("META-INF/gradle/incremental.annotation.processors")
+        pickFirst("META-INF/INDEX.LIST")
 		
         //exclude 'com/sun/tools/javac/resources/legacy.properties'
 		
@@ -109,6 +112,8 @@ android {
 configurations.implementation {
   //  exclude group: "org.jetbrains", module: "annotations"
     exclude group: 'com.android.tools', module: 'common'
+    exclude group: "org.jetbrains.kotlin", module: "kotlin-reflect"
+    exclude group: "com.google.protobuf" , module:"protobuf-java"
   //  exclude group: "it.unimi.dsi", module: "fastutil"
   //  exclude group: "javax.inject", module: "javax.inject"
   
@@ -133,11 +138,12 @@ dependencies {
 	
     // not used for compilation, but for analysis
     implementation project(path: ':javac')
-    implementation project(path: ':kotlinc')
+   // implementation project(path: ':kotlinc')
+    implementation(project(":kotlin-analysis-api"))
 
     implementation project(path: ':language-api')
+    implementation project(path: ':building-logic')
 
-    implementation project(path: ':build-logic')
     implementation project(path: ':manifmerger')
     implementation project(path: ':project')
     implementation project(path: ':logging')
@@ -180,9 +186,11 @@ dependencies {
 	//lsp
 	implementation project(':event:eventbus')
 	implementation project(':event:eventbus-events') 
-	implementation project(':lsp:kotlin') 
-	implementation project(':lsp:kotlin-core')  
-	implementation project(':lsp:api') 
+	implementation project(':lsp:kotlin')
+	implementation project(':lsp:api')
+    implementation(projects.utilities.lookup)
+    implementation(projects.lsp.indexing)
+    implementation(projects.lsp.jvmSymbolIndex)
       
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.5")
 }

@@ -7,11 +7,6 @@ import android.util.AttributeSet
 import io.github.rosemoe.sora.widget.CodeEditor
 import io.github.rosemoe.sora.event.ContentChangeEvent
 import io.github.rosemoe.sora.event.SelectionChangeEvent
-import com.tyron.completion.model.signatures.SignatureHelp
-import com.tyron.completion.model.signatures.SignatureHelpParams
-import com.tyron.completion.model.signatures.SignatureHelpLanguage
-import com.tyron.completion.model.Position
-import com.tyron.completion.model.Range
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -20,11 +15,9 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.slf4j.LoggerFactory
-import com.tyron.common.tasks.JobCancelChecker
-import com.tyron.common.tasks.cancelIfActive
+import com.itsaky.androidide.tasks.JobCancelChecker
+import com.itsaky.androidide.tasks.cancelIfActive
 import java.io.File
-import com.tyron.common.progress.ICancelChecker
-import com.tyron.completion.util.CancelChecker
 import com.tyron.code.ui.editor.snippets.AbstractSnippetVariableResolver
 import com.tyron.code.ui.editor.snippets.FileVariableResolver
 import com.tyron.code.ui.editor.snippets.WorkspaceVariableResolver
@@ -36,8 +29,17 @@ import com.itsaky.androidide.eventbus.events.editor.DocumentCloseEvent
 import com.itsaky.androidide.eventbus.events.editor.DocumentOpenEvent
 import com.itsaky.androidide.eventbus.events.editor.DocumentSaveEvent
 import com.itsaky.androidide.eventbus.events.editor.DocumentSelectedEvent
-import com.tyron.completion.lsp.api.ILanguageClient
-import com.tyron.completion.lsp.api.ILanguageServer
+import com.itsaky.androidide.lsp.api.ILanguageClient
+import com.itsaky.androidide.lsp.api.ILanguageServer
+import com.itsaky.androidide.lsp.models.Command
+import com.itsaky.androidide.progress.ICancelChecker
+import com.itsaky.androidide.lsp.api.SignatureHelpLanguage
+import com.itsaky.androidide.lsp.models.SignatureHelp
+import com.itsaky.androidide.lsp.models.SignatureHelpParams
+import com.itsaky.androidide.models.Position
+import com.itsaky.androidide.models.Range
+import com.tyron.common.util.CancelChecker
+import io.github.rosemoe.sora.widget.component.EditorAutoCompletion
 
 /**
 *
@@ -143,7 +145,28 @@ abstract class IDEEditor @JvmOverloads constructor(
       return
     }
     this.languageClient = client
-  }  
+  }
+
+   fun executeCommand(command: Command?) {
+    if (isReleased) {
+      return
+    }
+    if (command == null) {
+      log.warn("Cannot execute command in editor. Command is null.")
+      return
+    }
+
+    log.info(String.format("Executing command '%s' for completion item.", command.title))
+    when (command.command) {
+      Command.TRIGGER_COMPLETION -> {
+        val completion = getComponent(EditorAutoCompletion::class.java)
+        completion.requireCompletion()
+      }
+
+      Command.TRIGGER_PARAMETER_HINTS -> signatureHelp()
+      Command.FORMAT_CODE -> formatCodeAsync()
+    }
+  }
     
   fun signatureHelp() {
     if (isReleased) {
@@ -269,6 +292,9 @@ abstract class IDEEditor @JvmOverloads constructor(
     if (isReleased) {
       return
     }
+    if(languageServer==null) {
+        return
+    }
 
     val file = this.file ?: return
 
@@ -281,6 +307,9 @@ abstract class IDEEditor @JvmOverloads constructor(
 
   open fun dispatchDocumentChangeEvent(event: ContentChangeEvent) {
     if (isReleased) {
+      return
+    }
+    if(languageServer==null) {
       return
     }
 
@@ -297,8 +326,10 @@ abstract class IDEEditor @JvmOverloads constructor(
     }
     val start = event.changeStart
     val end = event.changeEnd
-    val changeRange = Range(Position(start.line, start.column, start.index),
-      Position(end.line, end.column, end.index))
+    val changeRange = Range(
+      Position(start.line, start.column, start.index),
+      Position(end.line, end.column, end.index)
+    )
     val changedText = event.changedText.toString()
     val changeEvent = DocumentChangeEvent(file, changedText, text.toString(), ++fileVersion, type,
       changeDelta, changeRange)
@@ -310,12 +341,18 @@ abstract class IDEEditor @JvmOverloads constructor(
     if (isReleased) {
       return
     }
+    if(languageServer==null) {
+      return
+    }
     val file = file ?: return
     eventDispatcher.dispatch(DocumentSelectedEvent(file.toPath()))
   }
 
   open fun dispatchDocumentCloseEvent() {
     if (isReleased) {
+      return
+    }
+    if(languageServer==null) {
       return
     }
     val file = file ?: return
@@ -330,6 +367,9 @@ abstract class IDEEditor @JvmOverloads constructor(
     if (isReleased) {
       return
     }
+     if(languageServer==null) {
+       return
+     }
     val file = file ?: return
     
     eventDispatcher.dispatch(DocumentSaveEvent(file.toPath()))

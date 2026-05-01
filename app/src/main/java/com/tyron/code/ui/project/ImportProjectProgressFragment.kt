@@ -104,9 +104,9 @@ class ImportProjectProgressFragment : BottomSheetDialogFragment() {
 
         val zipProjectUri: Uri? = requireArguments().getParcelable("zip_project_uri")
         val file = File(zipProjectUri?.path.toString())
-        val split = file.path.split(":")
+//        val split = file.path.split(":")
 		
-        val projectName = File(split[1].replace(".zip", "")).name
+//        val projectName = File(split[1].replace(".zip", "")).name
         
         val path: String = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             requireContext().getExternalFilesDir("/Projects")!!.absolutePath

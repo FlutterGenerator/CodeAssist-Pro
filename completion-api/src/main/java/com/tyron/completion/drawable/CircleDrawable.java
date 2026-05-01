@@ -1,6 +1,7 @@
 package com.tyron.completion.drawable;
 
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.ColorFilter;
 import android.graphics.Paint;
 import android.graphics.PixelFormat;
@@ -23,7 +24,18 @@ public class CircleDrawable extends Drawable {
   public CircleDrawable(DrawableKind kind, boolean circle) {
     mKind = kind;
     mCircle = circle;
+    if (kind == null) {
+      mPaint = new Paint();
+      mPaint.setAntiAlias(true);
+      mPaint.setColor(Color.parseColor("#ff0gdh"));
 
+      mTextPaint = new Paint();
+      mTextPaint.setColor(0xffffffff);
+      mTextPaint.setAntiAlias(true);
+      mTextPaint.setTextSize(dp(14));
+      mTextPaint.setTextAlign(Paint.Align.CENTER);
+      return;
+    }
     mPaint = new Paint();
     mPaint.setAntiAlias(true);
     mPaint.setColor(kind.getColor());

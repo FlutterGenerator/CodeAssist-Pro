@@ -14,8 +14,8 @@ import com.tyron.completion.model.CompletionItem;
 import com.tyron.completion.model.CompletionList;
 import com.tyron.completion.util.CompletionUtils;
 import com.tyron.editor.Editor;
-import com.tyron.kotlin.completion.KotlinEnvironment;
-import com.tyron.kotlin.completion.KotlinFile;
+//import com.tyron.kotlin.completion.KotlinEnvironment;
+//import com.tyron.kotlin.completion.KotlinFile;
 
 import java.io.File;
 import java.util.List;
@@ -57,7 +57,7 @@ import android.util.Log;
 import com.tyron.completion.model.CompletionList;
 import com.tyron.code.language.CachedAutoCompleteProvider;
 import com.tyron.builder.model.DiagnosticWrapper;
-import dev.mutwakil.completion.kotlin.util.KotlinSeverityMapper;
+//import dev.mutwakil.completion.kotlin.util.KotlinSeverityMapper;
 
 public class KotlinLanguage extends EmptyTextMateLanguage implements Language {
 
@@ -109,7 +109,7 @@ public class KotlinLanguage extends EmptyTextMateLanguage implements Language {
         }
     };
 
-    public KotlinEnvironment kotlinEnvironment;
+//    public KotlinEnvironment kotlinEnvironment;
 
     public KotlinLanguage(Editor editor) {
         this.editor = editor;
@@ -158,7 +158,7 @@ public class KotlinLanguage extends EmptyTextMateLanguage implements Language {
         }
         }
 //        Objects.requireNonNull((CodeEditorView)editor).post(() -> ((CodeEditorView)editor).setDiagnostics(new ArrayList<DiagnosticWrapper>(kotlinEnvironment.getDiagnostics())));           
-        kotlinEnvironment.analysis = null;  
+//        kotlinEnvironment.analysis = null;
   }
   
   public List<DiagnosticWrapper> getDiagnostics(){
@@ -212,7 +212,7 @@ public class KotlinLanguage extends EmptyTextMateLanguage implements Language {
      Project project = ProjectManager.getInstance().getCurrentProject();
      if(project==null || editor.getCurrentFile()==null)return;
         Module currentModule = project.getModule(editor.getCurrentFile());
-        kotlinEnvironment = KotlinEnvironment.Companion.get(currentModule);
+//        kotlinEnvironment = KotlinEnvironment.Companion.get(currentModule);
         if(isHighlightEnabled()){
              initAnalysis();
         }
@@ -222,66 +222,66 @@ public class KotlinLanguage extends EmptyTextMateLanguage implements Language {
     destroyAnalysis(); 
     analysisRunning = true;
     analysisThread = new Thread(() -> {
-        kotlinEnvironment.addIssueListener(issue -> {
-            if (!analysisRunning) return kotlin.Unit.INSTANCE;
-            if (editor==null) return kotlin.Unit.INSTANCE;
-            if (!isHighlightEnabled()) return kotlin.Unit.INSTANCE;
-
-            short severity;
-            CompilerMessageSeverity s = issue.getSeverity();
-            
-            DiagnosticWrapper wrapper = new DiagnosticWrapper();
-            wrapper.setStartPosition(issue.getStartOffset());
-            wrapper.setEndPosition(issue.getEndOffset());
-            wrapper.setMessage(issue.getMessage());
-            wrapper.setKind(KotlinSeverityMapper.toKind(issue.getSeverity()));
-            if (wrapper.getKind() == null) return kotlin.Unit.INSTANCE;
-            diagnostics.add(wrapper);
-
-            if (s == CompilerMessageSeverity.ERROR) {
-                severity = DiagnosticRegion.SEVERITY_ERROR;
-            } else if (s == CompilerMessageSeverity.WARNING
-                    || s == CompilerMessageSeverity.STRONG_WARNING) {
-                severity = DiagnosticRegion.SEVERITY_WARNING;
-            } else {
-                return kotlin.Unit.INSTANCE;
-            }
-            
-           if (!analysisRunning) return kotlin.Unit.INSTANCE;
-
-            Objects.requireNonNull((CodeEditorView) editor).post(() -> {
-                container.addDiagnostic(
-                        new DiagnosticRegion(
-                                issue.getStartOffset(),
-                                issue.getEndOffset(),
-                                severity, 
-                                0,
-                                null//new DiagnosticDetail("Info",issue.getMessage(),null,null)
-                        )
-                );
-            });
-            return kotlin.Unit.INSTANCE;
-        });
-      
+//        kotlinEnvironment.addIssueListener(issue -> {
+//            if (!analysisRunning) return kotlin.Unit.INSTANCE;
+//            if (editor==null) return kotlin.Unit.INSTANCE;
+//            if (!isHighlightEnabled()) return kotlin.Unit.INSTANCE;
+//
+//            short severity;
+//            CompilerMessageSeverity s = issue.getSeverity();
+//
+//            DiagnosticWrapper wrapper = new DiagnosticWrapper();
+//            wrapper.setStartPosition(issue.getStartOffset());
+//            wrapper.setEndPosition(issue.getEndOffset());
+//            wrapper.setMessage(issue.getMessage());
+//            wrapper.setKind(KotlinSeverityMapper.toKind(issue.getSeverity()));
+//            if (wrapper.getKind() == null) return kotlin.Unit.INSTANCE;
+//            diagnostics.add(wrapper);
+//
+//            if (s == CompilerMessageSeverity.ERROR) {
+//                severity = DiagnosticRegion.SEVERITY_ERROR;
+//            } else if (s == CompilerMessageSeverity.WARNING
+//                    || s == CompilerMessageSeverity.STRONG_WARNING) {
+//                severity = DiagnosticRegion.SEVERITY_WARNING;
+//            } else {
+//                return kotlin.Unit.INSTANCE;
+//            }
+//
+//           if (!analysisRunning) return kotlin.Unit.INSTANCE;
+//
+//            Objects.requireNonNull((CodeEditorView) editor).post(() -> {
+//                container.addDiagnostic(
+//                        new DiagnosticRegion(
+//                                issue.getStartOffset(),
+//                                issue.getEndOffset(),
+//                                severity,
+//                                0,
+//                                null//new DiagnosticDetail("Info",issue.getMessage(),null,null)
+//                        )
+//                );
+//            });
+//            return kotlin.Unit.INSTANCE;
+//        });
+//
         if (!analysisRunning) return;
         if (!isHighlightEnabled()) return;
         if (editor==null) return;
         if (editor.getCurrentFile()==null)return;
 
-        var fileEntry = kotlinEnvironment.kotlinFiles.get(editor.getCurrentFile().getAbsolutePath());
-        if (fileEntry == null) return;
+//        var fileEntry = kotlinEnvironment.kotlinFiles.get(editor.getCurrentFile().getAbsolutePath());
+//        if (fileEntry == null) return;
 
-        var ktFile = fileEntry.getKotlinFile();
+//        var ktFile = fileEntry.getKotlinFile();
 
         try {
             if (!analysisRunning) return;
 
-             kotlinEnvironment.analysisOf(
-                    kotlinEnvironment.kotlinFiles.values().stream()
-                            .map(it -> it.getKotlinFile())
-                            .toList(),
-                    ktFile
-            );
+//             kotlinEnvironment.analysisOf(
+//                    kotlinEnvironment.kotlinFiles.values().stream()
+//                            .map(it -> it.getKotlinFile())
+//                            .toList(),
+//                    ktFile
+//            );
 
             if (!analysisRunning) return;
 

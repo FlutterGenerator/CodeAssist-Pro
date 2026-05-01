@@ -51,15 +51,17 @@ configurations.implementation {
 dependencies {
 
     implementation project(path: ':completion-api')
-    implementation project(path: ':kotlinc')
+//    implementation project(path: ':kotlinc')
+    implementation project(path: ':kotlin-analysis-api')
     implementation project(path: ':common')
     implementation project(':resources')
-    implementation project(':logging') 
+    implementation project(':logging')
     implementation project(':project') 
     implementation project(':editor-api') 
     implementation project(':event:eventbus-android') 
     implementation project(':event:eventbus-events') 
     implementation project(path: ':lsp:api') 
  	api ('io.github.rosemoe:editor:0.24.4')
-    api ('io.github.rosemoe:language-textmate:0.24.4') 
+    api ('io.github.rosemoe:language-textmate:0.24.4')
+    implementation(projects.utilities.shared)
 }

@@ -21,6 +21,7 @@ package org.openjdk.com.sun.org.apache.xerces.internal.parsers;
 
 import org.openjdk.com.sun.org.apache.xerces.internal.impl.Constants;
 import org.openjdk.com.sun.org.apache.xerces.internal.util.SymbolTable;
+import org.openjdk.com.sun.org.apache.xerces.internal.xpointer.XPointerHandler;
 import org.openjdk.com.sun.org.apache.xerces.internal.xinclude.XIncludeHandler;
 import org.openjdk.com.sun.org.apache.xerces.internal.xinclude.XIncludeNamespaceSupport;
 import org.openjdk.com.sun.org.apache.xerces.internal.xni.XMLDocumentHandler;
@@ -28,202 +29,215 @@ import org.openjdk.com.sun.org.apache.xerces.internal.xni.grammars.XMLGrammarPoo
 import org.openjdk.com.sun.org.apache.xerces.internal.xni.parser.XMLComponentManager;
 import org.openjdk.com.sun.org.apache.xerces.internal.xni.parser.XMLConfigurationException;
 import org.openjdk.com.sun.org.apache.xerces.internal.xni.parser.XMLDocumentSource;
-import org.openjdk.com.sun.org.apache.xerces.internal.xpointer.XPointerHandler;
 
 /**
- * This parser configuration includes an <code>XPointerHandler</code> in the pipeline before the
- * schema validator, or as the last component in the pipeline if there is no schema validator. Using
- * this pipeline will enable processing according to the XML Inclusions specification with
- * XPointers, to the conformance level described in <code>XPointerHandler.</code>.
+ * This parser configuration includes an <code>XPointerHandler</code> in the pipeline
+ * before the schema validator, or as the last component in the pipeline if there is
+ * no schema validator.  Using this pipeline will enable processing according to the
+ * XML Inclusions specification with XPointers, to the conformance level described in
+ * <code>XPointerHandler.</code>.
  *
  * @see XPointerHandler
  */
 public class XPointerParserConfiguration extends XML11Configuration {
 
-  private XPointerHandler fXPointerHandler;
+    private XPointerHandler fXPointerHandler;
 
-  private XIncludeHandler fXIncludeHandler;
+    private XIncludeHandler fXIncludeHandler;
 
-  /** Feature identifier: allow notation and unparsed entity events to be sent out of order. */
-  protected static final String ALLOW_UE_AND_NOTATION_EVENTS =
-      Constants.SAX_FEATURE_PREFIX + Constants.ALLOW_DTD_EVENTS_AFTER_ENDDTD_FEATURE;
+    /** Feature identifier: allow notation and unparsed entity events to be sent out of order. */
+    protected static final String ALLOW_UE_AND_NOTATION_EVENTS =
+        Constants.SAX_FEATURE_PREFIX + Constants.ALLOW_DTD_EVENTS_AFTER_ENDDTD_FEATURE;
 
-  /** Feature identifier: fixup base URIs. */
-  protected static final String XINCLUDE_FIXUP_BASE_URIS =
-      Constants.XERCES_FEATURE_PREFIX + Constants.XINCLUDE_FIXUP_BASE_URIS_FEATURE;
+    /** Feature identifier: fixup base URIs. */
+    protected static final String XINCLUDE_FIXUP_BASE_URIS =
+        Constants.XERCES_FEATURE_PREFIX + Constants.XINCLUDE_FIXUP_BASE_URIS_FEATURE;
 
-  /** Feature identifier: fixup language. */
-  protected static final String XINCLUDE_FIXUP_LANGUAGE =
-      Constants.XERCES_FEATURE_PREFIX + Constants.XINCLUDE_FIXUP_LANGUAGE_FEATURE;
+    /** Feature identifier: fixup language. */
+    protected static final String XINCLUDE_FIXUP_LANGUAGE =
+        Constants.XERCES_FEATURE_PREFIX + Constants.XINCLUDE_FIXUP_LANGUAGE_FEATURE;
 
-  /** Property identifier: error reporter. */
-  protected static final String XPOINTER_HANDLER =
-      Constants.XERCES_PROPERTY_PREFIX + Constants.XPOINTER_HANDLER_PROPERTY;
+    /** Property identifier: error reporter. */
+    protected static final String XPOINTER_HANDLER =
+        Constants.XERCES_PROPERTY_PREFIX + Constants.XPOINTER_HANDLER_PROPERTY;
 
-  /** Property identifier: error reporter. */
-  protected static final String XINCLUDE_HANDLER =
-      Constants.XERCES_PROPERTY_PREFIX + Constants.XINCLUDE_HANDLER_PROPERTY;
+    /** Property identifier: error reporter. */
+    protected static final String XINCLUDE_HANDLER =
+        Constants.XERCES_PROPERTY_PREFIX + Constants.XINCLUDE_HANDLER_PROPERTY;
 
-  /** Property identifier: error reporter. */
-  protected static final String NAMESPACE_CONTEXT =
-      Constants.XERCES_PROPERTY_PREFIX + Constants.NAMESPACE_CONTEXT_PROPERTY;
+    /** Property identifier: error reporter. */
+    protected static final String NAMESPACE_CONTEXT =
+        Constants.XERCES_PROPERTY_PREFIX + Constants.NAMESPACE_CONTEXT_PROPERTY;
 
-  /** Default constructor. */
-  public XPointerParserConfiguration() {
-    this(null, null, null);
-  } // <init>()
+    /** Default constructor. */
+    public XPointerParserConfiguration() {
+        this(null, null, null);
+    } // <init>()
 
-  /**
-   * Constructs a parser configuration using the specified symbol table.
-   *
-   * @param symbolTable The symbol table to use.
-   */
-  public XPointerParserConfiguration(SymbolTable symbolTable) {
-    this(symbolTable, null, null);
-  } // <init>(SymbolTable)
+    /**
+     * Constructs a parser configuration using the specified symbol table.
+     *
+     * @param symbolTable The symbol table to use.
+     */
+    public XPointerParserConfiguration(SymbolTable symbolTable) {
+        this(symbolTable, null, null);
+    } // <init>(SymbolTable)
 
-  /**
-   * Constructs a parser configuration using the specified symbol table and grammar pool.
-   *
-   * <p>
-   *
-   * @param symbolTable The symbol table to use.
-   * @param grammarPool The grammar pool to use.
-   */
-  public XPointerParserConfiguration(SymbolTable symbolTable, XMLGrammarPool grammarPool) {
-    this(symbolTable, grammarPool, null);
-  } // <init>(SymbolTable,XMLGrammarPool)
+    /**
+     * Constructs a parser configuration using the specified symbol table and
+     * grammar pool.
+     * <p>
+     *
+     * @param symbolTable The symbol table to use.
+     * @param grammarPool The grammar pool to use.
+     */
+    public XPointerParserConfiguration(
+        SymbolTable symbolTable,
+        XMLGrammarPool grammarPool) {
+        this(symbolTable, grammarPool, null);
+    } // <init>(SymbolTable,XMLGrammarPool)
 
-  /**
-   * Constructs a parser configuration using the specified symbol table, grammar pool, and parent
-   * settings.
-   *
-   * <p>
-   *
-   * @param symbolTable The symbol table to use.
-   * @param grammarPool The grammar pool to use.
-   * @param parentSettings The parent settings.
-   */
-  public XPointerParserConfiguration(
-      SymbolTable symbolTable, XMLGrammarPool grammarPool, XMLComponentManager parentSettings) {
-    super(symbolTable, grammarPool, parentSettings);
+    /**
+     * Constructs a parser configuration using the specified symbol table,
+     * grammar pool, and parent settings.
+     * <p>
+     *
+     * @param symbolTable    The symbol table to use.
+     * @param grammarPool    The grammar pool to use.
+     * @param parentSettings The parent settings.
+     */
+    public XPointerParserConfiguration(
+        SymbolTable symbolTable,
+        XMLGrammarPool grammarPool,
+        XMLComponentManager parentSettings) {
+        super(symbolTable, grammarPool, parentSettings);
 
-    fXIncludeHandler = new XIncludeHandler();
-    addCommonComponent(fXIncludeHandler);
+        fXIncludeHandler = new XIncludeHandler();
+        addCommonComponent(fXIncludeHandler);
 
-    fXPointerHandler = new XPointerHandler();
-    addCommonComponent(fXPointerHandler);
+        fXPointerHandler = new XPointerHandler();
+        addCommonComponent(fXPointerHandler);
 
-    final String[] recognizedFeatures = {
-      ALLOW_UE_AND_NOTATION_EVENTS, XINCLUDE_FIXUP_BASE_URIS, XINCLUDE_FIXUP_LANGUAGE
-    };
-    addRecognizedFeatures(recognizedFeatures);
+        final String[] recognizedFeatures = {
+            ALLOW_UE_AND_NOTATION_EVENTS,
+            XINCLUDE_FIXUP_BASE_URIS,
+            XINCLUDE_FIXUP_LANGUAGE
+        };
+        addRecognizedFeatures(recognizedFeatures);
 
-    // add default recognized properties
-    final String[] recognizedProperties = {XINCLUDE_HANDLER, XPOINTER_HANDLER, NAMESPACE_CONTEXT};
-    addRecognizedProperties(recognizedProperties);
+        // add default recognized properties
+        final String[] recognizedProperties =
+            { XINCLUDE_HANDLER, XPOINTER_HANDLER, NAMESPACE_CONTEXT };
+        addRecognizedProperties(recognizedProperties);
 
-    setFeature(ALLOW_UE_AND_NOTATION_EVENTS, true);
-    setFeature(XINCLUDE_FIXUP_BASE_URIS, true);
-    setFeature(XINCLUDE_FIXUP_LANGUAGE, true);
+        setFeature(ALLOW_UE_AND_NOTATION_EVENTS, true);
+        setFeature(XINCLUDE_FIXUP_BASE_URIS, true);
+        setFeature(XINCLUDE_FIXUP_LANGUAGE, true);
 
-    setProperty(XINCLUDE_HANDLER, fXIncludeHandler);
-    setProperty(XPOINTER_HANDLER, fXPointerHandler);
-    setProperty(NAMESPACE_CONTEXT, new XIncludeNamespaceSupport());
-  } // <init>(SymbolTable,XMLGrammarPool)}
+        setProperty(XINCLUDE_HANDLER, fXIncludeHandler);
+        setProperty(XPOINTER_HANDLER, fXPointerHandler);
+        setProperty(NAMESPACE_CONTEXT, new XIncludeNamespaceSupport());
 
-  /** Configures the pipeline. */
-  protected void configurePipeline() {
-    super.configurePipeline();
 
-    // configure DTD pipeline
-    fDTDScanner.setDTDHandler(fDTDProcessor);
-    fDTDProcessor.setDTDSource(fDTDScanner);
+    } // <init>(SymbolTable,XMLGrammarPool)}
 
-    fDTDProcessor.setDTDHandler(fXIncludeHandler);
-    fXIncludeHandler.setDTDSource(fDTDProcessor);
-    fXIncludeHandler.setDTDHandler(fXPointerHandler);
-    fXPointerHandler.setDTDSource(fXIncludeHandler);
-    fXPointerHandler.setDTDHandler(fDTDHandler);
-    if (fDTDHandler != null) {
-      fDTDHandler.setDTDSource(fXPointerHandler);
-    }
 
-    // configure XML document pipeline: insert after DTDValidator and
-    // before XML Schema validator
-    XMLDocumentSource prev = null;
-    if (fFeatures.get(XMLSCHEMA_VALIDATION) == Boolean.TRUE) {
-      // we don't have to worry about fSchemaValidator being null, since
-      // super.configurePipeline() instantiated it if the feature was set
-      prev = fSchemaValidator.getDocumentSource();
-    }
-    // Otherwise, insert after the last component in the pipeline
-    else {
-      prev = fLastComponent;
-      fLastComponent = fXPointerHandler;
-    }
+        /** Configures the pipeline. */
+    protected void configurePipeline() {
+        super.configurePipeline();
 
-    XMLDocumentHandler next = prev.getDocumentHandler();
-    prev.setDocumentHandler(fXIncludeHandler);
-    fXIncludeHandler.setDocumentSource(prev);
+        //configure DTD pipeline
+        fDTDScanner.setDTDHandler(fDTDProcessor);
+        fDTDProcessor.setDTDSource(fDTDScanner);
 
-    if (next != null) {
-      fXIncludeHandler.setDocumentHandler(next);
-      next.setDocumentSource(fXIncludeHandler);
-    }
+        fDTDProcessor.setDTDHandler(fXIncludeHandler);
+        fXIncludeHandler.setDTDSource(fDTDProcessor);
+        fXIncludeHandler.setDTDHandler(fXPointerHandler);
+        fXPointerHandler.setDTDSource(fXIncludeHandler);
+        fXPointerHandler.setDTDHandler(fDTDHandler);
+        if (fDTDHandler != null) {
+            fDTDHandler.setDTDSource(fXPointerHandler);
+        }
 
-    fXIncludeHandler.setDocumentHandler(fXPointerHandler);
-    fXPointerHandler.setDocumentSource(fXIncludeHandler);
-  } // configurePipeline()
+        // configure XML document pipeline: insert after DTDValidator and
+        // before XML Schema validator
+        XMLDocumentSource prev = null;
+        if (fFeatures.get(XMLSCHEMA_VALIDATION) == Boolean.TRUE) {
+            // we don't have to worry about fSchemaValidator being null, since
+            // super.configurePipeline() instantiated it if the feature was set
+            prev = fSchemaValidator.getDocumentSource();
+        }
+        // Otherwise, insert after the last component in the pipeline
+        else {
+            prev = fLastComponent;
+            fLastComponent = fXPointerHandler;
+        }
 
-  protected void configureXML11Pipeline() {
-    super.configureXML11Pipeline();
+        XMLDocumentHandler next = prev.getDocumentHandler();
+                prev.setDocumentHandler(fXIncludeHandler);
+                fXIncludeHandler.setDocumentSource(prev);
 
-    // configure XML 1.1. DTD pipeline
-    fXML11DTDScanner.setDTDHandler(fXML11DTDProcessor);
-    fXML11DTDProcessor.setDTDSource(fXML11DTDScanner);
+                if (next != null) {
+                        fXIncludeHandler.setDocumentHandler(next);
+            next.setDocumentSource(fXIncludeHandler);
+        }
 
-    fDTDProcessor.setDTDHandler(fXIncludeHandler);
-    fXIncludeHandler.setDTDSource(fXML11DTDProcessor);
-    fXIncludeHandler.setDTDHandler(fXPointerHandler);
-    fXPointerHandler.setDTDSource(fXIncludeHandler);
-    fXPointerHandler.setDTDHandler(fDTDHandler);
-    if (fDTDHandler != null) {
-      fDTDHandler.setDTDSource(fXPointerHandler);
-    }
+                fXIncludeHandler.setDocumentHandler(fXPointerHandler);
+                fXPointerHandler.setDocumentSource(fXIncludeHandler);
+    } // configurePipeline()
 
-    // configure XML document pipeline: insert after DTDValidator and
-    // before XML Schema validator
-    XMLDocumentSource prev = null;
-    if (fFeatures.get(XMLSCHEMA_VALIDATION) == Boolean.TRUE) {
-      // we don't have to worry about fSchemaValidator being null, since
-      // super.configurePipeline() instantiated it if the feature was set
-      prev = fSchemaValidator.getDocumentSource();
-    }
-    // Otherwise, insert after the last component in the pipeline
-    else {
-      prev = fLastComponent;
-      fLastComponent = fXPointerHandler;
-    }
+        protected void configureXML11Pipeline() {
+                super.configureXML11Pipeline();
 
-    XMLDocumentHandler next = prev.getDocumentHandler();
-    prev.setDocumentHandler(fXIncludeHandler);
-    fXIncludeHandler.setDocumentSource(prev);
+        // configure XML 1.1. DTD pipeline
+                fXML11DTDScanner.setDTDHandler(fXML11DTDProcessor);
+                fXML11DTDProcessor.setDTDSource(fXML11DTDScanner);
 
-    if (next != null) {
-      fXIncludeHandler.setDocumentHandler(next);
-      next.setDocumentSource(fXIncludeHandler);
-    }
+        fDTDProcessor.setDTDHandler(fXIncludeHandler);
+        fXIncludeHandler.setDTDSource(fXML11DTDProcessor);
+        fXIncludeHandler.setDTDHandler(fXPointerHandler);
+        fXPointerHandler.setDTDSource(fXIncludeHandler);
+        fXPointerHandler.setDTDHandler(fDTDHandler);
+        if (fDTDHandler != null) {
+            fDTDHandler.setDTDSource(fXPointerHandler);
+        }
 
-    fXIncludeHandler.setDocumentHandler(fXPointerHandler);
-    fXPointerHandler.setDocumentSource(fXIncludeHandler);
-  } // configureXML11Pipeline()
 
-  public void setProperty(String propertyId, Object value) throws XMLConfigurationException {
+                // configure XML document pipeline: insert after DTDValidator and
+                // before XML Schema validator
+                XMLDocumentSource prev = null;
+                if (fFeatures.get(XMLSCHEMA_VALIDATION) == Boolean.TRUE) {
+                        // we don't have to worry about fSchemaValidator being null, since
+                        // super.configurePipeline() instantiated it if the feature was set
+                        prev = fSchemaValidator.getDocumentSource();
+                }
+                // Otherwise, insert after the last component in the pipeline
+                else {
+                        prev = fLastComponent;
+                        fLastComponent = fXPointerHandler;
+                }
 
-    // if (propertyId.equals(XINCLUDE_HANDLER)) {
-    // }
+        XMLDocumentHandler next = prev.getDocumentHandler();
+                prev.setDocumentHandler(fXIncludeHandler);
+                fXIncludeHandler.setDocumentSource(prev);
 
-    super.setProperty(propertyId, value);
-  } // setProperty(String,Object)
+                if (next != null) {
+                        fXIncludeHandler.setDocumentHandler(next);
+            next.setDocumentSource(fXIncludeHandler);
+        }
+
+                fXIncludeHandler.setDocumentHandler(fXPointerHandler);
+                fXPointerHandler.setDocumentSource(fXIncludeHandler);
+
+
+        } // configureXML11Pipeline()
+
+    public void setProperty(String propertyId, Object value)
+        throws XMLConfigurationException {
+
+        //if (propertyId.equals(XINCLUDE_HANDLER)) {
+        //}
+
+        super.setProperty(propertyId, value);
+    } // setProperty(String,Object)
 }

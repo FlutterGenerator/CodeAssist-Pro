@@ -22,35 +22,41 @@ package org.openjdk.com.sun.xml.internal.stream.dtd.nonvalidating;
 
 import org.openjdk.com.sun.org.apache.xerces.internal.xni.QName;
 
-/** */
+/**
+ */
 public class XMLAttributeDecl {
 
-  /** name */
-  public final QName name = new QName();
 
-  /** simpleType */
-  public final XMLSimpleType simpleType = new XMLSimpleType();
+    /** name */
+    public final QName name = new QName();
 
-  /** optional */
-  public boolean optional;
+    /** simpleType */
+    public final XMLSimpleType simpleType = new XMLSimpleType();
 
-  /**
-   * setValues
-   *
-   * @param name
-   * @param simpleType
-   * @param optional
-   */
-  public void setValues(QName name, XMLSimpleType simpleType, boolean optional) {
-    this.name.setValues(name);
-    this.simpleType.setValues(simpleType);
-    this.optional = optional;
-  }
+    /** optional */
+    public boolean optional;
 
-  /** clear */
-  public void clear() {
-    this.name.clear();
-    this.simpleType.clear();
-    this.optional = false;
-  }
+
+    /**
+     * setValues
+     *
+     * @param name
+     * @param simpleType
+     * @param optional
+     */
+    public void setValues(QName name, XMLSimpleType simpleType, boolean optional) {
+        this.name.setValues(name);
+        this.simpleType.setValues(simpleType);
+        this.optional   = optional;
+    }
+
+    /**
+     * clear
+     */
+    public void clear() {
+        this.name.clear();
+        this.simpleType.clear();
+        this.optional   = false;
+    }
+
 }

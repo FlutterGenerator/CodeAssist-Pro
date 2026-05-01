@@ -37,14 +37,14 @@ configurations.all {
 dependencies {
     implementation ('com.github.marschall:zipfilesystem-standalone:1.0.1')
     implementation 'androidx.annotation:annotation:1.9.1'
-    implementation project(path: ':jaxp:jaxp-internal')
-    implementation project(path: ':jaxp:xml')
+//    implementation project(path: ':jaxp:jaxp-internal')
+    implementation project(path: ':jaxp')
      
     runtimeOnly ('org.jetbrains.kotlin:kotlin-reflect:2.3.0')
     compileOnly files('libs/the-unsafe.jar')
     compileOnly project(path: ':android-stubs')
     implementation project(':javac')
-    api files('libs/kotlin-compiler-embeddable-2.3.0.jar')
+//    api files('libs/kotlin-compiler-embeddable-2.3.0.jar')
    
     implementation 'org.jetbrains:annotations:26.0.2'
     api("org.lsposed.hiddenapibypass:hiddenapibypass:6.1")
@@ -53,11 +53,11 @@ dependencies {
     implementation project(':java-stubs')
    
 }
-
-repositories {
-    mavenCentral()
-    maven { url = 'https://www.jetbrains.com/intellij-repository/releases/'} 
-}
+//
+//repositories {
+//    mavenCentral()
+//    maven { url = 'https://www.jetbrains.com/intellij-repository/releases/'}
+//}
 
 spotless {
 		java {

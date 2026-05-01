@@ -59,13 +59,14 @@ package org.openjdk.com.sun.org.apache.bcel.internal.generic;
  */
 
 /**
- * Thrown by InstructionList.remove() when one or multiple disposed instruction are still being
- * referenced by a InstructionTargeter object. I.e. the InstructionTargeter has to be notified that
- * (one of) the InstructionHandle it is referencing is being removed from the InstructionList and
- * thus not valid anymore.
+ * Thrown by InstructionList.remove() when one or multiple disposed instruction
+ * are still being referenced by a InstructionTargeter object. I.e. the
+ * InstructionTargeter has to be notified that (one of) the InstructionHandle it
+ * is referencing is being removed from the InstructionList and thus not valid anymore.
  *
- * <p>Making this an exception instead of a return value forces the user to handle these case
- * explicitely in a try { ... } catch. The following code illustrates how this may be done:
+ * Making this an exception instead of a return value forces the user to handle
+ * these case explicitely in a try { ... } catch. The following code illustrates
+ * how this may be done:
  *
  * <PRE>
  *     ...
@@ -85,7 +86,7 @@ package org.openjdk.com.sun.org.apache.bcel.internal.generic;
  * @see InstructionHandle
  * @see InstructionList
  * @see InstructionTargeter
- * @author <A HREF="mailto:markus.dahm@berlin.de">M. Dahm</A>
+ * @author  <A HREF="mailto:markus.dahm@berlin.de">M. Dahm</A>
  */
 public final class TargetLostException extends Exception {
   private InstructionHandle[] targets;
@@ -98,7 +99,5 @@ public final class TargetLostException extends Exception {
   /**
    * @return list of instructions still being targeted.
    */
-  public InstructionHandle[] getTargets() {
-    return targets;
-  }
+  public InstructionHandle[] getTargets() { return targets; }
 }

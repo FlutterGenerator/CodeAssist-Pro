@@ -413,5 +413,8 @@
     <string name="use_fir_desc">Use the new Frontend Intermediate Representation to improve compilation speed and analysis performance.</string>
     <string name="use_fast_kotlin_lsp_title">Use Fast Kotlin LSP</string>
     <string name="use_fast_kotlin_lsp_desc">it\'s fast but dose\'t support all language features</string>
+    <string name="environment_title">Environment</string>
+    <string name="settings_openjdk_title">OpenJDK</string>
+    <string name="settings_openjdk_desc">Configure</string>
 
 </resources>

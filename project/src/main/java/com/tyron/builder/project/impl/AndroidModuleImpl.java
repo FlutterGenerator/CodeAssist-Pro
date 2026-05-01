@@ -82,7 +82,8 @@ public class AndroidModuleImpl extends JavaModuleImpl implements AndroidModule {
           mLibraries.add(compileJarFile);
 
         } catch (IOException e) {
-          throw new UncheckedIOException(e);
+         // throw new UncheckedIOException(e);
+          return;
         }
       }
     } else {

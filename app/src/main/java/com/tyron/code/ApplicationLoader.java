@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatDelegate;
 import androidx.preference.PreferenceManager;
 import com.developer.crashx.config.CrashConfig;
 import com.google.android.material.color.DynamicColors;
+import com.itsaky.androidide.app.configuration.IJdkDistributionProvider;
 import com.tyron.actions.ActionManager;
 import com.tyron.builder.BuildModule;
 import com.tyron.code.event.EventManager;
@@ -32,6 +33,7 @@ import com.tyron.code.ui.main.action.project.ProjectActionGroup;
 import com.tyron.code.ui.settings.ApplicationSettingsFragment;
 import com.tyron.common.ApplicationProvider;
 import com.tyron.common.Prefs;
+import com.itsaky.androidide.utils.Environment;
 import com.tyron.completion.CompletionProvider;
 import com.tyron.completion.index.CompilerService;
 import com.tyron.completion.java.CompletionModule;
@@ -44,7 +46,7 @@ import com.tyron.completion.xml.XmlIndexProvider;
 import com.tyron.completion.xml.providers.LayoutXmlCompletionProvider;
 import com.tyron.completion.xml.v2.AndroidXmlCompletionProvider;
 import com.tyron.editor.selection.ExpandSelectionProvider;
-import com.tyron.kotlin_completion.KotlinCompletionModule;
+//import com.tyron.kotlin_completion.KotlinCompletionModule;
 import com.tyron.language.fileTypes.FileTypeManager;
 import com.tyron.language.java.JavaFileType;
 import com.tyron.language.java.JavaLanguage;
@@ -58,6 +60,7 @@ import io.github.rosemoe.sora.langs.textmate.registry.GrammarRegistry;
 import io.github.rosemoe.sora.langs.textmate.registry.provider.AssetsFileResolver;
 import java.security.Security;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.jetbrains.kotlin.cli.jvm.compiler.CompatKt;
 
 public class ApplicationLoader extends Application {
 
@@ -90,6 +93,7 @@ public class ApplicationLoader extends Application {
 
     sInstance = this;
     applicationContext = this;
+    Prefs.init(this, getDefaultPreferences());
     ApplicationProvider.initialize(applicationContext);
 
     CompletionModule.initialize(applicationContext);
@@ -113,7 +117,12 @@ public class ApplicationLoader extends Application {
     } catch (Exception e) {
       throw new RuntimeException(e);
     }
-    Prefs.init(this, getDefaultPreferences());
+   // Prefs.init(this, getDefaultPreferences());
+      Environment.init(this);
+      IJdkDistributionProvider.getInstance().loadDistributions();
+    System.setProperty("java.awt.headless","true");
+    CompatKt.setupIdeaStandaloneExecution();
+
     runStartup();
   }
 
@@ -203,7 +212,7 @@ public class ApplicationLoader extends Application {
           XmlCompletionModule.registerActions(manager);
 
           // kotlin actions
-          KotlinCompletionModule.registerActions(manager);
+//          KotlinCompletionModule.registerActions(manager);
         });
     startupManager.startup();
   }

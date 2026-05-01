@@ -1,4 +1,5 @@
-<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <Preference
         app:fragment="com.tyron.code.ui.settings.ApplicationSettingsFragment"
@@ -30,7 +31,7 @@
         app:summary="@string/settings_build_run_desc"
         app:title="@string/settings_build_run_title" />
 
-	<Preference
+    <Preference
         app:fragment="com.tyron.code.ui.settings.GitSettingsFragment"
         app:iconSpaceReserved="false"
         app:summary="@string/settings_git_desc"

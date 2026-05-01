@@ -43,9 +43,9 @@ dependencies {
     // jaxb
     api ('javax.xml.bind:jaxb-api:2.3.1')
 }
-repositories {
-    mavenCentral()
-} 
+//repositories {
+//    mavenCentral()
+//}
 
 spotless {
 		java {

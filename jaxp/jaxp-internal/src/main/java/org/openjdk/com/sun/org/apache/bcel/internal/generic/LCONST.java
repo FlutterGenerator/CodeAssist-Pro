@@ -65,9 +65,10 @@ import org.openjdk.com.sun.org.apache.bcel.internal.Constants;
  *
  * <PRE>Stack: ... -&gt; ..., </PRE>
  *
- * @author <A HREF="mailto:markus.dahm@berlin.de">M. Dahm</A>
+ * @author  <A HREF="mailto:markus.dahm@berlin.de">M. Dahm</A>
  */
-public class LCONST extends Instruction implements ConstantPushInstruction, TypedInstruction {
+public class LCONST extends Instruction
+  implements ConstantPushInstruction, TypedInstruction {
   private long value;
 
   /**
@@ -77,30 +78,31 @@ public class LCONST extends Instruction implements ConstantPushInstruction, Type
   LCONST() {}
 
   public LCONST(long l) {
-    super(Constants.LCONST_0, (short) 1);
+    super(Constants.LCONST_0, (short)1);
 
-    if (l == 0) opcode = Constants.LCONST_0;
-    else if (l == 1) opcode = Constants.LCONST_1;
-    else throw new ClassGenException("LCONST can be used only for 0 and 1: " + l);
+    if(l == 0)
+      opcode = Constants.LCONST_0;
+    else if(l == 1)
+      opcode = Constants.LCONST_1;
+    else
+      throw new ClassGenException("LCONST can be used only for 0 and 1: " + l);
 
     value = l;
   }
 
-  public Number getValue() {
-    return new Long(value);
-  }
+  public Number getValue() { return new Long(value); }
 
-  /**
-   * @return Type.LONG
+  /** @return Type.LONG
    */
   public Type getType(ConstantPoolGen cp) {
     return Type.LONG;
   }
 
   /**
-   * Call corresponding visitor method(s). The order is: Call visitor methods of implemented
-   * interfaces first, then call methods according to the class hierarchy in descending order, i.e.,
-   * the most specific visitXXX() call comes last.
+   * Call corresponding visitor method(s). The order is:
+   * Call visitor methods of implemented interfaces first, then
+   * call methods according to the class hierarchy in descending order,
+   * i.e., the most specific visitXXX() call comes last.
    *
    * @param v Visitor object
    */

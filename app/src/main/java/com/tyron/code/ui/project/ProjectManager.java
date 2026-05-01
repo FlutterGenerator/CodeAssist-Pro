@@ -7,6 +7,8 @@ import androidx.annotation.Nullable;
 import android.content.SharedPreferences;
 
 import com.google.common.base.Throwables;
+import com.itsaky.androidide.lsp.api.DefaultLanguageServerRegistry;
+import com.itsaky.androidide.lsp.api.ILanguageServerRegistry;
 import com.tyron.builder.compiler.BuildType;
 import com.tyron.builder.compiler.incremental.resource.IncrementalAapt2Task;
 import com.tyron.builder.compiler.manifest.ManifestMergeTask;
@@ -19,6 +21,7 @@ import com.tyron.builder.project.api.Module;
 import com.tyron.code.ApplicationLoader;
 import com.tyron.code.template.CodeTemplate;
 import com.tyron.code.util.ProjectUtils;
+import com.tyron.common.Prefs;
 import com.tyron.common.logging.IdeLog;
 import com.tyron.completion.java.provider.CompletionEngine;
 import com.tyron.completion.progress.ProgressManager;
@@ -36,6 +39,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 //import kotlin.collections.CollectionsKt;
 import org.apache.commons.io.FileUtils;
+import org.appdevforall.codeonthego.indexing.jvm.JvmGeneratedIndexingService;
+import org.appdevforall.codeonthego.indexing.jvm.JvmLibraryIndexingService;
 
 //new
 import com.tyron.completion.xml.v2.events.XmlReparsedEvent;
@@ -53,9 +58,7 @@ import com.tyron.completion.java.parse.CompilationInfo;
 import com.tyron.completion.java.provider.PruneMethodBodies;
 import com.tyron.completion.xml.v2.LayoutRepo;
 import com.tyron.builder.project.IProjectManager;
-import com.tyron.completion.lsp.api.ILanguageServerRegistry;
 import com.itsaky.androidide.eventbus.events.project.ProjectInitializedEvent;
-import com.tyron.completion.lsp.api.DefaultLanguageServerRegistry;
 
 public class ProjectManager {
 
@@ -312,6 +315,8 @@ public class ProjectManager {
                         "> Task :" + module.getModuleName() + ":" + "injectingResources");
                   }
               }
+
+//              IProjectManager.getInstance().getIndexingServiceManager().onProjectSynced();
               // indexModule(module);
               // CompilationInfo info = CompilationInfo.get(module,true);
               // KotlinEnvironment kotlinEnvironment = KotlinEnvironment.Companion.get(module,true);
@@ -324,9 +329,20 @@ public class ProjectManager {
     }
 
    // mProjectOpenListeners.forEach(it -> it.onProjectOpen(mCurrentProject));
+      var indexingServiceManager = IProjectManager.getInstance().getIndexingServiceManager();
+      indexingServiceManager.register(
+              new JvmLibraryIndexingService(Prefs.getContext())
+      );
+      indexingServiceManager.register(
+             new JvmGeneratedIndexingService(
+                      Prefs.getContext()
+              )
+      );
+      indexingServiceManager.onProjectSynced();
     var projectInitializedEvent = new ProjectInitializedEvent();
-    projectInitializedEvent.put(Module.class,module);
-    ((DefaultLanguageServerRegistry)ILanguageServerRegistry.getDefault()).onProjectInitialized(projectInitializedEvent);
+    projectInitializedEvent.put(Project.class,getCurrentProject());
+    ((DefaultLanguageServerRegistry) ILanguageServerRegistry.Companion.getDefault()).onProjectInitialized(projectInitializedEvent);
+//      IProjectManager.getInstance().getIndexingServiceManager().onProjectSynced();
     mCurrentProject.setIndexing(false);
     mListener.onComplete(project, true, "Index successful");
 
@@ -375,6 +391,7 @@ public class ProjectManager {
   public void closeProject(@NonNull Project project) {
     if (project.equals(mCurrentProject)) {
       mCurrentProject = null;
+      IProjectManager.getInstance().getIndexingServiceManager().close();
       IProjectManager.getInstance().currentProject = null;
     }
   }

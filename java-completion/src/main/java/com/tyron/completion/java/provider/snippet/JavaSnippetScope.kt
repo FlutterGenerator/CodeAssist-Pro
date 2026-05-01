@@ -17,7 +17,8 @@
 
 package com.tyron.completion.java.provider.snippet
 
-import com.tyron.completion.model.snippets.ISnippetScope
+import com.itsaky.androidide.lsp.snippets.ISnippetScope
+
 
 /**
  * Scope for [JavaSnippet].

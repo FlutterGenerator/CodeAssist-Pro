@@ -39,9 +39,11 @@ public class CodeBlockUtils {
 
     for (line = model.getLineCount() - 1; line >= 0 && !delegate.isCancelled(); line--) {
       String lineContent = model.getLineString(line);
+      char[] chars = new char[model.getLine(line).length()];
+      model.getLine(line).getChars(0,model.getLine(line).length(),chars,0);
       int indent =
           IndentRange.computeIndentLevel(
-              model.getLine(line).getBackingCharArray(), model.getColumnCount(line), tabSize);
+              model.getLine(line), model.getColumnCount(line), tabSize);
       PreviousRegion previous = previousRegions.get(previousRegions.size() - 1);
       if (indent == -1) {
         if (offSide) {

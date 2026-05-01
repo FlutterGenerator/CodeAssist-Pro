@@ -1,0 +1,36 @@
+package com.itsaky.androidide.lsp.models;
+
+public enum DrawableKind {
+  Attribute("A", 0xffcc7832),
+  Method("m", 0xffe92e2e),
+  Interface("I", 0xffcc7832),
+  Field("F", 0xffcc7832),
+  Class("C", 0xff1c9344),
+  Parameter("pa", 0xffcc7832),
+  Enum("E", 0xff1c9344),
+  Keyword("K", 0xffcc7832),
+  Package("P", 0xffcc7832),
+  Lambda("λ", 0xff36b9da),
+  Snippet("S", 0xffcc7832),
+  Annotation("An", 0xffcc7832),
+  LocalVariable("V", 0xffcc7832),
+  EnumMember("E", 0xffcc7832),
+  Constructor("c", 0xffe92e2e),
+  Property("p", 0xffcc7832);
+
+  private final int color;
+  private final String prefix;
+
+  DrawableKind(String prefix, int color) {
+    this.prefix = prefix;
+    this.color = color;
+  }
+
+  public String getValue() {
+    return prefix;
+  }
+
+  public int getColor() {
+    return color;
+  }
+}

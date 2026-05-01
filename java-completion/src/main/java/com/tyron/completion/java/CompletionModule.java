@@ -10,20 +10,13 @@ import com.tyron.actions.ActionManager;
 import com.tyron.builder.BuildModule;
 import com.tyron.common.util.Decompress;
 import com.tyron.completion.java.action.common.CommentAction;
-import com.tyron.completion.java.action.common.JavaCommonActionGroup;
 import com.tyron.completion.java.action.common.OrganizeImportsAction;
 import com.tyron.completion.java.action.common.RemoveUnusedImportsAction;
 import com.tyron.completion.java.action.common.UncommentAction;
 import com.tyron.completion.java.action.context.IntroduceLocalVariableAction;
 import com.tyron.completion.java.action.context.OverrideInheritedMethodsAction;
-import com.tyron.completion.java.action.generators.GenerateConstructorAction;
-import com.tyron.completion.java.action.generators.GenerateEqualsAndHashCodeAction;
-import com.tyron.completion.java.action.generators.GenerateGettersAndSettersAction;
 import com.tyron.completion.java.action.generators.GenerateMissingConstructorAction;
-import com.tyron.completion.java.action.generators.GenerateToStringAction;
-import com.tyron.completion.java.action.generators.JavaGenerateActionGroup;
 import com.tyron.completion.java.action.quickfix.AddCatchClauseAction;
-import com.tyron.completion.java.action.quickfix.AddReturnStatementAction;
 import com.tyron.completion.java.action.quickfix.AddThrowsAction;
 import com.tyron.completion.java.action.quickfix.ImplementAbstractMethodsFix;
 import com.tyron.completion.java.action.quickfix.ImportClassAction;
@@ -46,31 +39,19 @@ public class CompletionModule {
     actionManager.registerAction(ImportClassAction.ID, new ImportClassAction());
     actionManager.registerAction(ImportClassFieldFix.ID, new ImportClassFieldFix());
     actionManager.registerAction(ImplementAbstractMethodsFix.ID, new ImplementAbstractMethodsFix());
-    actionManager.registerAction(AddReturnStatementAction.ID, new AddReturnStatementAction());
 
     actionManager.registerAction(
         IntroduceLocalVariableAction.ID, new IntroduceLocalVariableAction());
     actionManager.registerAction(
         OverrideInheritedMethodsAction.ID, new OverrideInheritedMethodsAction());
     // common
-   /* actionManager.registerAction(CommentAction.ID, new CommentAction());
+    actionManager.registerAction(CommentAction.ID, new CommentAction());
     actionManager.registerAction(UncommentAction.ID, new UncommentAction());
     actionManager.registerAction(RemoveUnusedImportsAction.ID, new RemoveUnusedImportsAction());
-    actionManager.registerAction(OrganizeImportsAction.ID, new OrganizeImportsAction());*/
-    actionManager.registerAction(JavaCommonActionGroup.ID, new JavaCommonActionGroup());
+    actionManager.registerAction(OrganizeImportsAction.ID, new OrganizeImportsAction());
     // Genetators
-   /* actionManager.registerAction(
+    actionManager.registerAction(
         GenerateMissingConstructorAction.ID, new GenerateMissingConstructorAction());
-    actionManager.registerAction(
-        GenerateGettersAndSettersAction.ID, new GenerateGettersAndSettersAction());
-    actionManager.registerAction(
-        GenerateConstructorAction.ID, new GenerateConstructorAction());
-    actionManager.registerAction(
-        GenerateToStringAction.ID, new GenerateToStringAction());
-    actionManager.registerAction(
-        GenerateEqualsAndHashCodeAction.ID, new GenerateEqualsAndHashCodeAction());*/
-    actionManager.registerAction(
-        JavaGenerateActionGroup.ID, new JavaGenerateActionGroup());
   }
 
   public static void initialize(Context context) {

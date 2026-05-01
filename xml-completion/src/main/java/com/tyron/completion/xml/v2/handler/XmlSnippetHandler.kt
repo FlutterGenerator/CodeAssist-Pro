@@ -1,8 +1,10 @@
 package com.tyron.completion.xml.v2.handler
 
+import android.util.Log
+import com.itsaky.androidide.lsp.snippets.ISnippet
 import com.tyron.completion.model.CompletionList
 import com.tyron.completion.model.SnippetCompletionItem
-import com.tyron.completion.model.snippets.ISnippet
+import com.tyron.completion.xml.insert.AttributeInsertHandler
 import io.github.rosemoe.sora.lang.completion.SnippetDescription
 import io.github.rosemoe.sora.lang.completion.snippet.parser.CodeSnippetParser
 
@@ -26,6 +28,7 @@ object XmlSnippetHandler {
 
     private fun createSnippetItem(snippet: ISnippet, partialLength: Int): SnippetCompletionItem {
         val body = snippet.body.joinToString("\n")
+        Log.i("",body)
         val codeSnippet = CodeSnippetParser.parse(body)
         val description = SnippetDescription(partialLength, codeSnippet, true)
         return SnippetCompletionItem(snippet.prefix, snippet.description, description)

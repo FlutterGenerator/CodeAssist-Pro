@@ -15,7 +15,8 @@ public class Kotlin implements Language {
 
   @Override
   public io.github.rosemoe.sora.lang.Language get(Editor editor) {
-    return useFastKotlinLsp() ? new KotlinLanguage2(editor) : new KotlinLanguage(editor);
+  //  return useFastKotlinLsp() ? new KotlinLanguage2(editor) : new KotlinLanguage(editor);
+    return new KotlinLanguage2(editor);
   }
   public boolean useFastKotlinLsp(){
     return ApplicationLoader.getDefaultPreferences().getBoolean(SharedPreferenceKeys.FAST_KOTLIN_LSP, false);

@@ -57,13 +57,14 @@ package org.openjdk.com.sun.org.apache.bcel.internal.generic;
  * information on the Apache Software Foundation, please see
  * <http://www.apache.org/>.
  */
-import java.io.*;
 import org.openjdk.com.sun.org.apache.bcel.internal.Constants;
+
+import java.io.*;
 
 /**
  * GOTO - Branch always (to relative offset, not absolute address)
  *
- * @author <A HREF="mailto:markus.dahm@berlin.de">M. Dahm</A>
+ * @author  <A HREF="mailto:markus.dahm@berlin.de">M. Dahm</A>
  */
 public class GOTO extends GotoInstruction implements VariableLengthInstruction {
   /**
@@ -78,12 +79,12 @@ public class GOTO extends GotoInstruction implements VariableLengthInstruction {
 
   /**
    * Dump instruction as byte code to stream out.
-   *
    * @param out Output stream
    */
   public void dump(DataOutputStream out) throws IOException {
     index = getTargetOffset();
-    if (opcode == Constants.GOTO) super.dump(out);
+    if(opcode == Constants.GOTO)
+      super.dump(out);
     else { // GOTO_W
       index = getTargetOffset();
       out.writeByte(opcode);
@@ -91,16 +92,15 @@ public class GOTO extends GotoInstruction implements VariableLengthInstruction {
     }
   }
 
-  /**
-   * Called in pass 2 of InstructionList.setPositions() in order to update the branch target, that
-   * may shift due to variable length instructions.
+  /** Called in pass 2 of InstructionList.setPositions() in order to update
+   * the branch target, that may shift due to variable length instructions.
    */
   protected int updatePosition(int offset, int max_offset) {
     int i = getTargetOffset(); // Depending on old position value
 
     position += offset; // Position may be shifted by preceding expansions
 
-    if (Math.abs(i) >= (32767 - max_offset)) { // to large for short (estimate)
+    if(Math.abs(i) >= (32767 - max_offset)) { // to large for short (estimate)
       opcode = Constants.GOTO_W;
       length = 5;
       return 2; // 5 - 3
@@ -110,9 +110,10 @@ public class GOTO extends GotoInstruction implements VariableLengthInstruction {
   }
 
   /**
-   * Call corresponding visitor method(s). The order is: Call visitor methods of implemented
-   * interfaces first, then call methods according to the class hierarchy in descending order, i.e.,
-   * the most specific visitXXX() call comes last.
+   * Call corresponding visitor method(s). The order is:
+   * Call visitor methods of implemented interfaces first, then
+   * call methods according to the class hierarchy in descending order,
+   * i.e., the most specific visitXXX() call comes last.
    *
    * @param v Visitor object
    */

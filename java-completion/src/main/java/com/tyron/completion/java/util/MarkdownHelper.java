@@ -1,10 +1,10 @@
 package com.tyron.completion.java.util;
 
+import com.itsaky.androidide.lsp.models.MarkupContent;
+import com.itsaky.androidide.lsp.models.MarkupKind;
 import com.sun.source.doctree.DocCommentTree;
 import com.sun.source.doctree.DocTree;
-import com.tyron.completion.model.signatures.MarkupContent;
-import com.tyron.completion.model.signatures.MarkupKind;
-import dev.mutwakil.javac.*;
+
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
@@ -24,6 +24,8 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
+
+import org.jetbrains.annotations.NotNull;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -35,7 +37,7 @@ public class MarkdownHelper {
   private static final Pattern HTML_TAG = Pattern.compile("<(\\w+)[^>]*>");
   private static final Logger LOG = Logger.getLogger("main");
 
-  public static MarkupContent asMarkupContent(DocCommentTree comment) {
+  public static @NotNull MarkupContent asMarkupContent(DocCommentTree comment) {
     String markdown = asMarkdown(comment);
     MarkupContent content = new MarkupContent();
     content.setKind(MarkupKind.MARKDOWN);

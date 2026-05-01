@@ -18,486 +18,308 @@
 package com.itsaky.androidide.lsp.kotlin
 
 import android.util.Log
-import android.util.Log.i
-import androidx.core.net.toUri
-import com.itsaky.androidide.eventbus.events.editor.ChangeType
+import com.itsaky.androidide.app.configuration.IJdkDistributionProvider
 import com.itsaky.androidide.eventbus.events.editor.DocumentChangeEvent
 import com.itsaky.androidide.eventbus.events.editor.DocumentCloseEvent
 import com.itsaky.androidide.eventbus.events.editor.DocumentOpenEvent
-import com.itsaky.androidide.eventbus.events.editor.DocumentSelectedEvent
-import com.tyron.completion.lsp.api.ILanguageClient
-import com.tyron.completion.lsp.api.ILanguageServer
-import com.tyron.completion.lsp.api.IServerSettings
-import com.itsaky.androidide.lsp.kotlin.adapters.toIde
-import com.itsaky.androidide.lsp.kotlin.adapters.toLsp4j
-import com.tyron.completion.CompletionParameters
-import com.tyron.completion.model.CompletionList
-import com.tyron.completion.model.DefinitionParams
-import com.tyron.completion.model.DefinitionResult
-import com.tyron.completion.model.DiagnosticResult
-import com.tyron.completion.model.ExpandSelectionParams
-import com.tyron.completion.model.references.ReferenceParams
-import com.tyron.completion.model.references.ReferenceResult
-import com.tyron.completion.model.signatures.SignatureHelp
-import com.tyron.completion.model.signatures.SignatureHelpParams
-import com.tyron.completion.model.Range
-import com.tyron.builder.project.api.Module
-import com.tyron.builder.project.api.JavaModule
-import com.tyron.builder.BuildModule
-//import com.itsaky.androidide.projects.models.bootClassPaths
-//import com.itsaky.androidide.projects.models.projectDir
-import com.tyron.common.util.DocumentUtils
-import java.io.File
+import com.itsaky.androidide.eventbus.events.editor.DocumentSaveEvent
+import com.itsaky.androidide.lsp.api.ILanguageClient
+import com.itsaky.androidide.lsp.api.ILanguageServer
+import com.itsaky.androidide.lsp.api.IServerSettings
+import com.itsaky.androidide.lsp.kotlin.compiler.Compiler
+import com.itsaky.androidide.lsp.kotlin.compiler.KotlinProjectModel
+import com.itsaky.androidide.lsp.kotlin.compiler.index.KT_SOURCE_FILE_INDEX_KEY
+import com.itsaky.androidide.lsp.kotlin.compiler.index.KT_SOURCE_FILE_META_INDEX_KEY
+import com.itsaky.androidide.lsp.kotlin.completion.KotlinSnippetRepository
+import com.itsaky.androidide.lsp.kotlin.completion.codeComplete
+import com.itsaky.androidide.lsp.kotlin.diagnostic.collectDiagnosticsFor
+import com.itsaky.androidide.lsp.models.CompletionParams
+import com.itsaky.androidide.lsp.models.CompletionResult
+import com.itsaky.androidide.lsp.models.DefinitionParams
+import com.itsaky.androidide.lsp.models.DefinitionResult
+import com.itsaky.androidide.lsp.models.DiagnosticResult
+import com.itsaky.androidide.lsp.models.ExpandSelectionParams
+import com.itsaky.androidide.lsp.models.ReferenceParams
+import com.itsaky.androidide.lsp.models.ReferenceResult
+import com.itsaky.androidide.lsp.models.SignatureHelp
+import com.itsaky.androidide.lsp.models.SignatureHelpParams
+//import com.itsaky.androidide.lsp.util.LSPEditorActions
+import com.itsaky.androidide.models.Range
+import com.itsaky.androidide.projects.FileManager
+import com.itsaky.androidide.tasks.createJobCancelChecker
+import com.itsaky.androidide.utils.DocumentUtils
+import com.itsaky.androidide.utils.Environment
+import com.itsaky.androidide.utils.ifNotEmpty
+import com.tyron.builder.project.IProjectManager
+import com.tyron.builder.project.Project
+import com.tyron.common.Prefs
+import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import org.appdevforall.codeonthego.lsp.kotlin.server.KotlinLanguageServer as KtLspServer
-import org.eclipse.lsp4j.DidCloseTextDocumentParams
-import org.eclipse.lsp4j.DidOpenTextDocumentParams
-import org.eclipse.lsp4j.InitializeParams
-import org.eclipse.lsp4j.TextDocumentIdentifier
-import org.eclipse.lsp4j.TextDocumentItem
-import org.eclipse.lsp4j.WorkspaceFolder
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
+import org.appdevforall.codeonthego.indexing.jvm.JVM_LIBRARY_SYMBOL_INDEX
+import org.appdevforall.codeonthego.indexing.jvm.JvmGeneratedIndexingService
+import org.appdevforall.codeonthego.indexing.jvm.JvmLibraryIndexingService
+import org.appdevforall.codeonthego.indexing.jvm.JvmSymbolIndex
+import org.appdevforall.codeonthego.indexing.jvm.KtFileMetadataIndex
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
+import org.jetbrains.kotlin.config.JvmTarget
+import org.jetbrains.kotlin.config.LanguageVersion
+import org.jetbrains.kotlin.platform.jvm.JvmPlatforms
 import org.slf4j.LoggerFactory
 import java.nio.file.Path
-
-import org.eclipse.lsp4j.Position as Lsp4jPosition
+import java.nio.file.Paths
 
 class KotlinLanguageServer : ILanguageServer {
 
-    private val ktLspServer = KtLspServer()
-    private var clientBridge: KotlinLanguageClientBridge? = null
-    private var _client: ILanguageClient? = null
-    private var _settings: IServerSettings? = null
-    private var selectedFile: Path? = null
-    private var initialized = false
-
-    override val serverId: String = SERVER_ID
-
-    override val client: ILanguageClient?
-        get() = _client
-
-    val settings: IServerSettings
-        get() = _settings ?: KotlinServerSettings.getInstance().also { _settings = it }
-
-    companion object {
-        const val SERVER_ID = "ide.lsp.kotlin"
-        private val log = LoggerFactory.getLogger(KotlinLanguageServer::class.java)
-        val TAG = KotlinLanguageServer::class.simpleName
-    }
-
-    init {
-        applySettings(KotlinServerSettings.getInstance())
-
-        if (!EventBus.getDefault().isRegistered(this)) {
-            EventBus.getDefault().register(this)
-        }
-    }
-
-    override fun shutdown() {
-        ktLspServer.shutdown().get()
-        EventBus.getDefault().unregister(this)
-        initialized = false
-    }
-
-    override fun connectClient(client: ILanguageClient?) {
-        this._client = client
-        if (client != null) {
-            val positionResolver: PositionToOffsetResolver = { uri ->
-                val normalizedUri = normalizeUri(uri)
-                val state = ktLspServer.getDocumentManager().get(normalizedUri)
-                if (state == null) {
-                    log.debug("positionResolver: no document state for URI: {} (normalized: {})", uri, normalizedUri)
-                }
-                state?.let { it::positionToOffset }
-            }
-            clientBridge = KotlinLanguageClientBridge(client, positionResolver)
-            ktLspServer.connect(clientBridge!!)
-        }
-    }
-
-    private fun normalizeUri(uri: String): String {
-        return try {
-            java.net.URI(uri).normalize().toString()
-        } catch (e: Exception) {
-            uri
-        }
-    }
-
-    override fun applySettings(settings: IServerSettings?) {
-        this._settings = settings
-    }
-
-    override fun setupWorkspace(workspace: Module) {
-        i(TAG,"setupWithProject called, initialized=${initialized}")
-        if (!initialized) {
-            loadStdlibIndex()
-
-            val initParams = InitializeParams().apply({
-                //rootUri = workspace.project.rootFile.toUri().toString()
-                workspaceFolders = listOf<WorkspaceFolder>(
-                    WorkspaceFolder(
-                        workspace.rootFile.toUri().toString(),
-                        workspace.rootFile.name
-                    )
-                )
-            })
-            ktLspServer.initialize(initParams).get()
-            ktLspServer.initialized(null)
-            i(TAG,"Kotlin LSP initialized with stdlib index")
-           // print("Kotlin LSP initialized with stdlib index")
-            initialized = true
-        }
-        val javaModule = workspace as? JavaModule?:return
-        indexClasspaths(javaModule)
-    }
-
-    private fun loadStdlibIndex() {
-        try {
-            val startTime = System.currentTimeMillis()
-            val stdlibStream = javaClass.getResourceAsStream("/stdlib-index.json")
-            if (stdlibStream != null) {
-                stdlibStream.use { inputStream ->
-                    val stdlibIndex = org.appdevforall.codeonthego.lsp.kotlin.index.StdlibIndexLoader.loadFromStream(inputStream)
-                    ktLspServer.loadStdlibIndex(stdlibIndex)
-                    val elapsed = System.currentTimeMillis() - startTime
-                    i(TAG,"Loaded stdlib index: ${stdlibIndex.size} symbols in ${elapsed}ms")
-                }
-            } else {
-                Log.w(TAG,"stdlib-index.json not found in resources, using minimal index")
-            }
-        } catch (e: Exception) {
-            Log.e(TAG,"Failed to load stdlib-index.json, using minimal index", e)
-
-        }
-    }
-
-    private fun indexClasspaths(workspace: JavaModule) {
-        i(TAG,"indexClasspaths called, subProjects count=${workspace.subprojects.size}")
-        CoroutineScope(Dispatchers.IO).launch {
-            try {
-                val classpaths = mutableSetOf<File>()
-                val bootClasspaths = mutableSetOf<File>()
-                
-                classpaths.addAll(workspace.getLibraries().toMutableList())
-                bootClasspaths.add(BuildModule.getLambdaStubs())
-                bootClasspaths.add(BuildModule.getAndroidJar())
-
-                for (project in workspace.subprojects) {
-                    Log.d(TAG,"Checking project: ${project.moduleName} (type=${project::class.simpleName})")
-                    if (project is JavaModule) {
-                        val projectClasspaths = project.getLibraries().toMutableList()
-                        Log.d(TAG,"Project ${project.moduleName} has ${projectClasspaths.size} classpath entries")
-                        classpaths.addAll(projectClasspaths)
-
-                     //   if (project is AndroidModule) {
-                     //       val projectBootClasspaths = project.bootClassPaths
-                     //       log.debug("Project {} has {} boot classpath entries", project.name, projectBootClasspaths.size)
-                     //       bootClasspaths.addAll(projectBootClasspaths)
-                     //   }
-                    }
-                }
-
-                classpaths.addAll(bootClasspaths.filter { it.exists() })
-
-                i(TAG,"Total classpath entries found: ${classpaths.size} (including ${bootClasspaths.size} boot classpaths)")
-                //print("Total classpath entries")
-                if (classpaths.isNotEmpty()) {
-                    val files = classpaths.filter { it.exists() }
-                    i(TAG,"Indexing ${files.size} existing classpath entries for Kotlin LSP")
-                    ktLspServer.setClasspathAsync(files).thenAccept { index ->
-                        Log.d(TAG,"Kotlin LSP classpath indexed: ${index.size} symbols from ${index.jarCount} jars")
-                    }.exceptionally { e ->
-                        Log.e(TAG,"Error in classpath indexing async", e)
-                        null
-                    }
-                } else {
-                    Log.w(TAG,"No classpath entries found for Kotlin LSP")
-                }
-            } catch (e: Exception) {
-                log.error("Error indexing classpaths for Kotlin LSP", e)
-                Log.e(TAG,"Error indexing classpaths for Kotlin LSP",e)
-            }
-        }
-    }
-
-    override fun complete(params: CompletionParameters?): CompletionList {
-        Log.d(TAG,"complete() called, params=${params != null}")
-        if (params == null || !settings.completionsEnabled()) {
-            Log.d(TAG,"complete() returning EMPTY: params=${params!=null}, completionsEnabled=${settings.completionsEnabled()}")
-            return CompletionList.EMPTY
-        }
-
-        if (!DocumentUtils.isKotlinFile(params.file.toPath())) {
-            Log.d(TAG,"complete() returning EMPTY: not a Kotlin file")
-            return CompletionList.EMPTY
-        }
-
-        val uri = params.file.toUri().toString()
-
-        ktLspServer.getAnalysisScheduler().analyzeSync(uri)
-
-        Log.d(TAG,"complete() uri=${uri}, position=${params.line}:${params.column}, prefix=${params.prefix}")
-        val lspParams = org.eclipse.lsp4j.CompletionParams().apply {
-            textDocument = TextDocumentIdentifier(uri)
-            position = Lsp4jPosition(params.line, params.column)
-        }
-
-        return try {
-            val future = ktLspServer.textDocumentService.completion(lspParams)
-            val result = future.get()
-            val items = result?.right?.items ?: result?.left ?: emptyList()
-            log.debug("complete() got ${items.size} items from ktlsp")
-            CompletionList.builder(params.prefix?:"")
-            .addItems(items.map { it.toIde(params.prefix ?: "") })
-            .build()
-              
-            
-        } catch (e: Exception) {
-            Log.e(TAG,"Error during completion", e)
-            CompletionList.EMPTY
-        }
-    }
-
-    override suspend fun findReferences(params: ReferenceParams): ReferenceResult {
-        if (!settings.referencesEnabled()) {
-            return ReferenceResult(emptyList())
-        }
-
-        if (!DocumentUtils.isKotlinFile(params.file)) {
-            return ReferenceResult(emptyList())
-        }
-
-        val uri = params.file.toUri().toString()
-        val lspParams = org.eclipse.lsp4j.ReferenceParams().apply {
-            textDocument = TextDocumentIdentifier(uri)
-            position = params.position.toLsp4j()
-            context = org.eclipse.lsp4j.ReferenceContext(params.includeDeclaration)
-        }
-
-        return try {
-            val future = ktLspServer.textDocumentService.references(lspParams)
-            val locations = future.get() ?: emptyList()
-            ReferenceResult(locations.map { it.toIde() })
-        } catch (e: Exception) {
-            log.error("Error finding references", e)
-            ReferenceResult(emptyList())
-        }
-    }
-
-    override suspend fun findDefinition(params: DefinitionParams): DefinitionResult {
-        if (!settings.definitionsEnabled()) {
-            return DefinitionResult(emptyList())
-        }
-
-        if (!DocumentUtils.isKotlinFile(params.file)) {
-            return DefinitionResult(emptyList())
-        }
-
-        val uri = params.file.toUri().toString()
-        val lspParams = org.eclipse.lsp4j.DefinitionParams().apply {
-            textDocument = TextDocumentIdentifier(uri)
-            position = params.position.toLsp4j()
-        }
-
-        return try {
-            val future = ktLspServer.textDocumentService.definition(lspParams)
-            val result = future.get()
-            val locations = result?.left ?: emptyList()
-            DefinitionResult(locations.map { it.toIde() })
-        } catch (e: Exception) {
-            log.error("Error finding definition", e)
-            DefinitionResult(emptyList())
-        }
-    }
-
-    override suspend fun expandSelection(params: ExpandSelectionParams): Range {
-        return params.selection
-    }
-    
-    fun signatureHelpBlocking(params: SignatureHelpParams): SignatureHelp =
-      kotlinx.coroutines.runBlocking {
-         signatureHelp(params)
-      }
-
-    override suspend fun signatureHelp(params: SignatureHelpParams): SignatureHelp {
-        if (!settings.signatureHelpEnabled()) {
-            return SignatureHelp(emptyList(), -1, -1)
-        }
-
-        if (!DocumentUtils.isKotlinFile(params.file)) {
-            return SignatureHelp(emptyList(), -1, -1)
-        }
-
-        val uri = params.file.toUri().toString()
-        val lspParams = org.eclipse.lsp4j.SignatureHelpParams().apply {
-            textDocument = TextDocumentIdentifier(uri)
-            position = params.position.toLsp4j()
-        }
-
-        return try {
-            val future = ktLspServer.textDocumentService.signatureHelp(lspParams)
-            val result = future.get()
-            result?.toIde() ?: SignatureHelp(emptyList(), -1, -1)
-        } catch (e: Exception) {
-            log.error("Error getting signature help", e)
-            SignatureHelp(emptyList(), -1, -1)
-        }
-    }
-
-    override suspend fun analyze(file: Path): DiagnosticResult {
-        log.debug("analyze() called for file: {}", file)
-
-        if (!settings.diagnosticsEnabled() || !settings.codeAnalysisEnabled()) {
-            log.debug("analyze() skipped: diagnosticsEnabled={}, codeAnalysisEnabled={}",
-                settings.diagnosticsEnabled(), settings.codeAnalysisEnabled())
-            return DiagnosticResult.NO_UPDATE
-        }
-
-        if (!DocumentUtils.isKotlinFile(file)) {
-            log.debug("analyze() skipped: not a Kotlin file")
-            return DiagnosticResult.NO_UPDATE
-        }
-
-        val uri = file.toUri().toString()
-        val state = ktLspServer.getDocumentManager().get(uri)
-        if (state == null) {
-            log.warn("analyze() skipped: document state not found for URI: {}", uri)
-            return DiagnosticResult.NO_UPDATE
-        }
-
-        ktLspServer.getAnalysisScheduler().analyzeSync(uri)
-
-        val diagnostics = state.diagnostics
-        log.info("analyze() completed: {} diagnostics found for {}", diagnostics.size, file.fileName)
-
-        return DiagnosticResult(file, diagnostics.map { it.toIde(state::positionToOffset) })
-    }
-
-    @Subscribe(threadMode = ThreadMode.ASYNC)
-    @Suppress("unused")
-    fun onDocumentOpen(event: DocumentOpenEvent) {
-        if (!DocumentUtils.isKotlinFile(event.openedFile)) {
-            return
-        }
-
-        selectedFile = event.openedFile
-        val uri = event.openedFile.toUri().toString()
-
-        log.debug("onDocumentOpen: uri={}, version={}, textLen={}", uri, event.version, event.text.length)
-
-        val params = DidOpenTextDocumentParams().apply {
-            textDocument = TextDocumentItem(uri, "kotlin", event.version, event.text)
-        }
-        ktLspServer.textDocumentService.didOpen(params)
-
-        analyzeCurrentFileAsync()
-    }
-
-    @Subscribe(threadMode = ThreadMode.ASYNC)
-    @Suppress("unused")
-    fun onDocumentChange(event: DocumentChangeEvent) {
-        if (!DocumentUtils.isKotlinFile(event.changedFile)) {
-            return
-        }
-
-        val uri = event.changedFile.toUri().toString()
-
-        log.debug("onDocumentChange: uri={}, version={}, changeType={}", uri, event.version, event.changeType)
-        log.debug("  changeRange={}, changedText='{}', newText.len={}",
-            event.changeRange, event.changedText, event.newText?.length ?: -1)
-
-        val changeText = when (event.changeType) {
-            ChangeType.DELETE -> ""
-            else -> event.changedText
-        }
-
-        val startIndex = event.changeRange.start.index
-        val endIndex = if (event.changeType == ChangeType.INSERT) {
-            startIndex
-        } else {
-            event.changeRange.end.index
-        }
-
-        log.debug("  using index-based sync: indices=$startIndex-$endIndex (adjusted for {}), text='{}' ({} chars)",
-            event.changeType, changeText, changeText.length)
-
-        ktLspServer.didChangeByIndex(
-            uri = uri,
-            startIndex = startIndex,
-            endIndex = endIndex,
-            newText = changeText,
-            version = event.version
-        )
-    }
-
-    @Subscribe(threadMode = ThreadMode.ASYNC)
-    @Suppress("unused")
-    fun onDocumentClose(event: DocumentCloseEvent) {
-        if (!DocumentUtils.isKotlinFile(event.closedFile)) {
-            return
-        }
-
-        val uri = event.closedFile.toUri().toString()
-        val params = DidCloseTextDocumentParams().apply {
-            textDocument = TextDocumentIdentifier(uri)
-        }
-        ktLspServer.textDocumentService.didClose(params)
-
-        if (selectedFile == event.closedFile) {
-            selectedFile = null
-        }
-    }
-
-    @Subscribe(threadMode = ThreadMode.ASYNC)
-    @Suppress("unused")
-    fun onDocumentSelected(event: DocumentSelectedEvent) {
-        if (!DocumentUtils.isKotlinFile(event.selectedFile)) {
-            return
-        }
-
-        selectedFile = event.selectedFile
-        val uri = event.selectedFile.toUri().toString()
-
-        log.debug("onDocumentSelected: uri={}", uri)
-
-        val existingState = ktLspServer.getDocumentManager().get(uri)
-        if (existingState == null) {
-            log.info("onDocumentSelected: document not open in KtLsp, opening it first: {}", uri)
-            log.debug("  available uris: {}", ktLspServer.getDocumentManager().openUris.take(5))
-            try {
-                val content = event.selectedFile.toFile().readText()
-                log.debug("  read {} chars from disk", content.length)
-                val params = DidOpenTextDocumentParams().apply {
-                    textDocument = TextDocumentItem(uri, "kotlin", 0, content)
-                }
-                ktLspServer.textDocumentService.didOpen(params)
-            } catch (e: Exception) {
-                log.error("Failed to open document in KtLsp: {}", uri, e)
-            }
-        } else {
-            log.debug("onDocumentSelected: document already open, version={}, contentLen={}",
-                existingState.version, existingState.content.length)
-        }
-
-        analyzeCurrentFileAsync()
-    }
-
-    private fun analyzeCurrentFileAsync() {
-        val file = selectedFile ?: return
-        val client = _client ?: return
-
-        CoroutineScope(Dispatchers.Default).launch {
-            val result = analyze(file)
-            if (result != DiagnosticResult.NO_UPDATE) {
-                withContext(Dispatchers.Main) {
-                    client.publishDiagnostics(result)
-                }
-            }
-        }
-    }
+	private var _client: ILanguageClient? = null
+	private var _settings: IServerSettings? = null
+	private var initialized = false
+
+	private val scope =
+		CoroutineScope(SupervisorJob() + CoroutineName(KotlinLanguageServer::class.simpleName!!))
+	private var projectModel: KotlinProjectModel? = null
+	private var compiler: Compiler? = null
+
+	override val serverId: String = SERVER_ID
+
+	val TAG = KotlinLanguageServer::class.java.simpleName
+
+	override val client: ILanguageClient?
+		get() = _client
+
+	val settings: IServerSettings
+		get() = _settings ?: KotlinServerSettings.getInstance().also { _settings = it }
+
+	companion object {
+
+		const val SERVER_ID = "ide.lsp.kotlin"
+		private val logger = LoggerFactory.getLogger(KotlinLanguageServer::class.java)
+	}
+
+	init {
+		applySettings(KotlinServerSettings.getInstance())
+
+		if (!EventBus.getDefault().isRegistered(this)) {
+			EventBus.getDefault().register(this)
+		}
+	}
+
+	override fun shutdown() {
+		EventBus.getDefault().unregister(this)
+		scope.cancel("LSP is being shut down")
+		compiler?.close()
+		initialized = false
+	}
+
+	override fun connectClient(client: ILanguageClient?) {
+		this._client = client
+		this.compiler?.updateLanguageClient(client)
+	}
+
+	override fun applySettings(settings: IServerSettings?) {
+		this._settings = settings
+	}
+
+	override fun setupWithProject(workspace: Project) {
+		logger.info("setupWithProject called, initialized={}", initialized)
+		Log.i(TAG,"setupWithProject called, initialized=$initialized")
+//		LSPEditorActions.ensureActionsMenuRegistered(KotlinCodeActionsMenu)
+		KotlinSnippetRepository.init()
+		val context = Prefs.getApplication()
+		val indexingServiceManager = IProjectManager.getInstance()
+			.indexingServiceManager
+
+		val indexingRegistry = indexingServiceManager.registry
+		indexingRegistry.register(
+			key = KT_SOURCE_FILE_INDEX_KEY,
+			index = JvmSymbolIndex.createSqliteIndex(
+				context = context,
+				dbName = KT_SOURCE_FILE_INDEX_KEY.name,
+				indexName = KT_SOURCE_FILE_INDEX_KEY.name,
+			)
+		)
+
+		indexingRegistry.register(
+			key = KT_SOURCE_FILE_META_INDEX_KEY,
+			index = KtFileMetadataIndex.create(
+				context = context,
+				dbName = KT_SOURCE_FILE_META_INDEX_KEY.name
+			)
+		)
+
+		val jvmLibraryIndexingService =
+			indexingServiceManager.getService(JvmLibraryIndexingService.ID) as? JvmLibraryIndexingService?
+
+		jvmLibraryIndexingService?.refresh()
+
+		val jdkHome = Environment.JAVA_HOME.toPath()
+		val jdkRelease = IJdkDistributionProvider.DEFAULT_JAVA_RELEASE
+		val intellijPluginRoot = Paths.get(context.applicationInfo.sourceDir)
+
+		val jvmTarget = JvmTarget.fromString(IJdkDistributionProvider.DEFAULT_JAVA_VERSION)
+			?: JvmTarget.JVM_21
+
+		val jvmPlatform = JvmPlatforms.jvmPlatformByTargetVersion(jvmTarget)
+
+		if (!initialized) {
+			logger.info("Creating initial analysis session")
+			Log.i(TAG,"Creating initial analysis session")
+
+			val model = KotlinProjectModel()
+			model.update(workspace, jvmPlatform)
+			this.projectModel = model
+
+			val compiler = Compiler(
+				workspace = workspace,
+				projectModel = model,
+				intellijPluginRoot = intellijPluginRoot,
+				jdkHome = jdkHome,
+				jdkRelease = jdkRelease,
+				languageVersion = LanguageVersion.LATEST_STABLE,
+			)
+
+			compiler.updateLanguageClient(client)
+			this.compiler = compiler
+		} else {
+			logger.info("Updating project model")
+			projectModel?.update(workspace, jvmPlatform)
+		}
+
+		// Open already open files
+		// we won't get an event for these
+		FileManager.activeDocuments.ifNotEmpty {
+			forEach { document ->
+				compiler?.compilationEnvironmentFor(document.file)
+					?.openFileIfNeeded(document.file)
+			}
+		}
+
+		initialized = true
+		logger.info("Kotlin project initialized")
+		Log.i(TAG,"Kotlin project initialized")
+	}
+
+	override fun complete(params: CompletionParams?): CompletionResult {
+		if (params == null) {
+			logger.warn("Cannot complete for null params")
+			Log.w(TAG,"Cannot complete for null params")
+			return CompletionResult.EMPTY
+		}
+
+		logger.debug("complete(position={}, file={})", params.position, params.file)
+		Log.d(TAG,"complete(position=$params.position, file=$params.file)")
+		return compiler?.compilationEnvironmentFor(params.file)
+			?.let { context(it) { codeComplete(params) } }
+			?: CompletionResult.EMPTY
+	}
+
+	override suspend fun findReferences(params: ReferenceParams): ReferenceResult {
+		if (!settings.referencesEnabled()) {
+			return ReferenceResult.empty()
+		}
+
+		if (!DocumentUtils.isKotlinFile(params.file)) {
+			return ReferenceResult.empty()
+		}
+
+		return ReferenceResult.empty()
+	}
+
+	override suspend fun findDefinition(params: DefinitionParams): DefinitionResult {
+		if (!settings.definitionsEnabled()) {
+			return DefinitionResult.empty()
+		}
+
+		if (!DocumentUtils.isKotlinFile(params.file)) {
+			return DefinitionResult.empty()
+		}
+
+		return DefinitionResult.empty()
+	}
+
+	override suspend fun expandSelection(params: ExpandSelectionParams): Range {
+		return params.selection
+	}
+
+	override suspend fun signatureHelp(params: SignatureHelpParams): SignatureHelp {
+		if (!settings.signatureHelpEnabled()) {
+			return SignatureHelp.empty()
+		}
+
+		if (!DocumentUtils.isKotlinFile(params.file)) {
+			return SignatureHelp.empty()
+		}
+
+		return SignatureHelp.empty()
+	}
+
+	override suspend fun analyze(file: Path): DiagnosticResult {
+		logger.debug("analyze(file={})", file)
+
+		if (!settings.diagnosticsEnabled() || !settings.codeAnalysisEnabled()) {
+			logger.debug(
+				"analyze() skipped: diagnosticsEnabled={}, codeAnalysisEnabled={}",
+				settings.diagnosticsEnabled(), settings.codeAnalysisEnabled()
+			)
+			return DiagnosticResult.NO_UPDATE
+		}
+
+		if (!DocumentUtils.isKotlinFile(file)) {
+			logger.debug("analyze() skipped: not a Kotlin file")
+			return DiagnosticResult.NO_UPDATE
+		}
+
+		return compiler?.compilationEnvironmentFor(file)
+			?.let { context(it) { collectDiagnosticsFor(file, createJobCancelChecker()) } }
+			?: DiagnosticResult.NO_UPDATE
+	}
+
+	@Subscribe(threadMode = ThreadMode.ASYNC)
+	@Suppress("unused")
+	fun onDocumentOpen(event: DocumentOpenEvent) {
+		if (!DocumentUtils.isKotlinFile(event.openedFile)) {
+			return
+		}
+
+		compiler?.compilationEnvironmentFor(event.openedFile)
+			?.onFileOpen(event.openedFile)
+	}
+
+	@Subscribe(threadMode = ThreadMode.ASYNC)
+	@Suppress("unused")
+	fun onDocumentChange(event: DocumentChangeEvent) {
+		if (!DocumentUtils.isKotlinFile(event.changedFile)) {
+			return
+		}
+
+		compiler?.compilationEnvironmentFor(event.changedFile)
+			?.onFileContentChanged(event.changedFile)
+
+	}
+
+	@Subscribe(threadMode = ThreadMode.ASYNC)
+	@Suppress("unused")
+	fun onDocumentClose(event: DocumentCloseEvent) {
+		if (!DocumentUtils.isKotlinFile(event.closedFile)) {
+			return
+		}
+
+		compiler?.compilationEnvironmentFor(event.closedFile)
+			?.onFileClosed(event.closedFile)
+
+	}
+
+	@Subscribe(threadMode = ThreadMode.ASYNC)
+	@Suppress("unused")
+	fun onDocumentSaved(event: DocumentSaveEvent) {
+		if (!DocumentUtils.isKotlinFile(event.savedFile)) {
+			return
+		}
+
+		compiler?.compilationEnvironmentFor(event.savedFile)
+			?.onFileSaved(event.savedFile)
+	}
 }

@@ -25,39 +25,41 @@ import org.openjdk.com.sun.org.apache.xerces.internal.xni.grammars.XMLGrammarDes
 import org.openjdk.com.sun.org.apache.xerces.internal.xni.grammars.XMLGrammarPool;
 
 /**
- * Filter {@link XMLGrammarPool} that exposes a read-only view of the underlying pool.
+ * <p>Filter {@link XMLGrammarPool} that exposes a
+ * read-only view of the underlying pool.</p>
  *
  * @author Kohsuke Kawaguchi (kohsuke.kawaguchi@sun.com)
  */
 final class ReadOnlyGrammarPool implements XMLGrammarPool {
 
-  private final XMLGrammarPool core;
+    private final XMLGrammarPool core;
 
-  public ReadOnlyGrammarPool(XMLGrammarPool pool) {
-    this.core = pool;
-  }
+    public ReadOnlyGrammarPool( XMLGrammarPool pool ) {
+        this.core = pool;
+    }
 
-  public void cacheGrammars(String grammarType, Grammar[] grammars) {
-    // noop. don't let caching to happen
-  }
+    public void cacheGrammars(String grammarType, Grammar[] grammars) {
+        // noop. don't let caching to happen
+    }
 
-  public void clear() {
-    // noop. cache is read-only.
-  }
+    public void clear() {
+        // noop. cache is read-only.
+    }
 
-  public void lockPool() {
-    // noop. this pool is always read-only
-  }
+    public void lockPool() {
+        // noop. this pool is always read-only
+    }
 
-  public Grammar retrieveGrammar(XMLGrammarDescription desc) {
-    return core.retrieveGrammar(desc);
-  }
+    public Grammar retrieveGrammar(XMLGrammarDescription desc) {
+        return core.retrieveGrammar(desc);
+    }
 
-  public Grammar[] retrieveInitialGrammarSet(String grammarType) {
-    return core.retrieveInitialGrammarSet(grammarType);
-  }
+    public Grammar[] retrieveInitialGrammarSet(String grammarType) {
+        return core.retrieveInitialGrammarSet(grammarType);
+    }
 
-  public void unlockPool() {
-    // noop. this pool is always read-only.
-  }
+    public void unlockPool() {
+        // noop. this pool is always read-only.
+    }
+
 } // ReadOnlyGrammarPool

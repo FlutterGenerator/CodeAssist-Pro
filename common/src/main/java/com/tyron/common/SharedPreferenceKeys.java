@@ -32,4 +32,5 @@ public class SharedPreferenceKeys {
   public static final String USE_FIR = "use_fir";
   public static final String DIAGNOSTIC_DETAIL = "diagnostic_detail";
   public static final String FAST_KOTLIN_LSP = "fast_kotlin_lsp";
+  public static final String OPENJDK = "openjdk";
 }

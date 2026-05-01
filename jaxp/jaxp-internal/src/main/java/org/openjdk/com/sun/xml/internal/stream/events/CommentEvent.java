@@ -35,39 +35,42 @@ import org.openjdk.javax.xml.stream.events.XMLEvent;
  */
 public class CommentEvent extends DummyEvent implements Comment {
 
-  /* String data for this event */
-  private String fText;
+    /* String data for this event */
+    private String fText ;
 
-  public CommentEvent() {
-    init();
-  }
+    public CommentEvent() {
+        init();
+    }
 
-  public CommentEvent(String text) {
-    init();
-    fText = text;
-  }
+    public CommentEvent(String text) {
+        init();
+        fText = text;
+    }
 
-  protected void init() {
-    setEventType(XMLEvent.COMMENT);
-  }
+    protected void init() {
+        setEventType(XMLEvent.COMMENT);
+    }
 
-  /**
-   * @return String String representation of this event
-   */
-  public String toString() {
-    return "<!--" + getText() + "-->";
-  }
+    /**
+     * @return String String representation of this event
+     */
+    public String toString() {
+        return "<!--" + getText() + "-->";
+    }
 
-  /**
-   * Return the string data of the comment, returns empty string if it does not exist
-   *
-   * @return String
-   */
-  public String getText() {
-    return fText;
-  }
 
-  protected void writeAsEncodedUnicodeEx(java.io.Writer writer) throws java.io.IOException {
-    writer.write("<!--" + getText() + "-->");
-  }
+    /** Return the string data of the comment, returns empty string if it
+     * does not exist
+     * @return String
+     */
+    public String getText() {
+        return fText ;
+    }
+
+    protected void writeAsEncodedUnicodeEx(java.io.Writer writer)
+    throws java.io.IOException
+    {
+        writer.write("<!--" + getText() + "-->");
+    }
+
 }

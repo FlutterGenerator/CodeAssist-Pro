@@ -2,8 +2,10 @@ package com.tyron.code.ui.editor;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import com.tyron.completion.model.Position;
-import com.tyron.completion.model.Range;
+
+import com.itsaky.androidide.models.Position;
+import com.itsaky.androidide.models.Range;
+
 import io.github.rosemoe.sora.text.CharPosition;
 import java.io.File;
 
