@@ -7,7 +7,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.os.Looper;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.TextPaint;
@@ -50,13 +49,9 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.logging.Handler;
 import javax.tools.Diagnostic;
 
 public class AppLogFragment extends Fragment implements ProjectManager.OnProjectOpenListener {
-
-  /** Only used in IDE Logs * */
-  private Handler mHandler;
 
   public static AppLogFragment newInstance(int id) {
     AppLogFragment fragment = new AppLogFragment();
@@ -73,8 +68,12 @@ public class AppLogFragment extends Fragment implements ProjectManager.OnProject
   private MainViewModel mMainViewModel;
   private LogViewModel mModel;
   private OnDiagnosticClickListener mListener;
-  List<DiagnosticWrapper> diags = new ArrayList<>();
-  List<ErrorItem> errors = new ArrayList<>();
+  
+  private List<DiagnosticWrapper> diags = new ArrayList<>();
+  private List<ErrorItem> errors = new ArrayList<>();
+  
+  // Tracks how many logs we've already rendered to avoid rebuilding the whole string
+  private int mProcessedDiagnosticCount = 0;
 
   public AppLogFragment() {}
 
@@ -108,13 +107,12 @@ public class AppLogFragment extends Fragment implements ProjectManager.OnProject
 
           if (output != null && !output.isEmpty()) {
             if (output.contains("INSTALL") || output.contains("Generated APK has been saved")) {
-
               Project project = ProjectManager.getInstance().getCurrentProject();
-              if (project != null) {
-                File mApkFile = new File(project.getRootFile(), "app/build/bin/signed.apk");
+              if (project != null) { 
+                File root = new File(project.getRootFile(), "app");        
+                File mApkFile = new File(project.getRootFile(), (root.exists() ? root.getName() : "composeApp") + "/build/bin/signed.apk");
                 ApkInstaller.installApplication(requireContext(), mApkFile.getAbsolutePath());
               }
-
             } else if (output.contains("ERROR")
                 || output.contains("error")
                 || output.contains("failed")
@@ -125,10 +123,7 @@ public class AppLogFragment extends Fragment implements ProjectManager.OnProject
               }
 
               for (DiagnosticWrapper diagnostic : diags) {
-                if (diagnostic != null) {
-
-                  if (diagnostic.getKind() != null
-                      && diagnostic.getKind() == Diagnostic.Kind.ERROR) {
+                if (diagnostic != null && diagnostic.getKind() == Diagnostic.Kind.ERROR) {
                     String error = diagnostic.getMessage(Locale.getDefault());
                     if (diagnostic.getSource() != null) {
                       String label = diagnostic.getSource().getName();
@@ -137,12 +132,10 @@ public class AppLogFragment extends Fragment implements ProjectManager.OnProject
                         errors.add(new ErrorItem(label, diagnostic.getSource(), diagnostic));
                       }
                     }
-                  }
                 }
               }
 
               if (errors != null && !errors.isEmpty()) {
-
                 ArrayAdapter<ErrorItem> adapter =
                     new ArrayAdapter<ErrorItem>(
                         requireContext(),
@@ -175,32 +168,25 @@ public class AppLogFragment extends Fragment implements ProjectManager.OnProject
                     (dialog, which) -> {
                       ErrorItem selectedErrorItem = errors.get(which);
 
-                      if (selectedErrorItem.getFile() != null) {
-                        if (getContext() != null) {
+                      if (selectedErrorItem.getFile() != null && getContext() != null) {
                           FileEditorManager manager = FileEditorManagerImpl.getInstance();
                           manager.openFile(
                               requireContext(),
                               selectedErrorItem.getFile(),
                               it -> {
                                 if (selectedErrorItem.getDiagnosticWrapper().getLineNumber() > 0
-                                    && selectedErrorItem.getDiagnosticWrapper().getColumnNumber()
-                                        > 0) {
+                                    && selectedErrorItem.getDiagnosticWrapper().getColumnNumber() > 0) {
                                   Bundle bundle = new Bundle(it.getFragment().getArguments());
                                   bundle.putInt(
                                       CodeEditorFragment.KEY_LINE,
-                                      (int)
-                                          selectedErrorItem.getDiagnosticWrapper().getLineNumber());
+                                      (int) selectedErrorItem.getDiagnosticWrapper().getLineNumber());
                                   bundle.putInt(
                                       CodeEditorFragment.KEY_COLUMN,
-                                      (int)
-                                          selectedErrorItem
-                                              .getDiagnosticWrapper()
-                                              .getColumnNumber());
+                                      (int) selectedErrorItem.getDiagnosticWrapper().getColumnNumber());
                                   it.getFragment().setArguments(bundle);
                                   manager.openFileEditor(it);
                                 }
                               });
-                        }
                       }
                     });
 
@@ -213,26 +199,19 @@ public class AppLogFragment extends Fragment implements ProjectManager.OnProject
     copyText.setOnClickListener(
         v -> {
           Caret caret = mEditor.getCaret();
+          String content;
           if (!(caret.getStartLine() == caret.getEndLine()
               && caret.getStartColumn() == caret.getEndColumn())) {
-            CharSequence textToCopy =
-                mEditor.getContent().subSequence(caret.getStart(), caret.getEnd());
-
-            String content = textToCopy.toString().trim();
-            if (content != null && !content.isEmpty()) {
-              copyContent(content);
-            }
-
+            content = mEditor.getContent().subSequence(caret.getStart(), caret.getEnd()).toString().trim();
           } else {
-
-            String content = mEditor.getText().toString().trim();
-            if (content != null && !content.isEmpty()) {
-              copyContent(content);
-            }
+            content = mEditor.getText().toString().trim();
+          }
+          
+          if (content != null && !content.isEmpty()) {
+            copyContent(content);
           }
         });
 
-    mEditor.setEditable(false);
     configureEditor(mEditor);
 
     if (mModel != null) {
@@ -244,15 +223,13 @@ public class AppLogFragment extends Fragment implements ProjectManager.OnProject
     ClipboardManager clipboard =
         (ClipboardManager) requireContext().getSystemService(Context.CLIPBOARD_SERVICE);
     clipboard.setText(content);
-    Toast toast = Toast.makeText(requireContext(), R.string.copied_to_clipboard, Toast.LENGTH_LONG);
-    toast.show();
+    Toast.makeText(requireContext(), R.string.copied_to_clipboard, Toast.LENGTH_LONG).show();
   }
 
   private void configureEditor(@NonNull CodeEditorView editor) {
     editor.setEditable(false);
     editor.setColorScheme(new CompiledEditorScheme(requireContext()));
-    String key =
-        EditorUtil.isDarkMode(requireContext())
+    String key = EditorUtil.isDarkMode(requireContext())
             ? ThemeRepository.DEFAULT_NIGHT
             : ThemeRepository.DEFAULT_LIGHT;
     TextMateColorScheme scheme = ThemeRepository.getColorScheme(key);
@@ -278,69 +255,66 @@ public class AppLogFragment extends Fragment implements ProjectManager.OnProject
     editor.setTextSize(Integer.parseInt(pref.getString(SharedPreferenceKeys.FONT_SIZE, "10")));
   }
 
-  @Override
-  public void onDestroy() {
-    super.onDestroy();
-  }
-
-  @Override
-  public void onDestroyView() {
-    super.onDestroyView();
-  }
-
   private void process(List<DiagnosticWrapper> texts) {
-    final android.os.Handler handler = new android.os.Handler(Looper.getMainLooper());
-    if (handler != null) {
-      handler.postDelayed(
-          () -> {
-            SpannableStringBuilder combinedText = new SpannableStringBuilder();
-            actionFab.setVisibility(View.GONE);
-            if (texts != null) {
-              // Create a copy of the list to avoid ConcurrentModificationException
-              List<DiagnosticWrapper> diagnostics = new ArrayList<>(texts);
-              this.diags = diagnostics;
-              for (DiagnosticWrapper diagnostic : diagnostics) {
-                if (diagnostic != null) {
-                  if (diagnostic.getKind() != null) {
-                    mEditor.setText(diagnostic.getKind().name());
-                    combinedText.append(diagnostic.getKind().name()).append(": ");
-                    addDiagnosticSpan(combinedText, diagnostic);
-                    combinedText.append(' ');
-                  }
+    if (texts == null) return;
 
-                  if (diagnostic.getKind() == Diagnostic.Kind.ERROR) {
-                    actionFab.setVisibility(View.VISIBLE);
-                    actionFab.setImageResource(R.drawable.ic_error);
-                    combinedText.append(diagnostic.getMessage(Locale.getDefault()));
-                  } else {
-                    String msg = diagnostic.getMessage(Locale.getDefault());
-
-                    if (msg.contains("Generated APK has been saved")) {
-
-                      actionFab.setVisibility(View.VISIBLE);
-                      actionFab.setImageResource(R.drawable.apk_install);
-                    }
-
-                    combinedText.append(msg);
-                  }
-
-                  if (diagnostic.getSource() != null) {
-                    combinedText.append(' ');
-                  }
-
-                  combinedText.append("\n");
-                }
-              }
-            }
-
-            //           mEditor.post(()->{
-            mEditor.setText(combinedText);
-            //            int lastLine = mEditor.getLineCount() - 1;
-            //            mEditor.setSelection(lastLine, 0);
-            //            });
-          },
-          100);
+    // Check if the log was cleared or restarted
+    if (texts.size() < mProcessedDiagnosticCount) {
+        mEditor.setText("");
+        mProcessedDiagnosticCount = 0;
+        diags.clear();
+        actionFab.setVisibility(View.GONE);
     }
+
+    int newItemsCount = texts.size() - mProcessedDiagnosticCount;
+    if (newItemsCount <= 0) return;
+
+    List<DiagnosticWrapper> newDiagnostics = texts.subList(mProcessedDiagnosticCount, texts.size());
+    this.diags.addAll(newDiagnostics);
+
+    SpannableStringBuilder combinedText = new SpannableStringBuilder();
+
+    for (DiagnosticWrapper diagnostic : newDiagnostics) {
+      if (diagnostic != null) {
+        if (diagnostic.getKind() != null) {
+          combinedText.append(diagnostic.getKind().name()).append(": ");
+          addDiagnosticSpan(combinedText, diagnostic);
+          combinedText.append(' ');
+        }
+
+        if (diagnostic.getKind() == Diagnostic.Kind.ERROR) {
+          actionFab.setVisibility(View.VISIBLE);
+          actionFab.setImageResource(R.drawable.ic_error);
+          combinedText.append(diagnostic.getMessage(Locale.getDefault()));
+        } else {
+          String msg = diagnostic.getMessage(Locale.getDefault());
+          if (msg.contains("Generated APK has been saved")) {
+            actionFab.setVisibility(View.VISIBLE);
+            actionFab.setImageResource(R.drawable.apk_install);
+          }
+          combinedText.append(msg);
+        }
+
+        if (diagnostic.getSource() != null) {
+          combinedText.append(' ');
+        }
+        combinedText.append("\n");
+      }
+    }
+
+    // Append only the newly processed text to the editor
+    mEditor.post(() -> {
+      int lastLine = mEditor.getLineCount() - 1;
+      int endCol = mEditor.getText().getColumnCount(lastLine);
+      try {
+          mEditor.getText().insert(lastLine, endCol, combinedText);
+      } catch (Exception e) {
+          // Fallback in case the underlying Content doesn't support Spanned directly
+          mEditor.getText().insert(lastLine, endCol, combinedText.toString());
+      }
+    });
+
+    mProcessedDiagnosticCount = texts.size();
   }
 
   @Override
@@ -373,12 +347,11 @@ public class AppLogFragment extends Fragment implements ProjectManager.OnProject
             public void onClick(@NonNull View widget) {
               diagnostic.getOnClickListener().onClick(widget);
             }
-
             @Override
             public void updateDrawState(TextPaint ds) {
               super.updateDrawState(ds);
-              ds.setColor(getColor(diagnostic.getKind())); // set color
-              ds.setUnderlineText(false); // underline the link text
+              ds.setColor(getColor(diagnostic.getKind()));
+              ds.setUnderlineText(false);
             }
           };
       sb.append("[" + diagnostic.getExtra() + "]", span, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
@@ -429,7 +402,7 @@ public class AppLogFragment extends Fragment implements ProjectManager.OnProject
       return message;
     }
 
-    private DiagnosticWrapper getDiagnosticWrapper() {
+    public DiagnosticWrapper getDiagnosticWrapper() {
       return diagnostic;
     }
 
