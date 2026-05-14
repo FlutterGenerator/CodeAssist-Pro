@@ -26,9 +26,9 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import org.openjdk.javax.lang.model.element.TypeParameterElement;
-import org.openjdk.javax.lang.model.type.TypeMirror;
-import org.openjdk.javax.lang.model.type.TypeVariable;
+import javax.lang.model.element.TypeParameterElement;
+import javax.lang.model.type.TypeMirror;
+import javax.lang.model.type.TypeVariable;
 
 public final class TypeVariableName extends TypeName {
   public final String name;

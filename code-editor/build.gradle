@@ -40,7 +40,8 @@ android {
     }
 
     buildFeatures {
-        buildConfig = true	    
+        buildConfig = true
+        viewBinding = true
     }
 }
 
@@ -57,11 +58,14 @@ dependencies {
     implementation project(':resources')
     implementation project(':logging')
     implementation project(':project') 
-    implementation project(':editor-api') 
+    implementation project(':editor-api')
+    implementation(projects.actionsApi)
     implementation project(':event:eventbus-android') 
     implementation project(':event:eventbus-events') 
     implementation project(path: ':lsp:api') 
- 	api ('io.github.rosemoe:editor:0.24.4')
-    api ('io.github.rosemoe:language-textmate:0.24.4')
+ 	api ('io.github.rosemoe:editor:0.24.5')
+    api ('io.github.rosemoe:language-textmate:0.24.5')
     implementation(projects.utilities.shared)
+//    implementation(projects.lsp.java)
+    implementation(projects.editor)
 }

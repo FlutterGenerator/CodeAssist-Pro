@@ -65,9 +65,10 @@ dependencies {
 	implementation(libs.common.kotlin.coroutines.android)
 
 	implementation(project(":common"))
-    implementation(project(":building-logic"))
-    implementation(project(":lsp:indexing"))
+	implementation(project(":build-logic"))
+	implementation(project(":lsp:indexing"))
 	implementation(projects.utilities.shared)
 	implementation(projects.codeEditor)
+	implementation(projects.editor)
 //	implementation(projects.logging.logger)
 }

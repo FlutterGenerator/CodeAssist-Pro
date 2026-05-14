@@ -155,8 +155,7 @@ public class JavaAnalyzer extends SemanticAnalyzeManager {
       return null;
     }
     Module module = project.getModule(editor.getCurrentFile());
-    CompilationInfo compilationInfo = CompilationInfo.get(module);
-    return compilationInfo;
+      return CompilationInfo.get(module);
   }
 
   private void doAnalyzeInBackground(Function0<Boolean> cancel, CharSequence contents) {

@@ -1,5 +1,6 @@
 package com.tyron.code.ui.editor
 
+import com.itsaky.androidide.editor.api.IEditor
 import com.itsaky.androidide.models.Position
 import com.itsaky.androidide.models.Range
 import com.tyron.code.ui.editor.IDEEditor.Companion.log

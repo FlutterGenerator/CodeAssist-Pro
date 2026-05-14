@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.itsaky.androidide.utils.SourceClassTrie;
 import com.tyron.builder.model.CodeAssistAndroidLibrary;
 import com.tyron.builder.model.CodeAssistLibrary;
 import com.tyron.builder.project.api.ContentRoot;
@@ -44,6 +45,7 @@ public class JavaModuleImpl extends ModuleImpl implements JavaModule {
   // the index of all the class files in this module
   private final PackageTrie mClassIndex = new PackageTrie();
   private final PackageTrie apiClassIndex = new PackageTrie();
+  private final SourceClassTrie compileJavaSourceClasses = new SourceClassTrie();
 
   protected final List<CodeAssistLibrary> libraries = new ArrayList<>();
   protected final Map<String, File> mKotlinFiles;
@@ -88,6 +90,11 @@ public class JavaModuleImpl extends ModuleImpl implements JavaModule {
   @Override
   public Map<String, File> getJavaFiles() {
     return mJavaFiles;
+  }
+
+  @Override
+  public SourceClassTrie getCompileJavaSourceClasses() {
+    return compileJavaSourceClasses;
   }
 
   @Override
@@ -621,6 +628,7 @@ public class JavaModuleImpl extends ModuleImpl implements JavaModule {
         }
       }
     }
+    JavaModuleKt.indexSources(this);
   }
 
   @NonNull

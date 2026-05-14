@@ -9,7 +9,8 @@ import androidx.annotation.Nullable;
 
 import com.itsaky.androidide.lsp.models.SignatureHelp;
 import com.itsaky.androidide.lsp.models.SignatureInformation;
-import com.tyron.common.util.ResourceUtilsKt;
+import com.itsaky.androidide.utils.ResourceUtilsKt;
+
 import io.github.rosemoe.sora.event.SelectionChangeEvent;
 import io.github.rosemoe.sora.widget.base.EditorPopupWindow;
 import org.slf4j.Logger;

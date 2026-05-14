@@ -2,6 +2,8 @@ package com.tyron.builder.project.api;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+
+import com.itsaky.androidide.utils.SourceClassTrie;
 import com.tyron.builder.model.CodeAssistLibrary;
 import com.tyron.builder.project.util.PackageTrie;
 
@@ -19,6 +21,8 @@ public interface JavaModule extends Module, KotlinModule {
    */
   @NonNull
   Map<String, File> getJavaFiles();
+
+  SourceClassTrie getCompileJavaSourceClasses();
 
   File getJavaFile(@NonNull String packageName);
 

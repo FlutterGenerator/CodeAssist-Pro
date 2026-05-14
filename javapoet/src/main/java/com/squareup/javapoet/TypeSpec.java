@@ -33,9 +33,9 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
-import org.openjdk.javax.lang.model.SourceVersion;
-import org.openjdk.javax.lang.model.element.Element;
-import org.openjdk.javax.lang.model.element.Modifier;
+import javax.lang.model.SourceVersion;
+import javax.lang.model.element.Element;
+import javax.lang.model.element.Modifier;
 
 /** A generated class, interface, or enum declaration. */
 public final class TypeSpec {

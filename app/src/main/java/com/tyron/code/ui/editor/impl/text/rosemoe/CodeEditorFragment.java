@@ -73,7 +73,7 @@ import com.tyron.completion.progress.ProgressManager;
 import com.tyron.diagnostics.DiagnosticProvider;
 import com.tyron.editor.CharPosition;
 import com.tyron.language.api.CodeAssistLanguage;
-import com.tyron.resources.R;
+import dev.mutwakil.codeassist.R;
 import io.github.rosemoe.sora.event.ClickEvent;
 import io.github.rosemoe.sora.event.ContentChangeEvent;
 import io.github.rosemoe.sora.event.EditorKeyEvent;
@@ -217,6 +217,7 @@ public class CodeEditorFragment extends Fragment
   @Override
   public void onResume() {
     super.onResume();
+    mEditor.onEditorSelected();
   }
 
   private void onContentChange(com.tyron.editor.Content content) {
@@ -675,7 +676,8 @@ public class CodeEditorFragment extends Fragment
       mEditor.dispatchDocumentSaveEvent();
     }
     ApplicationLoader.getDefaultPreferences().unregisterOnSharedPreferenceChangeListener(this);
-    mEditor.dispatchDocumentCloseEvent();
+//    mEditor.dispatchDocumentCloseEvent();
+    mEditor.notifyClose();
   }
 
   @Override
@@ -691,7 +693,7 @@ public class CodeEditorFragment extends Fragment
   public void onLowMemory() {
     super.onLowMemory();
 
-    //    mEditor.setBackgroundAnalysisEnabled(false);
+        mEditor.setBackgroundAnalysisEnabled(false);
   }
 
   @Override
@@ -758,9 +760,9 @@ public class CodeEditorFragment extends Fragment
   @Override
   public void onProjectOpen(Project project) {
     ProgressManager.getInstance().runLater(() -> readFile(project, mSavedInstanceState));
-//    if (mEditor.getEditorLanguage() instanceof KotlinLanguage
-//        && ((KotlinLanguage) mEditor.getEditorLanguage()).kotlinEnvironment == null)
-//      ((KotlinLanguage) mEditor.getEditorLanguage()).initEnv();
+    if (mEditor.getEditorLanguage() instanceof KotlinLanguage
+        && ((KotlinLanguage) mEditor.getEditorLanguage()).kotlinEnvironment == null)
+      ((KotlinLanguage) mEditor.getEditorLanguage()).initEnv();
     if (mEditor.getEditorLanguage() instanceof LspLanguage) {
       ILanguageServer languageServer = createLanguageServer(mCurrentFile);
       mEditor.setLanguageServer(languageServer);
@@ -779,9 +781,9 @@ public class CodeEditorFragment extends Fragment
   private void readOrWait() {
     if (ProjectManager.getInstance().getCurrentProject() != null) {
       readFile(ProjectManager.getInstance().getCurrentProject(), mSavedInstanceState);
-//      if (mEditor.getEditorLanguage() instanceof KotlinLanguage
-//          && ((KotlinLanguage) mEditor.getEditorLanguage()).kotlinEnvironment == null)
-//        ((KotlinLanguage) mEditor.getEditorLanguage()).initEnv();
+      if (mEditor.getEditorLanguage() instanceof KotlinLanguage
+          && ((KotlinLanguage) mEditor.getEditorLanguage()).kotlinEnvironment == null)
+        ((KotlinLanguage) mEditor.getEditorLanguage()).initEnv();
       if (mEditor.getEditorLanguage() instanceof LspLanguage) {
         ILanguageServer languageServer = createLanguageServer(mCurrentFile);
         mEditor.setLanguageServer(languageServer);

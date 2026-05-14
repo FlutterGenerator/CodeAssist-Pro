@@ -63,8 +63,9 @@ dependencies {
     implementation project(':google-java-format')
     compileOnly project(':resources')
     implementation project(':code-editor')
-    api project(':building-logic')
+    api project(':build-logic')
     implementation(projects.lsp.api)
+    implementation(projects.editor)
 
     compileOnly project(':android-stubs')
 }

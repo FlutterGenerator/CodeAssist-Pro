@@ -9,12 +9,17 @@ import com.tyron.code.ApplicationLoader;
 import com.tyron.code.language.AbstractAutoCompleteProvider;
 import com.tyron.code.ui.project.ProjectManager;
 import com.tyron.common.SharedPreferenceKeys;
+import com.tyron.completion.model.CompletionItem;
 import com.tyron.completion.model.CompletionList;
 import com.tyron.editor.Editor;
+import com.tyron.kotlin.completion.KotlinEnvironment;
+import com.tyron.kotlin.completion.KotlinFile;
 //import com.tyron.kotlin.completion.KotlinEnvironment;
 //import com.tyron.kotlin.completion.KotlinFile;
 import org.jetbrains.kotlin.cli.jvm.compiler.KotlinCoreEnvironment;
 import org.jetbrains.kotlin.com.intellij.psi.PsiElement;
+
+import java.util.List;
 
 public class KotlinAutoCompleteProvider extends AbstractAutoCompleteProvider {
 
@@ -56,17 +61,17 @@ public class KotlinAutoCompleteProvider extends AbstractAutoCompleteProvider {
       return null;
     }
 
-//    KotlinEnvironment kotlinEnvironment = KotlinEnvironment.Companion.get(currentModule);
-//    if (kotlinEnvironment == null) {
-//      return null;
-//    }
+    KotlinEnvironment kotlinEnvironment = KotlinEnvironment.Companion.get(currentModule);
+    if (kotlinEnvironment == null) {
+      return null;
+    }
 
-//    KotlinFile updatedFile =
-//        kotlinEnvironment.updateKotlinFile(
-//            mEditor.getCurrentFile().getAbsolutePath(), mEditor.getContent().toString());
-    //  List<CompletionItem> itemList =
-//    return kotlinEnvironment.complete(updatedFile, line, column);
-return CompletionList.EMPTY;
+    KotlinFile updatedFile =
+        kotlinEnvironment.updateKotlinFile(
+            mEditor.getCurrentFile().getAbsolutePath(), mEditor.getContent().toString());
+//      List<CompletionItem> itemList =
+    return kotlinEnvironment.complete(updatedFile, line, column);
+//return CompletionList.EMPTY;
     // return CompletionList.builder(prefix).addItems(itemList).build();
   }
 
@@ -121,22 +126,22 @@ return CompletionList.EMPTY;
       return empty;
     }
 
-//    KotlinEnvironment kotlinEnvironment = KotlinEnvironment.Companion.get(currentModule);
-//    if (kotlinEnvironment == null) {
-//      System.out.println(TAG + ": KotlinEnvironment is null");
+    KotlinEnvironment kotlinEnvironment = KotlinEnvironment.Companion.get(currentModule);
+    if (kotlinEnvironment == null) {
+      System.out.println(TAG + ": KotlinEnvironment is null");
       return empty;
-//    }
+    }
 
-//    KotlinFile kotlinFile =
-//        kotlinEnvironment.getKotlinFile(editor.getCurrentFile().getAbsolutePath());
-//    if (kotlinFile == null) {
-//      return empty;
-//    }
+    KotlinFile kotlinFile =
+        kotlinEnvironment.getKotlinFile(editor.getCurrentFile().getAbsolutePath());
+    if (kotlinFile == null) {
+      return empty;
+    }
 
-//    PsiElement psiElement = kotlinFile.elementAt(line, column);
-//    if (psiElement == null) {
-//      return empty;
-//    }
-//    return kotlinEnvironment.getPrefix(psiElement);
+    PsiElement psiElement = kotlinFile.elementAt(line, column);
+    if (psiElement == null) {
+      return empty;
+    }
+    return kotlinEnvironment.getPrefix(psiElement);
   }
 }

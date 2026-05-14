@@ -150,6 +150,11 @@ public class AndroidModuleImpl extends JavaModuleImpl implements AndroidModule {
   }
 
   @Override
+  public Boolean composeEnabled() {
+    return parseComposeEnabled(getGradleFile());
+  }
+
+  @Override
   public File getAndroidResourcesDirectory() {
     File custom = getPathSetting("android_resources_directory");
     if (custom.exists()) {
@@ -295,9 +300,39 @@ public class AndroidModuleImpl extends JavaModuleImpl implements AndroidModule {
     return false;
   }
 
+  private boolean parseComposeEnabled(File gradle) {
+    if (gradle != null && gradle.exists()) {
+      try {
+        String readString = FileUtils.readFileToString(gradle, Charset.defaultCharset());
+        return parseViewBindingEnabled(readString);
+      } catch (IOException e) {
+        // handle the exception here, if needed
+      }
+    }
+    return false;
+  }
+
   private boolean parseViewBindingEnabled(String readString) throws IOException {
     Pattern VIEW_BINDING_ENABLED =
         Pattern.compile("\\s*(viewBinding)\\s*()([a-zA-Z0-9.'/-:\\-]+)()");
+    Matcher matcher = VIEW_BINDING_ENABLED.matcher(readString);
+    while (matcher.find()) {
+      String declaration = matcher.group(3);
+      if (declaration != null && !declaration.isEmpty()) {
+        boolean viewBindingEnabled = Boolean.parseBoolean(String.valueOf(declaration));
+        if (viewBindingEnabled) {
+          return true;
+        } else {
+          return false;
+        }
+      }
+    }
+    return false;
+  }
+
+  private boolean parseComposeEnabled(String readString) throws IOException {
+    Pattern VIEW_BINDING_ENABLED =
+            Pattern.compile("\\s*(compose)\\s*()([a-zA-Z0-9.'/-:\\-]+)()");
     Matcher matcher = VIEW_BINDING_ENABLED.matcher(readString);
     while (matcher.find()) {
       String declaration = matcher.group(3);

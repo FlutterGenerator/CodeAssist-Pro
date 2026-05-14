@@ -9,6 +9,7 @@ import android.content.SharedPreferences;
 import com.google.common.base.Throwables;
 import com.itsaky.androidide.lsp.api.DefaultLanguageServerRegistry;
 import com.itsaky.androidide.lsp.api.ILanguageServerRegistry;
+import com.itsaky.androidide.utils.Environment;
 import com.tyron.builder.compiler.BuildType;
 import com.tyron.builder.compiler.incremental.resource.IncrementalAapt2Task;
 import com.tyron.builder.compiler.manifest.ManifestMergeTask;
@@ -26,6 +27,7 @@ import com.tyron.common.logging.IdeLog;
 import com.tyron.completion.java.provider.CompletionEngine;
 import com.tyron.completion.progress.ProgressManager;
 import com.tyron.completion.xml.task.InjectResourcesTask;
+import com.tyron.kotlin.completion.KotlinEnvironment;
 import com.tyron.viewbinding.task.InjectViewBindingTask;
 import java.io.File;
 import java.io.IOException;
@@ -277,10 +279,9 @@ public class ProjectManager {
 
             //new
             ResourceRepositoryManager.getProjectResources((AndroidModule)module);
-
+            //legacy
 //            XmlIndexProvider index = CompilerService.getInstance().getIndex(XmlIndexProvider.KEY);
 //            index.clear();
-
 //            XmlRepository xmlRepository = index.get(project, module);
             LayoutRepo repo = LayoutRepo.get((AndroidModule)module);
             try {
@@ -319,7 +320,7 @@ public class ProjectManager {
 //              IProjectManager.getInstance().getIndexingServiceManager().onProjectSynced();
               // indexModule(module);
               // CompilationInfo info = CompilationInfo.get(module,true);
-              // KotlinEnvironment kotlinEnvironment = KotlinEnvironment.Companion.get(module,true);
+
           }
         } catch (Throwable e) {
           String message = "Failure indexing project.\n" + Throwables.getStackTraceAsString(e);
@@ -327,22 +328,23 @@ public class ProjectManager {
         }
         }
     }
+      KotlinEnvironment kotlinEnvironment = KotlinEnvironment.Companion.get(module,true);
 
    // mProjectOpenListeners.forEach(it -> it.onProjectOpen(mCurrentProject));
-      var indexingServiceManager = IProjectManager.getInstance().getIndexingServiceManager();
-      indexingServiceManager.register(
-              new JvmLibraryIndexingService(Prefs.getContext())
-      );
-      indexingServiceManager.register(
-             new JvmGeneratedIndexingService(
-                      Prefs.getContext()
-              )
-      );
-      indexingServiceManager.onProjectSynced();
+//      var indexingServiceManager = IProjectManager.getInstance().getIndexingServiceManager();
+//      indexingServiceManager.register(
+//              new JvmLibraryIndexingService(Prefs.getContext())
+//      );
+//      indexingServiceManager.register(
+//             new JvmGeneratedIndexingService(
+//                      Prefs.getContext()
+//              )
+//      );
+//      indexingServiceManager.onProjectSynced();
     var projectInitializedEvent = new ProjectInitializedEvent();
     projectInitializedEvent.put(Project.class,getCurrentProject());
-    ((DefaultLanguageServerRegistry) ILanguageServerRegistry.Companion.getDefault()).onProjectInitialized(projectInitializedEvent);
-//      IProjectManager.getInstance().getIndexingServiceManager().onProjectSynced();
+//    ((DefaultLanguageServerRegistry) ILanguageServerRegistry.Companion.getDefault()).onProjectInitialized(projectInitializedEvent);
+
     mCurrentProject.setIndexing(false);
     mListener.onComplete(project, true, "Index successful");
 

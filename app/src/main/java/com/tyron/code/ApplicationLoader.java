@@ -117,11 +117,12 @@ public class ApplicationLoader extends Application {
     } catch (Exception e) {
       throw new RuntimeException(e);
     }
-   // Prefs.init(this, getDefaultPreferences());
+     BuildModule.getSimpleJdkModule();
       Environment.init(this);
       IJdkDistributionProvider.getInstance().loadDistributions();
     System.setProperty("java.awt.headless","true");
-    CompatKt.setupIdeaStandaloneExecution();
+    //uncomment it if you removed or disabled KotlinEnvironment class
+//    CompatKt.setupIdeaStandaloneExecution();
 
     runStartup();
   }

@@ -50,5 +50,18 @@
         <item name="preferenceStyle">@style/Preference.CodeAssist</item>
         <item name="editTextPreferenceStyle">@style/Preference.CodeAssist.DialogPreference.EditTextPreference</item>
         <item name="dialogPreferenceStyle">@style/Preference.CodeAssist.DialogPreference</item>
-    </style>    
+    </style>
+    <style name="PopupAnimation">
+        <item name="android:windowEnterAnimation">@anim/popup_in</item>
+        <item name="android:windowExitAnimation">@anim/popup_out</item>
+    </style>
+    <style name="AppTheme.MaterialAlertDialog" parent="@style/ThemeOverlay.Material3.MaterialAlertDialog">
+        <item name="shapeAppearance">@style/MaterialAlertDialog.ShapeAppearance</item>
+        <item name="android:windowEnterAnimation">@animator/dialog_in</item>
+        <item name="android:windowExitAnimation">@animator/dialog_out</item>
+
+    </style>
+    <style name="MaterialAlertDialog.ShapeAppearance" parent="">
+        <item name="cornerSize">28dp</item>
+    </style>
 </resources>

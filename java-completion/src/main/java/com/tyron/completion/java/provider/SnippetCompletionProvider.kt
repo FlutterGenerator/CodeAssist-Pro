@@ -4,12 +4,12 @@ import com.itsaky.androidide.lsp.snippets.ISnippet
 import com.tyron.completion.java.compiler.JavaCompilerService
 import com.tyron.completion.java.provider.snippet.JavaSnippetRepository
 import com.tyron.completion.java.provider.snippet.JavaSnippetScope
-import com.tyron.completion.java.util.CompletionItemFactory.snippetItem
 import io.github.rosemoe.sora.text.TextUtils
 import com.sun.source.tree.ClassTree
 import com.sun.source.tree.CompilationUnitTree
 import com.sun.source.tree.MethodTree
 import com.sun.source.util.TreePath
+import com.tyron.completion.java.util.snippetItem
 import java.nio.file.Path
 import com.tyron.completion.model.CompletionList
 
@@ -53,7 +53,7 @@ class SnippetCompletionProvider(
     snippetScope?.let { JavaSnippetRepository.snippets[it]?.let { list -> snippets.addAll(list) } }
 
      for (snippet in snippets) {
-      builder.addItem(snippetItem(snippet))
+      builder.addItem(snippetItem(snippet,indent))
      }
   }
 

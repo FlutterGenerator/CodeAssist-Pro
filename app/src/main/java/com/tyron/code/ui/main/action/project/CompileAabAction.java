@@ -59,6 +59,7 @@ public class CompileAabAction extends AnAction {
     List<String> plugins = module.getPlugins();
     if (plugins==null){
       ProjectManager.getInstance().addOnProjectOpenListener(p->update(event));
+      return;
     }
     String pluginType = plugins.toString();
     if (!pluginType.contains("com.android.application")) {

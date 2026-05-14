@@ -1,25 +1,12 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 @file:Suppress("UnstableApiUsage")
 
-//import com.itsaky.androidide.build.config.BuildConfig
-//import com.itsaky.androidide.build.config.FDroidConfig
-//import com.itsaky.androidide.build.config.publishingVersion
-//import com.itsaky.androidide.plugins.AndroidIDEPlugin
-//import com.itsaky.androidide.plugins.conf.configureAndroidModule
-//import com.itsaky.androidide.plugins.conf.configureJavaModule
-//import com.itsaky.androidide.plugins.conf.configureMavenPublish
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import org.gradle.jvm.toolchain.JavaLanguageVersion
+import org.gradle.api.plugins.JavaPluginExtension
 
-plugins {
-    id("build-logic.root-project")
-//    alias(libs.plugins.android.application) apply false
-//    alias(libs.plugins.android.library) apply false
-//    alias(libs.plugins.kotlin.android) apply false
-//    alias(libs.plugins.kotlin.jvm) apply false
-//    alias(libs.plugins.maven.publish) apply false
-//    alias(libs.plugins.gradle.publish) apply false
-//    alias(libs.plugins.protobuf) apply false
-//    alias(libs.plugins.benchmark) apply false
+plugins{
+
 }
 
 buildscript {
@@ -56,5 +43,5 @@ extra.apply {
     set("minSdkVersion", 26)
     set("applicationId", "dev.mutwakil.codeassist")
     set("versionCode", 1)
-    set("versionName", "0.2.0-ALPHA01")
+    set("versionName", "0.2.0-ALPHA02")
 }

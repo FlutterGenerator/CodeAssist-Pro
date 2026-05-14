@@ -26,17 +26,17 @@ import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import org.openjdk.javax.lang.model.element.Modifier;
-import org.openjdk.javax.lang.model.element.TypeElement;
-import org.openjdk.javax.lang.model.element.TypeParameterElement;
-import org.openjdk.javax.lang.model.type.ArrayType;
-import org.openjdk.javax.lang.model.type.DeclaredType;
-import org.openjdk.javax.lang.model.type.ErrorType;
-import org.openjdk.javax.lang.model.type.NoType;
-import org.openjdk.javax.lang.model.type.PrimitiveType;
-import org.openjdk.javax.lang.model.type.TypeKind;
-import org.openjdk.javax.lang.model.type.TypeMirror;
-import org.openjdk.javax.lang.model.util.SimpleTypeVisitor7;
+import javax.lang.model.element.Modifier;
+import javax.lang.model.element.TypeElement;
+import javax.lang.model.element.TypeParameterElement;
+import javax.lang.model.type.ArrayType;
+import javax.lang.model.type.DeclaredType;
+import javax.lang.model.type.ErrorType;
+import javax.lang.model.type.NoType;
+import javax.lang.model.type.PrimitiveType;
+import javax.lang.model.type.TypeKind;
+import javax.lang.model.type.TypeMirror;
+import javax.lang.model.util.SimpleTypeVisitor7;
 
 /**
  * Any type in Java's type system, plus {@code void}. This class is an identifier for primitive
@@ -305,12 +305,12 @@ public class TypeName {
 
           @Override
           public TypeName visitTypeVariable(
-              org.openjdk.javax.lang.model.type.TypeVariable t, Void p) {
+              javax.lang.model.type.TypeVariable t, Void p) {
             return TypeVariableName.get(t, typeVariables);
           }
 
           @Override
-          public TypeName visitWildcard(org.openjdk.javax.lang.model.type.WildcardType t, Void p) {
+          public TypeName visitWildcard(javax.lang.model.type.WildcardType t, Void p) {
             return WildcardTypeName.get(t, typeVariables);
           }
 

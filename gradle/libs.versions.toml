@@ -28,6 +28,7 @@ lifecycleViewmodelKtx = "2.7.0"
 paletteKtx = "1.0.0"
 playServicesOssLicenses = "17.1.0"
 preferenceKtxVersion = "1.2.1"
+protobufJava = "4.32.1"
 recyclerview = "1.3.2"
 securityCrypto = "1.1.0"
 slf4jAndroid = "2.0.17-0"
@@ -62,6 +63,8 @@ rikka-refine = "4.4.0"
 rikkax-parcelablelist = "2.0.1"
 libsu-core = "6.0.0"
 
+nbJavacAndroid = "17.0.0.3"
+
 ## IMPORTANT!
 ## When updating this value, please manually compile libbrotli.so from Brotli4j for Android and
 ## put it in app/src/main/jniLibs
@@ -80,6 +83,7 @@ compose-compiler = "2.1.21"
 
 leakcanary = "2.14"
 androidx-sqlite = "2.6.2"
+material = "1.13.0"
 
 [libraries]
 
@@ -128,6 +132,7 @@ kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib" }
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinxCoroutinesCore" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
 play-services-oss-licenses = { module = "com.google.android.gms:play-services-oss-licenses", version.ref = "playServicesOssLicenses" }
+protobuf-java = { module = "com.google.protobuf:protobuf-java", version.ref = "protobufJava" }
 room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
 room-ktx = { module = "androidx.room:room-ktx", version.ref = "room" }
 
@@ -157,6 +162,7 @@ androidide-ts-json = { module = "com.itsaky.androidide.treesitter:tree-sitter-js
 androidide-ts-kotlin = { module = "com.itsaky.androidide.treesitter:tree-sitter-kotlin", version.ref = "tree-sitter" }
 androidide-ts-log = { module = "com.itsaky.androidide.treesitter:tree-sitter-log", version.ref = "tree-sitter" }
 androidide-ts-xml = { module = "com.itsaky.androidide.treesitter:tree-sitter-xml", version.ref = "tree-sitter" }
+nb-javac-android = { module = "io.github.itsaky:nb-javac-android", version.ref = "nbJavacAndroid" }
 
 #Layout Editor
 slf4j-android = { module = "uk.uuid.slf4j:slf4j-android", version.ref = "slf4jAndroid" }
@@ -315,6 +321,7 @@ monitor = { group = "androidx.test", name = "monitor", version.ref = "monitorVer
 org-json = { module = "org.json:json", version = "20210307"}
 
 kotlinx-metadata = { module = "org.jetbrains.kotlin:kotlin-metadata-jvm", version.ref = "kotlin" }
+material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 
 
 [plugins]

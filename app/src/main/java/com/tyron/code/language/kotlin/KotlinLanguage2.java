@@ -20,8 +20,10 @@ import com.itsaky.androidide.lsp.util.CompletionItemKindExtsKt;
 import com.itsaky.androidide.models.Position;
 import com.itsaky.androidide.progress.ICancelChecker;
 import com.tyron.builder.model.DiagnosticWrapper;
+import com.tyron.code.ApplicationLoader;
 import com.tyron.code.language.LanguageManager;
 import com.tyron.code.language.textmate.EmptyTextMateLanguage;
+import com.tyron.common.SharedPreferenceKeys;
 import com.tyron.completion.CompletionParameters;
 import com.tyron.completion.lsp.api.LspLanguage;
 import com.itsaky.androidide.lsp.api.SignatureHelpLanguage;
@@ -101,6 +103,9 @@ public class KotlinLanguage2 extends EmptyTextMateLanguage
   @NonNull
   @Override
   public SignatureHelp signatureHelp(@NonNull SignatureHelpParams params) {
+    if (server == null) {
+      return SignatureHelpLanguageKt.unsupportedSignatureHelp();
+    }
     var signatureHelp = SignatureHelpLanguageKt.unsupportedSignatureHelp();
     if (!com.tyron.completion.java.provider.CompletionEngine.isIndexing()) {
       signatureHelp = ((KotlinLanguageServer) server).signatureHelpBlocking(params);
@@ -139,6 +144,10 @@ public class KotlinLanguage2 extends EmptyTextMateLanguage
     return delegate.getInterruptionLevel();
   }
 
+  private boolean isAutocompletionEnabled(){
+    return ApplicationLoader.getDefaultPreferences().getBoolean(SharedPreferenceKeys.KOTLIN_COMPLETIONS, false);
+  }
+
   @Override
   public void requireAutoComplete(
       @NonNull ContentReference content,
@@ -150,6 +159,9 @@ public class KotlinLanguage2 extends EmptyTextMateLanguage
 
       container.reset();
       diagnostics.clear();
+      if (!isAutocompletionEnabled()){
+        return;
+      }
 
       char c = content.charAt(position.getIndex() - 1);
       if (!isAutoCompleteChar(c)) {

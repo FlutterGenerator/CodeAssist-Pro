@@ -103,6 +103,10 @@
                 android:text="Preview icon&apos;s size won&apos;t increase"
                 android:textColor="#ff757575"
                 android:textSize="12sp" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:gravity="center"
+                android:layout_height="wrap_content">
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/textinputlayout4"
@@ -113,6 +117,7 @@
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
                 android:layout_marginTop="8dp"
+                android:layout_weight="1"
                 android:hint="Color"
                 app:endIconDrawable="@drawable/outline_sync_24"
                 app:endIconMode="custom" >
@@ -125,6 +130,13 @@
                     android:singleLine="true"
                     android:text="#000000" />
             </com.google.android.material.textfield.TextInputLayout>
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/pick_color"
+                    style="@style/ThemeOverlay.Material3.Button.ElevatedButton"
+                    android:id="@+id/pickColor"/>
+        </LinearLayout>
 
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"

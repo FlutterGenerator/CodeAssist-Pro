@@ -36,7 +36,9 @@ android {
     }
      
     buildFeatures {
-        buildConfig = true	    
+        buildConfig = true
+//        dataBinding = true
+        viewBinding = true
     }
 }
 
@@ -53,15 +55,16 @@ dependencies {
     api ("com.blankj:utilcodex:1.31.1")
     api ("org.checkerframework:checker-qual:3.50.0")
     api ('org.jetbrains.kotlinx:kotlinx-coroutines-android:1.10.2')
+    implementation libs.material
     compileOnly project(path: ':android-stubs')
 	api ('org.jetbrains.kotlin:kotlin-stdlib:2.3.0')
     kapt("com.google.auto.service:auto-service:1.1.1")
     api ("com.google.auto.service:auto-service:1.1.1")
     api libs.commons.compress
     implementation(projects.utilities.shared)
-    implementation(libs.composite.javac)
     implementation(projects.javac)
     api(libs.slf4j.android)
+    implementation(projects.resources)
 }
 
 spotless {

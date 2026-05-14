@@ -1,5 +1,10 @@
+
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
 plugins {
-    id 'com.android.library'
+    id("com.android.library")
+    id("kotlin-android")
+    id("kotlin-kapt")
 }
 apply plugin: 'com.diffplug.spotless'
 
@@ -24,10 +29,15 @@ android {
     }
     
 }
+kotlin{
+    compilerOptions{
+        jvmTarget = JvmTarget.JVM_17
+    }
+}
 
 dependencies {
     implementation 'androidx.annotation:annotation:1.8.2'
-    implementation project(path: ':building-logic')
+    implementation project(path: ':build-logic')
     implementation project(path: ':project')
     implementation project(path: ':logging')
     // needed for UserDataHolder class
@@ -36,6 +46,24 @@ dependencies {
     implementation project(path: ':fileeditor-api')
     implementation project(path: ':editor-api')
     compileOnly project(path: ':android-stubs')
+
+    kapt(libs.google.auto.service)
+
+    api(libs.androidx.nav.fragment)
+    api(libs.androidx.nav.ui)
+
+    implementation(projects.common)
+    implementation(projects.resources)
+    implementation(libs.common.editor)
+    implementation(libs.common.kotlin)
+    implementation(libs.common.kotlin.coroutines.android)
+    implementation(libs.common.utilcode)
+    implementation(libs.google.auto.service.annotations)
+    implementation(projects.resources)
+
+    implementation(libs.androidx.core.ktx)
+    implementation(libs.google.material)
+    implementation(projects.utilities.shared)
 }
 
 java {

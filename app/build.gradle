@@ -62,17 +62,18 @@ android {
             signingConfig = signingConfigs.debug
         }
     }
-    
-    splits {
-        abi {
-            enable true
-            reset()
 
-            include "armeabi-v7a", "arm64-v8a", "x86", "x86_64"
-
-            universalApk true
-        }
-    }
+    // not needed
+//    splits {
+//        abi {
+//            enable true
+//            reset()
+//
+//            include "armeabi-v7a", "arm64-v8a", "x86", "x86_64"
+//
+//            universalApk true
+//        }
+//    }
 	
     buildFeatures {
         viewBinding = true        
@@ -102,6 +103,7 @@ android {
         pickFirst("META-INF/jandex.idx")
         pickFirst("META-INF/gradle/incremental.annotation.processors")
         pickFirst("META-INF/INDEX.LIST")
+        pickFirst("sun/tools/serialver/resources/*")
 		
         //exclude 'com/sun/tools/javac/resources/legacy.properties'
 		
@@ -142,7 +144,7 @@ dependencies {
     implementation(project(":kotlin-analysis-api"))
 
     implementation project(path: ':language-api')
-    implementation project(path: ':building-logic')
+    implementation project(path: ':build-logic')
 
     implementation project(path: ':manifmerger')
     implementation project(path: ':project')
@@ -163,6 +165,7 @@ dependencies {
     implementation project(path: ':actions-api')
     implementation project(path: ':editor-api')
     implementation project(path: ':fileeditor-api')
+    implementation(projects.editor)
 
     // formatters    
     implementation project(path: ':google-java-format')
@@ -191,6 +194,11 @@ dependencies {
     implementation(projects.utilities.lookup)
     implementation(projects.lsp.indexing)
     implementation(projects.lsp.jvmSymbolIndex)
+
+//    provider
+    implementation(files("libs/mt-provider.jar"))
+
+    runtimeOnly(libs.protobuf.java)
       
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.5")
 }

@@ -66,13 +66,13 @@ public class TreeUtilities {
       Scope scope,
       final List<Diagnostic<? extends JavaFileObject>> errors) {
     Log log = Log.instance(jti.getContext());
-    Log.DiagnosticHandler discardHandler =
-        new Log.DiscardDiagnosticHandler(log) {
-          @Override
-          public void report(JCDiagnostic diag) {
-            errors.add(diag);
-          }
-        };
+    Log.DiagnosticHandler discardHandler = null;
+//        new Log.DiscardDiagnosticHandler(log) {
+//          @Override
+//          public void report(JCDiagnostic diag) {
+//            errors.add(diag);
+//          }
+//        };
     NBResolve resolve = NBResolve.instance(jti.getContext());
     resolve.disableAccessibilityChecks();
     try {

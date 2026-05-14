@@ -26,7 +26,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import org.openjdk.javax.lang.model.element.Modifier;
+import javax.lang.model.element.Modifier;
 
 /**
  * Like Guava, but worse and standalone. This makes it easier to mix JavaPoet with libraries that

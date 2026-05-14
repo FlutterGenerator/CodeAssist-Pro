@@ -8,6 +8,10 @@ import java.util.Map;
 
 public interface AndroidModule extends JavaModule, KotlinModule {
 
+  default Boolean composeEnabled(){
+    return false;
+  }
+
   /**
    * @return The directory where android resource xml files are searched
    */

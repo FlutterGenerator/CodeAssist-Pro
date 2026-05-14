@@ -2,10 +2,6 @@
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
 pluginManagement {
-    includeBuild("composite-builds/build-logic") {
-        name = "build-logic"
-    }
-
     repositories {
         gradlePluginPortal()
         google()
@@ -21,38 +17,6 @@ pluginManagement {
 }
 
 dependencyResolutionManagement {
-    val dependencySubstitutions = mapOf(
-            "build-deps" to arrayOf(
-                  //  "appintro",
-                    "fuzzysearch",
-                //    "google-java-format",
-                    "java-compiler",
-                    "javac",
-//                    "javapoet",
-//                    "jaxp",
-                    "jdk-compiler",
-                    "jdk-jdeps",
-//                    "jdt",
-//                    "layoutlib-api",
-                    "logback-core"
-            ),
-
-//            "build-deps-common" to arrayOf(
-//                    "desugaring-core"
-//            )
-    )
-
-    for ((build, modules) in dependencySubstitutions) {
-        includeBuild("composite-builds/${build}") {
-            this.name = build
-            dependencySubstitution {
-                for (module in modules) {
-                    substitute(module("com.itsaky.androidide.build:${module}"))
-                            .using(project(":${module}"))
-                }
-            }
-        }
-    }
 
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
@@ -68,6 +32,10 @@ dependencyResolutionManagement {
     }
 }
 
+plugins{
+    id("org.gradle.toolchains.foojay-resolver-convention") version "1.0.0"
+}
+
 rootProject.name = "CodeAssist-Pro"
 
 include(
@@ -76,7 +44,7 @@ include(
     ":app",
     ":jaxp:xml",
     ":jaxp:jaxp-internal",
-    ":building-logic",
+    ":build-logic",
     ":kotlinc",
     ":viewbinding-lib",
     ":viewbinding-inject",
@@ -120,11 +88,14 @@ include(
     ":lsp:jvm-symbol-index",
     ":lsp:indexing",
     ":lsp:jvm-symbol-models",
-    ":jaxp",
     ":event:eventbus",
     ":event:eventbus-android",
     ":event:eventbus-events",
     ":utilities:shared",
     ":utilities:lookup",
-    ":logging:logger"
+//    ":lsp:java",
+    "editor",
+    ":jaxp",
+    "subprojects:fuzzysearch",
+    "build-tools:compose-compiler-plugin"
 )

@@ -22,7 +22,7 @@ import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
-import org.openjdk.javax.lang.model.SourceVersion;
+import javax.lang.model.SourceVersion;
 
 /**
  * Assigns Java identifier names to avoid collisions, keywords, and invalid characters. To use,
