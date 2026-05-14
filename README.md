@@ -1,5 +1,7 @@
 > [!WELCOME]
 > This is an Active Repo for CodeAssist Pro.
+> join our Telegram channel for more updates.
+> https://t.me/codeassist_pro
 
 <p align='center'>
  <img width='300px%' height='300px' src='https://github.com/Wadamzmail/CodeAssist-Pro/blob/main/logo-dark.png#gh-dark-mode-only' >
@@ -92,7 +94,7 @@ Forked of Official CodeAssist Version Alpha-0.2.9
 
 ## CodeAssist Community
 
-English-language chat in Telegram: https://t.me/codeassist_app
+English-language chat in the channel discussions in Telegram: https://t.me/codeassist_pro
 
 ## Building - Android Studio
 
@@ -125,9 +127,3 @@ you find documentation under [docs](docs/) directory.
 - Ilyasse Salama
 
 - Deenbandhu Netam for the awesome CodeAssist-Unofficial
-
-# Contributors
-
-- Updated Templates By @SENPAi_203
-
-# CodeAssist-Unofficial
