@@ -73,7 +73,7 @@ include(
     ":jaxp:xml",
     ":jaxp:jaxp-internal",
     ":building-logic",
-    ":kotlinc",
+//    ":kotlinc",
     ":viewbinding-lib",
     ":viewbinding-inject",
     ":actions-api",
