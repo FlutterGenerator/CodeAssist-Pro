@@ -37,7 +37,7 @@ kotlin{
 
 dependencies {
     implementation 'androidx.annotation:annotation:1.8.2'
-    implementation project(path: ':build-logic')
+    implementation project(path: ':building-logic')
     implementation project(path: ':project')
     implementation project(path: ':logging')
     // needed for UserDataHolder class

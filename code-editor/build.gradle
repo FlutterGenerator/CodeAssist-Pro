@@ -68,4 +68,5 @@ dependencies {
     implementation(projects.utilities.shared)
 //    implementation(projects.lsp.java)
     implementation(projects.editor)
+    compileOnly(projects.actions)
 }

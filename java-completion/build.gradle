@@ -63,7 +63,7 @@ dependencies {
     implementation project(':google-java-format')
     compileOnly project(':resources')
     implementation project(':code-editor')
-    api project(':build-logic')
+    api project(':building-logic')
     implementation(projects.lsp.api)
     implementation(projects.editor)
 

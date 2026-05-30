@@ -2,7 +2,7 @@ package com.tyron.completion.java.provider;
 
 import static com.tyron.common.util.StringSearch.endsWithParen;
 import static com.tyron.common.util.StringSearch.partialIdentifier;
-import static com.tyron.completion.java.patterns.JavacTreePatterns.tree;
+//import static com.tyron.completion.java.patterns.JavacTreePatterns.tree;
 import static com.tyron.completion.java.util.CompletionItemFactory.classSnippet;
 import static com.tyron.completion.java.util.CompletionItemFactory.packageSnippet;
 import static com.tyron.completion.progress.ProgressManager.checkCanceled;
@@ -26,7 +26,7 @@ import com.tyron.completion.java.compiler.CompilerContainer;
 import com.tyron.completion.java.compiler.JavaCompilerService;
 import com.tyron.completion.java.compiler.ParseTask;
 import com.tyron.completion.java.compiler.services.CancelAbort;
-import com.tyron.completion.java.patterns.JavacTreePattern;
+//import com.tyron.completion.java.patterns.JavacTreePattern;
 import com.tyron.completion.java.util.FileContentFixer;
 import com.tyron.completion.model.CompletionList;
 import com.tyron.completion.progress.ProcessCanceledException;
@@ -45,14 +45,14 @@ public class Completions {
   private static final String TAG = Completions.class.getSimpleName();
 
   // patterns
-  private static final JavacTreePattern.Capture<IdentifierTree> INSIDE_PARAMETERIZED =
-      tree(IdentifierTree.class).withParent(ParameterizedTypeTree.class);
-  private static final JavacTreePattern.Capture<IdentifierTree> INSIDE_RETURN =
-      tree(IdentifierTree.class).withParent(ReturnTree.class);
-  private static final JavacTreePattern.Capture<IdentifierTree> VARIABLE_NAME =
-      tree(IdentifierTree.class).withParent(JCTree.JCVariableDecl.class);
-  private static final JavacTreePattern.Capture<IdentifierTree> SWITCH_CONSTANT =
-      tree(IdentifierTree.class).withParent(CaseTree.class);
+//  private static final JavacTreePattern.Capture<IdentifierTree> INSIDE_PARAMETERIZED =
+//      tree(IdentifierTree.class).withParent(ParameterizedTypeTree.class);
+//  private static final JavacTreePattern.Capture<IdentifierTree> INSIDE_RETURN =
+//      tree(IdentifierTree.class).withParent(ReturnTree.class);
+//  private static final JavacTreePattern.Capture<IdentifierTree> VARIABLE_NAME =
+//      tree(IdentifierTree.class).withParent(JCTree.JCVariableDecl.class);
+//  private static final JavacTreePattern.Capture<IdentifierTree> SWITCH_CONSTANT =
+//      tree(IdentifierTree.class).withParent(CaseTree.class);
 
   private final JavaCompilerService compiler;
 

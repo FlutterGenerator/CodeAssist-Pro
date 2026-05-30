@@ -4,7 +4,7 @@
 
     <PreferenceCategory
         app:iconSpaceReserved="false"
-        app:title="@string/completion_settings_kotlin_title">
+        app:title="Legacy Kotlin-lsp">
         <SwitchPreferenceCompat
             android:defaultValue="true"
             android:iconSpaceReserved="false"

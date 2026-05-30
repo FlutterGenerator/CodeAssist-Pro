@@ -16,7 +16,7 @@
  */
 
 
-//import com.itsaky.androidide.build.config.BuildConfig
+import com.itsaky.androidide.build.config.BuildConfig
 
 plugins {
     id("com.android.library")
@@ -26,7 +26,7 @@ plugins {
 
 
 android {
-    namespace = "com.itsaky.androidide.eventbus.events"
+    namespace = "${BuildConfig.PACKAGE_NAME}.eventbus.events"
     compileSdk = 36
 	defaultConfig {
 	 minSdk = 26
@@ -53,5 +53,6 @@ dependencies {
     api(project(":event:eventbus"))
     //implementation(project(":completion-api"))
     implementation(projects.lsp.models)
+    api(projects.toolingApi)
     
 }

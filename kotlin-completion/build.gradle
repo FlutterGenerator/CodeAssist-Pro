@@ -56,7 +56,7 @@ dependencies {
     implementation project(path: ':javac')
     implementation project(path: ':project')
     implementation project(path: ':logging')
-    implementation project(path: ':build-logic')
+    implementation project(path: ':building-logic')
     implementation project(path: ':completion-api')
     implementation project(path: ':actions-api')
     implementation project(path: ':editor-api')

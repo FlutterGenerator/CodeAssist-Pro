@@ -1,12 +1,15 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 @file:Suppress("UnstableApiUsage")
 
+import com.itsaky.androidide.build.config.BuildConfig
+import com.itsaky.androidide.plugins.AndroidIDEPlugin
+import com.itsaky.androidide.plugins.conf.configureAndroidModule
+import com.itsaky.androidide.plugins.conf.configureJavaModule
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-import org.gradle.jvm.toolchain.JavaLanguageVersion
-import org.gradle.api.plugins.JavaPluginExtension
+
 
 plugins{
-
+    id("build-logic.root-project")
 }
 
 buildscript {
@@ -31,6 +34,31 @@ buildscript {
         // in the individual module build.gradle files
     }
 }
+
+project.group = BuildConfig.PACKAGE_NAME
+
+subprojects {
+    if (project != rootProject) {
+        var group = project.parent!!.group
+        if (project.parent != rootProject) {
+            group = "${group}.${project.parent!!.name}"
+        }
+        project.group = group
+    }
+
+
+    afterEvaluate {
+        apply { plugin(AndroidIDEPlugin::class.java) }
+    }
+
+    project.version = rootProject.version
+
+    plugins.withId("com.android.library") {
+        configureAndroidModule(libs.androidx.libDesugaring)
+    }
+    plugins.withId("java-library") { configureJavaModule() }
+}
+
 
 tasks.register<Delete>("clean") {
     delete(rootProject.layout.buildDirectory)

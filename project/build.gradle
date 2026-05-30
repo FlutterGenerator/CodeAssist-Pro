@@ -40,7 +40,7 @@ dependencies {
     implementation(project(":kotlin-analysis-api"))
     compileOnly project(path: ':android-stubs')
     compileOnly project(path: ':android-common-resources')
-    implementation(project(":lsp:indexing"))
+    api(project(":lsp:indexing"))
     implementation(projects.utilities.shared)
     implementation(projects.event.eventbusEvents)
 }

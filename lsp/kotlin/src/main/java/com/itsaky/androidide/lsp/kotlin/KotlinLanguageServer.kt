@@ -17,12 +17,15 @@
 
 package com.itsaky.androidide.lsp.kotlin
 
-import android.util.Log
 import com.itsaky.androidide.app.configuration.IJdkDistributionProvider
+import com.itsaky.androidide.eventbus.events.BuildCompletedEvent
 import com.itsaky.androidide.eventbus.events.editor.DocumentChangeEvent
 import com.itsaky.androidide.eventbus.events.editor.DocumentCloseEvent
 import com.itsaky.androidide.eventbus.events.editor.DocumentOpenEvent
 import com.itsaky.androidide.eventbus.events.editor.DocumentSaveEvent
+import com.itsaky.androidide.eventbus.events.file.FileCreationEvent
+import com.itsaky.androidide.eventbus.events.file.FileDeletionEvent
+import com.itsaky.androidide.eventbus.events.file.FileRenameEvent
 import com.itsaky.androidide.lsp.api.ILanguageClient
 import com.itsaky.androidide.lsp.api.ILanguageServer
 import com.itsaky.androidide.lsp.api.IServerSettings
@@ -30,7 +33,6 @@ import com.itsaky.androidide.lsp.kotlin.compiler.Compiler
 import com.itsaky.androidide.lsp.kotlin.compiler.KotlinProjectModel
 import com.itsaky.androidide.lsp.kotlin.compiler.index.KT_SOURCE_FILE_INDEX_KEY
 import com.itsaky.androidide.lsp.kotlin.compiler.index.KT_SOURCE_FILE_META_INDEX_KEY
-import com.itsaky.androidide.lsp.kotlin.completion.KotlinSnippetRepository
 import com.itsaky.androidide.lsp.kotlin.completion.codeComplete
 import com.itsaky.androidide.lsp.kotlin.diagnostic.collectDiagnosticsFor
 import com.itsaky.androidide.lsp.models.CompletionParams
@@ -43,7 +45,7 @@ import com.itsaky.androidide.lsp.models.ReferenceParams
 import com.itsaky.androidide.lsp.models.ReferenceResult
 import com.itsaky.androidide.lsp.models.SignatureHelp
 import com.itsaky.androidide.lsp.models.SignatureHelpParams
-//import com.itsaky.androidide.lsp.util.LSPEditorActions
+import com.itsaky.androidide.lsp.util.LSPEditorActions
 import com.itsaky.androidide.models.Range
 import com.itsaky.androidide.projects.FileManager
 import com.itsaky.androidide.tasks.createJobCancelChecker
@@ -53,12 +55,12 @@ import com.itsaky.androidide.utils.ifNotEmpty
 import com.tyron.builder.project.IProjectManager
 import com.tyron.builder.project.Project
 import com.tyron.common.Prefs
+import io.sentry.Sentry
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
-import org.appdevforall.codeonthego.indexing.jvm.JVM_LIBRARY_SYMBOL_INDEX
-import org.appdevforall.codeonthego.indexing.jvm.JvmGeneratedIndexingService
+import kotlinx.coroutines.launch
 import org.appdevforall.codeonthego.indexing.jvm.JvmLibraryIndexingService
 import org.appdevforall.codeonthego.indexing.jvm.JvmSymbolIndex
 import org.appdevforall.codeonthego.indexing.jvm.KtFileMetadataIndex
@@ -84,8 +86,6 @@ class KotlinLanguageServer : ILanguageServer {
 	private var compiler: Compiler? = null
 
 	override val serverId: String = SERVER_ID
-
-	val TAG = KotlinLanguageServer::class.java.simpleName
 
 	override val client: ILanguageClient?
 		get() = _client
@@ -125,10 +125,10 @@ class KotlinLanguageServer : ILanguageServer {
 
 	override fun setupWithProject(workspace: Project) {
 		logger.info("setupWithProject called, initialized={}", initialized)
-		Log.i(TAG,"setupWithProject called, initialized=$initialized")
-//		LSPEditorActions.ensureActionsMenuRegistered(KotlinCodeActionsMenu)
-		KotlinSnippetRepository.init()
-		val context = Prefs.getApplication()
+
+		LSPEditorActions.ensureActionsMenuRegistered(KotlinCodeActionsMenu)
+
+		val context = Prefs.getContext()
 		val indexingServiceManager = IProjectManager.getInstance()
 			.indexingServiceManager
 
@@ -166,7 +166,6 @@ class KotlinLanguageServer : ILanguageServer {
 
 		if (!initialized) {
 			logger.info("Creating initial analysis session")
-			Log.i(TAG,"Creating initial analysis session")
 
 			val model = KotlinProjectModel()
 			model.update(workspace, jvmPlatform)
@@ -199,18 +198,15 @@ class KotlinLanguageServer : ILanguageServer {
 
 		initialized = true
 		logger.info("Kotlin project initialized")
-		Log.i(TAG,"Kotlin project initialized")
 	}
 
 	override fun complete(params: CompletionParams?): CompletionResult {
 		if (params == null) {
 			logger.warn("Cannot complete for null params")
-			Log.w(TAG,"Cannot complete for null params")
 			return CompletionResult.EMPTY
 		}
 
 		logger.debug("complete(position={}, file={})", params.position, params.file)
-		Log.d(TAG,"complete(position=$params.position, file=$params.file)")
 		return compiler?.compilationEnvironmentFor(params.file)
 			?.let { context(it) { codeComplete(params) } }
 			?: CompletionResult.EMPTY
@@ -321,5 +317,87 @@ class KotlinLanguageServer : ILanguageServer {
 
 		compiler?.compilationEnvironmentFor(event.savedFile)
 			?.onFileSaved(event.savedFile)
+	}
+
+	@Subscribe
+	@Suppress("unused")
+	fun onBuildCompleted(event: BuildCompletedEvent) {
+		Sentry.addBreadcrumb("onBuildCompleted: result=${event.result}")
+		compiler?.refreshSources()
+	}
+
+	@Subscribe
+	@Suppress("unused")
+	fun onFileCreated(event: FileCreationEvent) {
+		val path = event.file.toPath()
+		if (!DocumentUtils.isKotlinFile(path)) {
+			return
+		}
+
+		scope.launch {
+			runCatching { compiler?.compilationEnvironmentFor(path) }
+				.getOrNull()
+				?.onFileCreated(path)
+		}
+	}
+
+	@Subscribe
+	@Suppress("unused")
+	fun onFileDeleted(event: FileDeletionEvent) {
+		val path = event.file.toPath()
+		if (!DocumentUtils.isKotlinFile(path)) {
+			return
+		}
+
+		scope.launch {
+			runCatching { compiler?.compilationEnvironmentFor(path) }
+				.getOrNull()
+				?.onFileRemoved(path)
+		}
+	}
+
+	@Subscribe
+	@Suppress("unused")
+	fun onFileRenamed(event: FileRenameEvent) {
+		val fromPath = event.file.toPath()
+		val toPath = event.newFile.toPath()
+
+		scope.launch {
+			val oldIsKotlinFile = DocumentUtils.isKotlinFile(fromPath)
+			val newIsKotlinFile = DocumentUtils.isKotlinFile(toPath)
+
+			if (!oldIsKotlinFile && newIsKotlinFile) {
+				// only the new file is a Kotlin file
+				// so just submit it for indexing
+				compiler?.compilationEnvironmentFor(toPath)
+					?.onFileCreated(toPath)
+				return@launch
+			}
+
+			if (oldIsKotlinFile && !newIsKotlinFile) {
+				// only the old file was a Kotlin file
+				// so just remove it from the index
+				compiler?.compilationEnvironmentFor(fromPath)
+					?.onFileRemoved(fromPath)
+				return@launch
+			}
+
+			val fromKind = runCatching { compiler?.compilationKindFor(fromPath) }.getOrNull()
+			val toKind = runCatching { compiler?.compilationKindFor(toPath) }.getOrNull()
+			val fromEnv = fromKind?.let { compiler?.compilationEnvironmentFor(it) }
+			val toEnv = toKind?.let { compiler?.compilationEnvironmentFor(it) }
+
+			if (fromKind != null && fromEnv == toEnv && toEnv != null) {
+				// file was renamed within the same compilation environment
+				toEnv.onFileMoved(fromPath, toPath)
+				return@launch
+			}
+
+			// file may have been moved from one compilation environment to another
+			// remove from old env's index
+			// and submit to the new env for indexing
+			fromEnv?.onFileRemoved(fromPath)
+			toEnv?.onFileCreated(toPath)
+		}
 	}
 }

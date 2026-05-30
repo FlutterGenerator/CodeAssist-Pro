@@ -3,6 +3,7 @@ package com.tyron.code.ui.file.action.file;
 import android.content.Context;
 import androidx.annotation.NonNull;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.itsaky.androidide.eventbus.events.file.FileDeletionEvent;
 import com.tyron.actions.AnActionEvent;
 import com.tyron.actions.CommonDataKeys;
 import com.tyron.builder.project.api.FileManager;
@@ -25,6 +26,7 @@ import java.io.IOException;
 import kotlin.io.FileWalkDirection;
 import kotlin.io.FilesKt;
 import org.apache.commons.io.FileUtils;
+import org.greenrobot.eventbus.EventBus;
 
 public class DeleteFileAction extends FileAction {
 
@@ -71,6 +73,11 @@ public class DeleteFileAction extends FileAction {
                             treeView.refreshTreeView();
                             FileEditorManagerImpl.getInstance()
                                 .closeFile(currentNode.getValue().getFile());
+                              var deletionEvent = new FileDeletionEvent(currentNode.getValue().getFile());
+                              // Notify FileManager first
+                              com.itsaky.androidide.projects.FileManager.INSTANCE.onFileDeleted(deletionEvent);
+                              deletionEvent.put(Context.class,fragment.requireContext());
+                              EventBus.getDefault().post(deletionEvent);
                           } else {
                             new MaterialAlertDialogBuilder(fragment.requireContext())
                                 .setTitle(R.string.error)

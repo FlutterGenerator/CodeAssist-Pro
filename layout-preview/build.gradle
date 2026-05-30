@@ -45,7 +45,7 @@ dependencies {
     implementation project(path: ':common')
     implementation project(path: ':xml-repository')
     implementation project(path: ':vector-parser')
-    implementation project(path: ':build-logic')
+    implementation project(path: ':building-logic')
 
     implementation project(path: ':project')
     implementation project(path: ':manifmerger')

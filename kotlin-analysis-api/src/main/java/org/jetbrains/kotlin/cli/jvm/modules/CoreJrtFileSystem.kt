@@ -21,6 +21,7 @@ import org.jetbrains.kotlin.com.intellij.openapi.vfs.StandardFileSystems
 import org.jetbrains.kotlin.com.intellij.openapi.vfs.VirtualFile
 import org.jetbrains.kotlin.com.intellij.util.containers.ConcurrentFactoryMap
 import org.jetbrains.kotlin.com.intellij.util.io.URLUtil
+import org.jetbrains.kotlin.reflection.android.AndroidSupport.isDalvik
 import java.io.File
 import java.net.URI
 import java.net.URLClassLoader
@@ -80,6 +81,10 @@ class CoreJrtFileSystem : DeprecatedVirtualFileSystem() {
               See https://bugs.openjdk.java.net/browse/JDK-8260621
               So that cache allows us to avoid creating too many classloaders for same JDK and reduce severity of that leak
             */
+            //TODO(Wadamzmail): fix it and remove #isDalvik()
+            if (isDalvik()){
+                return@createMap null
+            }
             if (isAtLeastJava9()) {
                 // If the runtime JDK is set to 9+ it has JrtFileSystemProvider,
                 // but to load proper jrt-fs (one that is pointed by jdkHome) we should provide "java.home" path

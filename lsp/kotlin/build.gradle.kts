@@ -1,5 +1,3 @@
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-
 /*
  *  This file is part of AndroidIDE.
  *
@@ -17,6 +15,8 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
  *   along with AndroidIDE.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import com.itsaky.androidide.build.config.BuildConfig
+
 plugins {
 	id("com.android.library")
 	id("kotlin-android")
@@ -24,51 +24,51 @@ plugins {
 }
 
 android {
-	namespace = "dev.mutwakil.codeassist.lsp.kotlin"
-
-	compileSdk = 36
+	namespace = "${BuildConfig.PACKAGE_NAME}.lsp.kotlin"
 
 	kotlin.compilerOptions {
 		freeCompilerArgs.addAll("-Xcontext-parameters")
 	}
-	compileOptions{
-		sourceCompatibility = JavaVersion.VERSION_17
-		targetCompatibility = JavaVersion.VERSION_17
+}
+
+kotlin {
+	compilerOptions{
+		jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
 	}
 }
+
 
 kapt {
 	arguments {
-		arg("eventBusIndex", "dev.mutwakil.codeassist.events.LspKotlinEventsIndex")
+		arg("eventBusIndex", "${BuildConfig.PACKAGE_NAME}.events.LspKotlinEventsIndex")
 	}
 }
-kotlin{
-	compilerOptions{
-		jvmTarget = JvmTarget.JVM_17
-	}
-}
+
 dependencies {
 	kapt(projects.annotationProcessors)
 
-	implementation(project(":actions-api"))
-	implementation(project(":lsp:api"))
-	implementation(project(":lsp:jvm-symbol-index"))
-	implementation(project(":completion-api"))
-	implementation(project(":editor-api"))
-	implementation(project(":event:eventbus-events"))
-	implementation(project(":kotlin-analysis-api"))
-	implementation(project(":project"))
+	implementation(projects.actions)
+	implementation(projects.lsp.api)
+	implementation(projects.lsp.jvmSymbolIndex)
+	implementation(projects.lsp.models)
+	implementation(projects.editorApi)
+	implementation(projects.event.eventbusEvents)
+	implementation(projects.kotlinAnalysisApi)
+	implementation(projects.utilities.shared)
+	implementation(projects.project)
 
 	implementation(libs.common.jsonrpc)
 	implementation(libs.common.kotlin)
 	implementation(libs.common.kotlin.coroutines.core)
 	implementation(libs.common.kotlin.coroutines.android)
+	implementation(libs.sentry.android.core)
 
-	implementation(project(":common"))
-	implementation(project(":build-logic"))
-	implementation(project(":lsp:indexing"))
-	implementation(projects.utilities.shared)
-	implementation(projects.codeEditor)
-	implementation(projects.editor)
-//	implementation(projects.logging.logger)
+	implementation(kotlin("stdlib"))
+
+	compileOnly(projects.buildingLogic)
+
+	compileOnly(projects.common)
+	compileOnly(projects.resources)
+	compileOnly(projects.editor)
+	compileOnly(projects.logging)
 }

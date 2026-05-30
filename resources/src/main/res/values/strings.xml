@@ -417,5 +417,12 @@
     <string name="remote_url">Remote url</string>
     <string name="pick">Pick</string>
     <string name="pick_color">Pick Color</string>
+    <string name="action_import_classes">Import Classes</string>
+    <string name="msg_yesno_def_title">Please confirm</string>
+    <string name="msg_yesno_def_message">Are you sure?</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="action_comment_line">Comment Line</string>
+    <string name="action_uncomment_line">Uncomment Line</string>
 
 </resources>

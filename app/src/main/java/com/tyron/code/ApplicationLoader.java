@@ -58,6 +58,9 @@ import io.github.rosemoe.sora.langs.textmate.registry.FileProviderRegistry;
 import io.github.rosemoe.sora.langs.textmate.registry.GrammarRegistry;
 // new
 import io.github.rosemoe.sora.langs.textmate.registry.provider.AssetsFileResolver;
+import io.sentry.Sentry;
+import io.sentry.android.core.SentryAndroid;
+
 import java.security.Security;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.jetbrains.kotlin.cli.jvm.compiler.CompatKt;
@@ -78,6 +81,7 @@ public class ApplicationLoader extends Application {
   @Override
   public void onCreate() {
     super.onCreate();
+      SentryAndroid.init(this);
 
     addProviders();
     try {
@@ -122,7 +126,7 @@ public class ApplicationLoader extends Application {
       IJdkDistributionProvider.getInstance().loadDistributions();
     System.setProperty("java.awt.headless","true");
     //uncomment it if you removed or disabled KotlinEnvironment class
-//    CompatKt.setupIdeaStandaloneExecution();
+    CompatKt.setupIdeaStandaloneExecution();
 
     runStartup();
   }

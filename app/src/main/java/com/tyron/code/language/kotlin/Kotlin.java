@@ -2,7 +2,6 @@ package com.tyron.code.language.kotlin;
 
 import com.tyron.code.ApplicationLoader;
 import com.tyron.code.language.Language;
-import com.tyron.common.ApplicationProvider;
 import com.tyron.common.SharedPreferenceKeys;
 import com.tyron.editor.Editor;
 import java.io.File;
@@ -15,10 +14,9 @@ public class Kotlin implements Language {
 
   @Override
   public io.github.rosemoe.sora.lang.Language get(Editor editor) {
-  //  return useFastKotlinLsp() ? new KotlinLanguage2(editor) : new KotlinLanguage(editor);
-    return new KotlinLanguage(editor);
+    return useLegacyKotlinLsp() ? new KotlinLanguage(editor) : new KotlinLanguage2(editor);
   }
-  public boolean useFastKotlinLsp(){
-    return ApplicationLoader.getDefaultPreferences().getBoolean(SharedPreferenceKeys.FAST_KOTLIN_LSP, false);
+  public boolean useLegacyKotlinLsp(){
+    return ApplicationLoader.getDefaultPreferences().getBoolean(SharedPreferenceKeys.LEGACY_KOTLIN_LSP, false);
   }
 }

@@ -336,8 +336,8 @@ public class EditHelper {
     return s;
   }
 
-  private static final ClassTreePattern INSIDE_METHOD =
-      classTree().inside(NewClassTree.class).withParent(method());
+//  private static final ClassTreePattern INSIDE_METHOD =
+//      classTree().inside(NewClassTree.class).withParent(method());
 
   public static int indent(JavacUtilitiesProvider task, CompilationUnitTree root, Tree leaf) {
     Trees trees = task.getTrees();

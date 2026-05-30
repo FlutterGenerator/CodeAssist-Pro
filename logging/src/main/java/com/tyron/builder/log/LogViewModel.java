@@ -80,6 +80,10 @@ public class LogViewModel extends ViewModel {
     add(id, wrap(message, Diagnostic.Kind.ERROR));
   }
 
+  public void i(int id, String message) {
+    add(id, wrap(message, Diagnostic.Kind.NOTE));
+  }
+
   private DiagnosticWrapper wrap(String message, Diagnostic.Kind kind) {
     DiagnosticWrapper wrapper = new DiagnosticWrapper();
     wrapper.setMessage(message);

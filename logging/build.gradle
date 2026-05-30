@@ -27,7 +27,12 @@ android {
 }
 
 dependencies {
+
+    implementation('androidx.lifecycle:lifecycle-viewmodel:2.10.0-rc01')
+    implementation('androidx.lifecycle:lifecycle-viewmodel-ktx:2.10.0-rc01')
+    implementation('androidx.lifecycle:lifecycle-livedata:2.10.0-rc01')
     compileOnly project(path: ':android-stubs')
+    implementation(projects.resources)
 
     // diagnostics
     implementation project(path: ':javac')

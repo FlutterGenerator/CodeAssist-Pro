@@ -416,5 +416,8 @@
     <string name="environment_title">Environment</string>
     <string name="settings_openjdk_title">OpenJDK</string>
     <string name="settings_openjdk_desc">Configure</string>
+    <string name="use_legcy_kotlin_lsp_title">Use Legacy Kotlin Lsp</string>
+    <string name="use_legacy_kotlin_lsp_title">Use Legacy Kotlin-Lsp</string>
+    <string name="use_legacy_kotlin_lsp_desc">it\'s slow and Deprecated</string>
 
 </resources>
