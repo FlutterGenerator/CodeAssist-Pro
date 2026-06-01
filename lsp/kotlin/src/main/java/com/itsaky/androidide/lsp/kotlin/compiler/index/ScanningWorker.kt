@@ -5,6 +5,7 @@ import com.itsaky.androidide.lsp.kotlin.compiler.modules.KtModule
 import com.itsaky.androidide.lsp.kotlin.compiler.modules.asFlatSequence
 import com.itsaky.androidide.lsp.kotlin.compiler.modules.isSourceModule
 import com.itsaky.androidide.lsp.kotlin.utils.toNioPathOrNull
+import com.tyron.builder.log.IDELogger
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.isActive
 import org.appdevforall.codeonthego.indexing.jvm.JvmSymbolIndex
@@ -28,6 +29,7 @@ internal class ScanningWorker(
             .filter {
                 it.toNioPathOrNull()?.let { path -> kind.acceptsFile(path) } ?: run {
                     logger.warn("rejecting {} from kt source index", it)
+                    IDELogger.warn("rejecting %s from kt source index", it)
                     false
                 }
             }

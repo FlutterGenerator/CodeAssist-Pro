@@ -84,7 +84,7 @@ class JvmLibraryIndexingService(
 	}
 
 	private suspend fun reindexLibraries() {
-		Toast.makeText(Prefs.getContext(),"JvmSymbol is indexing,Please wait",Toast.LENGTH_SHORT).show()
+//		Toast.makeText(Prefs.getContext(),"JvmSymbol is indexing,Please wait",Toast.LENGTH_SHORT).show()
 		val index = this.libraryIndex ?: run {
 			log.warn("Not indexing libraries. Index not initialized.")
 			IDELogger.warn("Not indexing libraries. Index not initialized.")
@@ -117,7 +117,7 @@ class JvmLibraryIndexingService(
 		currentJars.add(BuildModule.getAndroidJar().absolutePath)
 		currentJars.add(BuildModule.getLambdaStubs().absolutePath)
 		log.info("{} JARs on classpath", currentJars.size)
-		IDELogger.info("{} JARs on classpath", currentJars.size)
+		IDELogger.info("%s JARs on classpath", currentJars.size)
 
 		// Step 1: Set the active set - this is instant.
 		// JARs not in the set become invisible to queries.
@@ -141,7 +141,7 @@ class JvmLibraryIndexingService(
 
 		if (newCount > 0) {
 			log.info("{} new JARs submitted for background indexing", newCount)
-			IDELogger.info("{} new JARs submitted for background indexing", newCount)
+			IDELogger.info("%s new JARs submitted for background indexing", newCount)
 		} else {
 			log.info("All JARs already cached, nothing to index")
 			IDELogger.info("All JARs already cached, nothing to index")

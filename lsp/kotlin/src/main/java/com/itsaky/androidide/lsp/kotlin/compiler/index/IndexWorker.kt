@@ -57,7 +57,7 @@ internal class IndexWorker(
 			debounceDuration = CompilationEnvironment.DEFAULT_FILE_MOD_EVENT_DEBOUNCE_DURATION
 		) { (path, ktFile), cancelChecker ->
 			logger.debug("Indexing modified file: {}", path)
-			IDELogger.debug("Indexing modified file: {}", path)
+			IDELogger.debug("Indexing modified file: %s", path)
 			indexSourceFile(project, ktFile, fileIndex, sourceIndex, cancelChecker)
 			sourceIndexCount++
 		}
@@ -73,7 +73,7 @@ internal class IndexWorker(
 				is IndexCommand.IndexSourceFile -> {
 					if (cmd.vf.fileSystem.protocol != "file") {
 						logger.warn("Unknown source file protocol: {}", cmd.vf.path)
-						IDELogger.warn("Unknown source file protocol: {}", cmd.vf.path)
+						IDELogger.warn("Unknown source file protocol: %s", cmd.vf.path)
 						continue
 					}
 
@@ -114,11 +114,11 @@ internal class IndexWorker(
 						sourceIndexCount,
 					)
 					IDELogger.info(
-						"Indexing complete: scanned={}, sourceIndexCount={}",
+						"Indexing complete: scanned=%s, sourceIndexCount=%s",
 						scanCount,
 						sourceIndexCount,
 					)
-					Toast.makeText(Prefs.getContext(),"Kotlin-Lsp, Indexing complete", Toast.LENGTH_SHORT).show()
+//					Toast.makeText(Prefs.getContext(),"Kotlin-Lsp, Indexing complete", Toast.LENGTH_SHORT).show()
 
 				}
 
@@ -140,7 +140,7 @@ internal class IndexWorker(
 
 				IndexCommand.SourceScanningComplete -> {
 					logger.info("Scanning complete. Found {} files to index.", scanCount)
-					IDELogger.info("Scanning complete. Found {} files to index.", scanCount)
+					IDELogger.info("Scanning complete. Found %s files to index.", scanCount)
 				}
 
 				IndexCommand.Stop -> break

@@ -1,5 +1,6 @@
 package org.appdevforall.codeonthego.indexing.util
 
+import com.tyron.builder.log.IDELogger
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -83,11 +84,14 @@ class BackgroundIndexer<T : Indexable>(
             try {
                 if (skipIfExists && index.containsSource(sourceId)) {
                     log.debug("Skipping already-indexed: {}", sourceId)
+                    IDELogger.debug("Skipping already-indexed: %s", sourceId)
                     progressListener?.onProgress(sourceId, IndexingEvent.Skipped)
                     return@launch
                 }
 
                 log.info("Indexing: {}", sourceId)
+                IDELogger.info("Indexing: %s", sourceId)
+
 
                 // Remove stale entries first
                 index.removeBySource(sourceId)
@@ -109,12 +113,15 @@ class BackgroundIndexer<T : Indexable>(
 
                 progressListener?.onProgress(sourceId, IndexingEvent.Completed(count))
                 log.info("Indexed {} entries from {}", count, sourceId)
+                IDELogger.info("Indexed %s entries from %s", count, sourceId)
 
             } catch (e: CancellationException) {
                 log.debug("Indexing cancelled: {}", sourceId)
+                IDELogger.debug("Indexing cancelled: %s", sourceId)
                 throw e
             } catch (e: Exception) {
                 log.error("Indexing failed: {}", sourceId, e)
+                IDELogger.error("Indexing failed: %s", sourceId, e)
                 progressListener?.onProgress(sourceId, IndexingEvent.Failed(e))
             } finally {
                 activeJobs.remove(sourceId)
@@ -169,6 +176,10 @@ class BackgroundIndexer<T : Indexable>(
         if (activeCount > 0) {
             log.warn(
                 "Closing indexer with {} active job(s); cancellation is cooperative and close will wait for completion",
+                activeCount,
+            )
+            IDELogger.warn(
+                "Closing indexer with %s active job(s); cancellation is cooperative and close will wait for completion",
                 activeCount,
             )
         }

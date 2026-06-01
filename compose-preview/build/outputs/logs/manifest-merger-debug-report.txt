@@ -1,0 +1,26 @@
+-- Merging decision tree log ---
+manifest
+ADDED from C:\Users\Brand\Desktop\projects\MyProjects\CodeAssist-Pro\compose-preview\src\main\AndroidManifest.xml:2:1-11:12
+INJECTED from C:\Users\Brand\Desktop\projects\MyProjects\CodeAssist-Pro\compose-preview\src\main\AndroidManifest.xml:2:1-11:12
+	package
+		INJECTED from C:\Users\Brand\Desktop\projects\MyProjects\CodeAssist-Pro\compose-preview\src\main\AndroidManifest.xml
+	xmlns:android
+		ADDED from C:\Users\Brand\Desktop\projects\MyProjects\CodeAssist-Pro\compose-preview\src\main\AndroidManifest.xml:2:11-69
+application
+ADDED from C:\Users\Brand\Desktop\projects\MyProjects\CodeAssist-Pro\compose-preview\src\main\AndroidManifest.xml:4:5-9:19
+activity#com.itsaky.androidide.compose.preview.ComposePreviewActivity
+ADDED from C:\Users\Brand\Desktop\projects\MyProjects\CodeAssist-Pro\compose-preview\src\main\AndroidManifest.xml:5:9-8:75
+	android:exported
+		ADDED from C:\Users\Brand\Desktop\projects\MyProjects\CodeAssist-Pro\compose-preview\src\main\AndroidManifest.xml:7:13-37
+	android:theme
+		ADDED from C:\Users\Brand\Desktop\projects\MyProjects\CodeAssist-Pro\compose-preview\src\main\AndroidManifest.xml:8:13-72
+	android:name
+		ADDED from C:\Users\Brand\Desktop\projects\MyProjects\CodeAssist-Pro\compose-preview\src\main\AndroidManifest.xml:6:13-88
+uses-sdk
+INJECTED from C:\Users\Brand\Desktop\projects\MyProjects\CodeAssist-Pro\compose-preview\src\main\AndroidManifest.xml reason: use-sdk injection requested
+INJECTED from C:\Users\Brand\Desktop\projects\MyProjects\CodeAssist-Pro\compose-preview\src\main\AndroidManifest.xml
+INJECTED from C:\Users\Brand\Desktop\projects\MyProjects\CodeAssist-Pro\compose-preview\src\main\AndroidManifest.xml
+	android:targetSdkVersion
+		INJECTED from C:\Users\Brand\Desktop\projects\MyProjects\CodeAssist-Pro\compose-preview\src\main\AndroidManifest.xml
+	android:minSdkVersion
+		INJECTED from C:\Users\Brand\Desktop\projects\MyProjects\CodeAssist-Pro\compose-preview\src\main\AndroidManifest.xml

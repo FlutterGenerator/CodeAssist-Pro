@@ -3857,6 +3857,7 @@ drawable ic_call_decline_low
 drawable ic_clear_black_24
 drawable ic_clear_black_24dp
 drawable ic_clock_black_24dp
+drawable ic_close
 drawable ic_code
 drawable ic_debug
 drawable ic_done
@@ -3867,6 +3868,7 @@ drawable ic_expand_less_22px
 drawable ic_expand_more_22px
 drawable ic_folder_zip
 drawable ic_git
+drawable ic_gradle
 drawable ic_groovy
 drawable ic_icon_manager
 drawable ic_icons8_discord
@@ -3890,6 +3892,7 @@ drawable ic_mtrl_chip_checked_black
 drawable ic_mtrl_chip_checked_circle
 drawable ic_mtrl_chip_close_circle
 drawable ic_open_project
+drawable ic_preview_layout
 drawable ic_project_information
 drawable ic_pub
 drawable ic_round_email_24
@@ -5437,6 +5440,14 @@ string pick_color
 string please_wait
 string preference_copied
 string preparing_for_import
+string preview_build_project
+string preview_build_required_message
+string preview_build_required_title
+string preview_building_project
+string preview_empty_message
+string preview_empty_title
+string preview_error_title
+string preview_initializing
 string project_already_exists
 string project_exported_successfully
 string project_import_cancelled
@@ -5558,10 +5569,12 @@ string text_to_search
 string title_activity_settings
 string title_add_remove_remote
 string title_commit
+string title_compose_preview
 string title_confirm_project_close
 string title_create_remove_branch
 string title_fetching
 string title_reset
+string toggle_preview_mode
 string use_fast_jar_file_system_desc
 string use_fast_jar_file_system_title
 string use_fast_kotlin_lsp_desc
@@ -5617,7 +5630,10 @@ style Animation_Material3_SideSheetDialog_Right
 style Animation_MaterialComponents_BottomSheetDialog
 style AppTheme
 style AppThemeNew
+style AppTheme_ComposePreviewSheet
+style AppTheme_ComposePreviewSheet_Modal
 style AppTheme_MaterialAlertDialog
+style AppTheme_ShapeAppearance_ComposePreviewSheet
 style BasePreferenceThemeOverlay
 style Base_AlertDialog_AppCompat
 style Base_AlertDialog_AppCompat_Light

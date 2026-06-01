@@ -1,0 +1,35 @@
+R_DEF: Internal format may change without notice
+local
+drawable ic_view_grid
+drawable ic_view_single
+id action_toggle_mode
+id buildProjectButton
+id composePreview
+id divider
+id editorContainer
+id emptyContainer
+id errorBuildButton
+id errorContainer
+id errorDetails
+id errorMessage
+id errorOverlay
+id errorTitle
+id initializingText
+id loadingIndicator
+id loadingOverlay
+id needsBuildContainer
+id previewContainer
+id previewFrame
+id previewLabel
+id previewListContainer
+id previewScrollView
+id previewSelector
+id singlePreviewView
+id splitContainer
+id statusSubtext
+id statusText
+id toolbar
+layout activity_compose_preview
+layout fragment_compose_preview
+layout item_preview_card
+menu menu_compose_preview

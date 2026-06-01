@@ -11,6 +11,9 @@ import androidx.preference.PreferenceManager;
 import com.developer.crashx.config.CrashConfig;
 import com.google.android.material.color.DynamicColors;
 import com.itsaky.androidide.app.configuration.IJdkDistributionProvider;
+import com.itsaky.androidide.compose.preview.PreviewComposeAction;
+import com.itsaky.androidide.compose.preview.compiler.PreviewKotlinCompiler;
+import com.itsaky.androidide.lsp.kotlin.completion.KotlinSnippetRepository;
 import com.tyron.actions.ActionManager;
 import com.tyron.builder.BuildModule;
 import com.tyron.code.event.EventManager;
@@ -127,6 +130,8 @@ public class ApplicationLoader extends Application {
     System.setProperty("java.awt.headless","true");
     //uncomment it if you removed or disabled KotlinEnvironment class
     CompatKt.setupIdeaStandaloneExecution();
+      PreviewKotlinCompiler.init();
+      KotlinSnippetRepository.INSTANCE.init();
 
     runStartup();
   }
@@ -218,6 +223,7 @@ public class ApplicationLoader extends Application {
 
           // kotlin actions
 //          KotlinCompletionModule.registerActions(manager);
+            manager.registerAction(PreviewComposeAction.ID,new PreviewComposeAction());
         });
     startupManager.startup();
   }

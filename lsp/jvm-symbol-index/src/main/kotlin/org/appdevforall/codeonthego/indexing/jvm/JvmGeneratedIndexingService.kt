@@ -2,6 +2,7 @@ package org.appdevforall.codeonthego.indexing.jvm
 
 import android.content.Context
 import com.itsaky.androidide.tasks.cancelIfActive
+import com.tyron.builder.log.IDELogger
 import com.tyron.builder.project.IProjectManager
 import com.tyron.builder.project.api.AndroidModule
 import kotlinx.coroutines.CoroutineScope
@@ -63,6 +64,7 @@ class JvmGeneratedIndexingService(
 		this.generatedIndex = index
 		registry.register(JVM_GENERATED_SYMBOL_INDEX, index)
 		log.info("JVM generated symbol index initialized")
+		IDELogger.info("JVM generated symbol index initialized")
 
 		// Kick off an initial index pass for any already-built JARs.
 		coroutineScope.launch {
@@ -85,11 +87,13 @@ class JvmGeneratedIndexingService(
 	private suspend fun reindexGeneratedJars(forceReindex: Boolean) {
 		val index = this.generatedIndex ?: run {
 			log.warn("Not indexing generated JARs — index not initialized.")
+			IDELogger.warn("Not indexing generated JARs — index not initialized.")
 			return
 		}
 
 		val workspace = IProjectManager.getInstance().currentProject ?: run {
 			log.warn("Not indexing generated JARs — workspace model not available.")
+			IDELogger.warn("Not indexing generated JARs — workspace model not available.")
 			return
 		}
 
@@ -105,6 +109,7 @@ class JvmGeneratedIndexingService(
 //				.toSet()
 
 		log.info("{} generated JARs found", generatedJars.size)
+		IDELogger.info("%s generated JARs found", generatedJars.size)
 
 		// Make exactly these JARs visible; remove stale ones from scope.
 		index.setActiveSources(generatedJars)
@@ -121,8 +126,10 @@ class JvmGeneratedIndexingService(
 
 		if (submitted > 0) {
 			log.info("{} generated JARs submitted for background indexing (force={})", submitted, forceReindex)
+			IDELogger.info("%s generated JARs submitted for background indexing (force=%s)", submitted, forceReindex)
 		} else {
 			log.info("All generated JARs already cached, nothing to index")
+			IDELogger.info("All generated JARs already cached, nothing to index")
 		}
 	}
 

@@ -25,7 +25,7 @@ object FilePermissionChecker {
                         intent.setData("package:${ctx.packageName}".toUri())
                         ctx.startActivity(intent)
                     })
-                }
+                }.create().show()
             }
         }
     }

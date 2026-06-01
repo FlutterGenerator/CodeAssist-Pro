@@ -8,6 +8,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.google.common.base.Throwables;
+import com.itsaky.androidide.compose.preview.ui.BuildComposeEvent;
 import com.itsaky.androidide.eventbus.events.project.ProjectInitializedEvent;
 import com.itsaky.androidide.lsp.api.DefaultLanguageServerRegistry;
 import com.itsaky.androidide.lsp.api.ILanguageServerRegistry;
@@ -26,6 +27,7 @@ import com.tyron.code.ApplicationLoader;
 import com.tyron.code.event.FileCreatedEvent;
 import com.tyron.code.event.FileDeletedEvent;
 import com.tyron.code.template.CodeTemplate;
+import com.tyron.code.ui.main.MainFragment;
 import com.tyron.code.util.ProjectUtils;
 import com.tyron.common.Prefs;
 import com.tyron.common.logging.IdeLog;
@@ -210,6 +212,9 @@ public class ProjectManager {
             mCurrentProject.getEventManager().dispatchEvent(new XmlReparsedEvent(event.getDeletedFile()));
         });
         // listen for newly created files and notify the resources repository
+        mCurrentProject.getEventManager().subscribeEvent(BuildComposeEvent.class,(event, unsubscribe) -> {
+            MainFragment.getInstance().compile(BuildType.COMPOSE);
+        });
         mCurrentProject.getEventManager().subscribeEvent(FileCreatedEvent.class, (event, u) -> modifiedEventConsumer.accept(event.getFile()));
         mCurrentProject.getEventManager().subscribeEvent(XmlReparsedEvent.class,
                 (event, unsubscribe) -> DebouncerStore.DEFAULT.registerOrGetDebouncer("ResourceInjector").debounce(300, () -> ProgressManager.getInstance().runNonCancelableAsync(() -> {
@@ -224,7 +229,6 @@ public class ProjectManager {
                     if (module2 instanceof AndroidModule && indexFiles.containsKey(RES)) {
                         try {
                             InjectResourcesTask.inject(mCurrentProject, (AndroidModule) module2);
-                            //InjectResourcesTask.inject(project, (AndroidModule) module);
                             InjectViewBindingTask.inject(mCurrentProject, (AndroidModule) module2);
                         } catch (IOException e) {
                             IdeLog.getLogger().severe(e.getMessage());
@@ -320,7 +324,7 @@ public class ProjectManager {
 
 //              IProjectManager.getInstance().getIndexingServiceManager().onProjectSynced();
                         // indexModule(module);
-                        // CompilationInfo info = CompilationInfo.get(module,true);
+                         CompilationInfo info = CompilationInfo.get(module,true);
 
                     }
                 } catch (Throwable e) {
@@ -331,19 +335,19 @@ public class ProjectManager {
         }
         if (Prefs.useLegacyKotlinLsp()) {
             KotlinEnvironment kotlinEnvironment = KotlinEnvironment.Companion.get(module, true);
+        }else {
+            var indexingServiceManager = IProjectManager.getInstance().getIndexingServiceManager();
+            indexingServiceManager.register(
+                    new JvmLibraryIndexingService(Prefs.getContext())
+            );
+            indexingServiceManager.register(
+                    new JvmGeneratedIndexingService(
+                            Prefs.getContext()
+                    )
+            );
+            indexingServiceManager.onProjectSynced();
         }
 
-
-        var indexingServiceManager = IProjectManager.getInstance().getIndexingServiceManager();
-        indexingServiceManager.register(
-                new JvmLibraryIndexingService(Prefs.getContext())
-        );
-        indexingServiceManager.register(
-                new JvmGeneratedIndexingService(
-                        Prefs.getContext()
-                )
-        );
-        indexingServiceManager.onProjectSynced();
         var projectInitializedEvent = new ProjectInitializedEvent();
         projectInitializedEvent.put(Project.class, getCurrentProject());
         ((DefaultLanguageServerRegistry) ILanguageServerRegistry.Companion.getDefault()).onProjectInitialized(projectInitializedEvent);

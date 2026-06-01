@@ -71,4 +71,5 @@ dependencies {
 	compileOnly(projects.resources)
 	compileOnly(projects.editor)
 	compileOnly(projects.logging)
+	compileOnly(projects.actionsApi)
 }

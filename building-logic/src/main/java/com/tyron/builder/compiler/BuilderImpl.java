@@ -82,11 +82,19 @@ public abstract class BuilderImpl<T extends Module> implements Builder<T> {
         }
         task.clean();
         mTasksRan.forEach(Task::clean);
+        var composeCallback = ComposeStaticCallback.callback;
+        if (composeCallback != null) {
+          composeCallback.done(ComposeStaticCallback.Status.FAILED);
+        }
         throw e;
       }
       mTasksRan.add(task);
     }
     mTasksRan.forEach(Task::clean);
+    var composeCallback = ComposeStaticCallback.callback;
+    if (composeCallback != null) {
+      composeCallback.done(ComposeStaticCallback.Status.SUCCESS);
+    }
 
     long milliseconds = Duration.between(now, Instant.now()).toMillis();
     long seconds = TimeUnit.MILLISECONDS.toSeconds(milliseconds);

@@ -88,6 +88,10 @@ fun JavaModuleImpl.searchSourceFileRelatively(file: Path?): SourceClassTrie.Sour
     return null
 }
 
+fun JavaModuleImpl.getCompileClasspaths(): List<File>{
+    return getLibraries()
+}
+
 fun JavaModuleImpl.getIntermediateClasspaths(): Set<File> {
     val result = mutableSetOf<File>()
 //    val variant = getSelectedVariant()?.name ?: "debug"

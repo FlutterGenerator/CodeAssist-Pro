@@ -1,0 +1,19 @@
+1<?xml version="1.0" encoding="utf-8"?>
+2<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+3    package="dev.mutwakil.codeassist.compose.preview" >
+4
+5    <uses-sdk android:minSdkVersion="26" />
+6
+7    <application>
+7-->C:\Users\Brand\Desktop\projects\MyProjects\CodeAssist-Pro\compose-preview\src\main\AndroidManifest.xml:4:5-9:19
+8        <activity
+8-->C:\Users\Brand\Desktop\projects\MyProjects\CodeAssist-Pro\compose-preview\src\main\AndroidManifest.xml:5:9-8:75
+9            android:name="com.itsaky.androidide.compose.preview.ComposePreviewActivity"
+9-->C:\Users\Brand\Desktop\projects\MyProjects\CodeAssist-Pro\compose-preview\src\main\AndroidManifest.xml:6:13-88
+10            android:exported="false"
+10-->C:\Users\Brand\Desktop\projects\MyProjects\CodeAssist-Pro\compose-preview\src\main\AndroidManifest.xml:7:13-37
+11            android:theme="@style/Theme.Material3.DayNight.NoActionBar" />
+11-->C:\Users\Brand\Desktop\projects\MyProjects\CodeAssist-Pro\compose-preview\src\main\AndroidManifest.xml:8:13-72
+12    </application>
+13
+14</manifest>

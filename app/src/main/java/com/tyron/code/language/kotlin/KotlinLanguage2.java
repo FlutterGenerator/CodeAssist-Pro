@@ -234,5 +234,6 @@ public class KotlinLanguage2 extends EmptyTextMateLanguage
   public void destroy() {
     analyzer.destroy();
     delegate.destroy();
+    Lookup.getDefault().unregister(ICancelChecker.class);
   }
 }

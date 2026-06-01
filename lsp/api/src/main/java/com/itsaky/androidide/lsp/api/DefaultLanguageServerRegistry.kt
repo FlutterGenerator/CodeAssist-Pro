@@ -20,6 +20,7 @@ import com.itsaky.androidide.eventbus.events.project.ProjectInitializedEvent
 import com.itsaky.androidide.lsp.debug.DebugClientConnectionResult
 import com.itsaky.androidide.lsp.debug.IDebugClient
 import com.tyron.builder.project.Project
+import com.tyron.common.Prefs
 import kotlinx.coroutines.CancellationException
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
@@ -115,6 +116,9 @@ class DefaultLanguageServerRegistry : ILanguageServerRegistry() {
 		sLogger.debug("Dispatching ProjectInitializedEvent to language servers...")
 		val servers = lock.readLock().withLock { mRegister.values.toList() }
 		for (server in servers) {
+			if (Prefs.useLegacyKotlinLsp().and(server.serverId.equals("ide.lsp.kotlin"))){
+				continue
+			}
 			server.setupWithProject(project)
 		}
 	}

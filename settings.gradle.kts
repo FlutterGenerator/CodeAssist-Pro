@@ -125,5 +125,6 @@ include(
     "editor",
     ":jaxp",
     "subprojects:fuzzysearch",
-    "build-tools:compose-compiler-plugin"
+    "build-tools:compose-compiler-plugin",
+    ":compose-preview"
 )

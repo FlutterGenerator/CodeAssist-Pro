@@ -212,6 +212,8 @@ dependencies {
     implementation(projects.lsp.jvmSymbolIndex)
     implementation(projects.lsp.models)
 
+    implementation(projects.composePreview)
+
 //    provider
     implementation(files("libs/mt-provider.jar"))
 

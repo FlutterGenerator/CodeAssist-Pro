@@ -7,6 +7,9 @@
 # Files for the ART/Dalvik VM
 *.dex
 
+# Compose preview downloaded JARs (generated during build)
+compose-preview/src/main/assets/compose/
+
 # Java class files
 *.class
 .idea
@@ -87,7 +90,7 @@ lint/outputs/
 lint/tmp/
 # lint/reports/
 /build/
-/build-logic/build/
+/building-logic/build/
 /lsp/kotlin-stdlib-generator/build/
 /lsp/kotlin-core/build/
 /lsp/kotlin/build/

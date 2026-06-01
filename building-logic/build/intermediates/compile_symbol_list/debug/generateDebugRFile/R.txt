@@ -3856,6 +3856,7 @@ int drawable ic_call_decline_low 0x0
 int drawable ic_clear_black_24 0x0
 int drawable ic_clear_black_24dp 0x0
 int drawable ic_clock_black_24dp 0x0
+int drawable ic_close 0x0
 int drawable ic_code 0x0
 int drawable ic_debug 0x0
 int drawable ic_done 0x0
@@ -3866,6 +3867,7 @@ int drawable ic_expand_less_22px 0x0
 int drawable ic_expand_more_22px 0x0
 int drawable ic_folder_zip 0x0
 int drawable ic_git 0x0
+int drawable ic_gradle 0x0
 int drawable ic_groovy 0x0
 int drawable ic_icon_manager 0x0
 int drawable ic_icons8_discord 0x0
@@ -3889,6 +3891,7 @@ int drawable ic_mtrl_chip_checked_black 0x0
 int drawable ic_mtrl_chip_checked_circle 0x0
 int drawable ic_mtrl_chip_close_circle 0x0
 int drawable ic_open_project 0x0
+int drawable ic_preview_layout 0x0
 int drawable ic_project_information 0x0
 int drawable ic_pub 0x0
 int drawable ic_round_email_24 0x0
@@ -5436,6 +5439,14 @@ int string pick_color 0x0
 int string please_wait 0x0
 int string preference_copied 0x0
 int string preparing_for_import 0x0
+int string preview_build_project 0x0
+int string preview_build_required_message 0x0
+int string preview_build_required_title 0x0
+int string preview_building_project 0x0
+int string preview_empty_message 0x0
+int string preview_empty_title 0x0
+int string preview_error_title 0x0
+int string preview_initializing 0x0
 int string project_already_exists 0x0
 int string project_exported_successfully 0x0
 int string project_import_cancelled 0x0
@@ -5557,10 +5568,12 @@ int string text_to_search 0x0
 int string title_activity_settings 0x0
 int string title_add_remove_remote 0x0
 int string title_commit 0x0
+int string title_compose_preview 0x0
 int string title_confirm_project_close 0x0
 int string title_create_remove_branch 0x0
 int string title_fetching 0x0
 int string title_reset 0x0
+int string toggle_preview_mode 0x0
 int string use_fast_jar_file_system_desc 0x0
 int string use_fast_jar_file_system_title 0x0
 int string use_fast_kotlin_lsp_desc 0x0
@@ -5616,7 +5629,10 @@ int style Animation_Material3_SideSheetDialog_Right 0x0
 int style Animation_MaterialComponents_BottomSheetDialog 0x0
 int style AppTheme 0x0
 int style AppThemeNew 0x0
+int style AppTheme_ComposePreviewSheet 0x0
+int style AppTheme_ComposePreviewSheet_Modal 0x0
 int style AppTheme_MaterialAlertDialog 0x0
+int style AppTheme_ShapeAppearance_ComposePreviewSheet 0x0
 int style BasePreferenceThemeOverlay 0x0
 int style Base_AlertDialog_AppCompat 0x0
 int style Base_AlertDialog_AppCompat_Light 0x0

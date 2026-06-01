@@ -5,7 +5,8 @@ import java.io.IOException;
 public enum BuildType {
   RELEASE("RELEASE"),
   DEBUG("DEBUG"),
-  AAB("AAB");
+  AAB("AAB"),
+  COMPOSE("COMPOSE");
 
   private final String stringValue;
 

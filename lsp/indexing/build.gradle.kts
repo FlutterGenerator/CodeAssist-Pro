@@ -22,5 +22,5 @@ dependencies {
 	api(libs.kotlinx.coroutines.core)
 	api(libs.tooling.slf4j)
 
-//	api(projects.logge
+	api(projects.logging)
 }

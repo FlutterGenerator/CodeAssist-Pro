@@ -61,20 +61,11 @@ public class JavacParser {
     // TODO: 5/7/2026 its just a test, improve it
     System.setProperty(PROP_ANDROIDIDE_JAVA_HOME, JAVA_HOME.getAbsolutePath());
     int i = 1;
-    if (i!=1) {
-      setLatestSourceVersion(SourceVersion.RELEASE_8);
-      setLatestSupportedSourceVersion(SourceVersion.RELEASE_11);
-      disableModules();
-      Collections.addAll(
-        options,
-        "-bootclasspath",
-        joinPath(Arrays.asList(BuildModule.getAndroidJar(), BuildModule.getLambdaStubs())));
-    } else {
       setLatestSourceVersion(SourceVersion.RELEASE_11);
       setLatestSupportedSourceVersion(SourceVersion.RELEASE_11);
       disableModules();
-      cpInfo.addAll(Arrays.asList(BuildModule.getLambdaStubs(),BuildModule.getAndroidJar()));
-    }
+//      cpInfo.addAll(Arrays.asList(BuildModule.getLambdaStubs(),BuildModule.getAndroidJar()));
+
     setupCompileOptions(options);
     Collections.addAll(
         options,

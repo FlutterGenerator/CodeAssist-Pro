@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="dev.mutwakil.codeassist.compose.preview" >
+
+    <uses-sdk android:minSdkVersion="26" />
+
+    <application>
+        <activity
+            android:name="com.itsaky.androidide.compose.preview.ComposePreviewActivity"
+            android:exported="false"
+            android:theme="@style/Theme.Material3.DayNight.NoActionBar" />
+    </application>
+
+</manifest>

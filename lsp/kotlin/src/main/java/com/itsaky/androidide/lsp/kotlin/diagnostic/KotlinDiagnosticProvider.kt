@@ -8,6 +8,7 @@ import com.itsaky.androidide.lsp.models.DiagnosticItem
 import com.itsaky.androidide.lsp.models.DiagnosticResult
 import com.itsaky.androidide.lsp.models.DiagnosticSeverity
 import com.itsaky.androidide.progress.ICancelChecker
+import com.tyron.builder.log.IDELogger
 import kotlinx.coroutines.CancellationException
 import org.jetbrains.kotlin.analysis.api.KaExperimentalApi
 import org.jetbrains.kotlin.analysis.api.components.KaDiagnosticCheckerFilter
@@ -31,13 +32,16 @@ context(env: CompilationEnvironment)
 internal fun collectDiagnosticsFor(file: Path, cancelChecker: ICancelChecker): DiagnosticResult {
 	try {
 		logger.info("analyzing file: {}", file)
+		IDELogger.info("analyzing file: %s", file)
 		return doAnalyze(file, cancelChecker)
 	} catch (err: Throwable) {
 		if (err is CancellationException) {
 			logger.debug("analysis cancelled")
+			IDELogger.debug("analysis cancelled")
 			throw err
 		}
 		logger.error("an error occurred analyzing file: {}", file, err)
+		IDELogger.error("an error occurred analyzing file: %s", file, err)
 		return DiagnosticResult.NO_UPDATE
 	}
 }
@@ -53,6 +57,7 @@ private fun doAnalyze(file: Path, cancelChecker: ICancelChecker): DiagnosticResu
 
 	if (ktFile == null) {
 		logger.warn("File {} is not accessible", file)
+		IDELogger.warn("File %s is not accessible", file)
 		return DiagnosticResult.NO_UPDATE
 	}
 
@@ -88,6 +93,7 @@ private fun doAnalyze(file: Path, cancelChecker: ICancelChecker): DiagnosticResu
 	}
 
 	logger.info("Found {} diagnostics", diagnostics.size)
+	IDELogger.info("Found %s diagnostics", diagnostics.size)
 
 	return DiagnosticResult(
 		file = file,

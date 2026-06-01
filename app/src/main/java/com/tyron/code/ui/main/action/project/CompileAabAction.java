@@ -58,7 +58,7 @@ public class CompileAabAction extends AnAction {
     Module module = project.getMainModule();
     List<String> plugins = module.getPlugins();
     if (plugins==null){
-      ProjectManager.getInstance().addOnProjectOpenListener(p->update(event));
+//      ProjectManager.getInstance().addOnProjectOpenListener(p->update(event));
       return;
     }
     String pluginType = plugins.toString();

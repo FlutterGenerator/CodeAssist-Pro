@@ -14,6 +14,8 @@ public class BuildModule {
   private static File sKotlincZip;
   private static File sJavacZip;
 
+  private static File sComposePlugin;
+
   public static void initialize(Context applicationContext) {
     sApplicationContext = applicationContext.getApplicationContext();
   }
@@ -66,6 +68,21 @@ public class BuildModule {
     }
     return sSimpleJdkModule;
   }
+
+  public static File getsComposePlugin() {
+    if (sComposePlugin == null) {
+      sComposePlugin = new File(BuildModule.getContext().getFilesDir(), "kotlin-compose-compiler-plugin-embeddable-2.3.20.jar");
+
+      if (!sComposePlugin.exists()) {
+        Decompress.unzipFromAssets(
+                BuildModule.getContext(),
+                "simple-jdk-module.zip",
+                sComposePlugin.getParentFile().getAbsolutePath());
+      }
+    }
+    return sComposePlugin;
+  }
+
 
   /*public static File getKotlinc() {
     if (sKotlincZip == null) {
