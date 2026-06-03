@@ -71,20 +71,14 @@ public class BuildModule {
     return sSimpleJdkModule;
   }
 
-  public static File getsComposePlugin() {
-    var oldPlugin = new File(Environment.COMPOSE_HOME, "compose-compiler-plugin.jar");
-    if (oldPlugin.exists()){
-      oldPlugin.delete();
-    }
+  public static File getComposePlugin() {
     if (sComposePlugin == null) {
-      sComposePlugin = new File(Environment.COMPOSE_HOME, "kotlin-compose-compiler-plugin-embeddable-2.3.20.jar");
+      sComposePlugin = new File(Environment.COMPOSE_HOME, "compose-compiler-plugin.jar");
 
-      if (!sComposePlugin.exists()) {
         Decompress.unzipFromAssets(
                 BuildModule.getContext(),
-                "kotlin-compose-compiler-plugin-embeddable-2.3.20.jar",
+                "compose-compiler-plugin.zip",
                 sComposePlugin.getParentFile().getAbsolutePath());
-      }
     }
     return sComposePlugin;
   }

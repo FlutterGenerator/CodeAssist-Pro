@@ -17,6 +17,8 @@ import java.lang.reflect.Method;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -234,7 +236,7 @@ public class JavaModuleImpl extends ModuleImpl implements JavaModule {
     File checkResStaticFolder = new File(libFolder, "res.apk");
     File checkSymbolFile = new File(libFolder, "R.txt");
     File checkPublicRes = new File(libFolder, "public.txt");
-    List<File> jars = getJars(libFolder);
+    List<File> jars = new ArrayList<>();//getJars(libFolder);
     CodeAssistAndroidLibrary lib = new CodeAssistAndroidLibrary();
     lib.setDeclaration(libFolder.getName());
 
@@ -254,9 +256,12 @@ public class JavaModuleImpl extends ModuleImpl implements JavaModule {
            isAar = true;
       lib.setPublicResources(checkPublicRes);
     }
-    if (!jars.isEmpty()) {
+//    if (!jars.isEmpty()) {
       if (isAar) {
-        lib.setCompileJarFiles(jars);
+        if (check.exists()) {
+         jars.add(check);
+          lib.setCompileJarFiles(jars);
+        }
         addLibrary(lib);
       } else {
         //    jars.forEach(it->addLibrary(CodeAssistLibrary.forJar(it)));
@@ -264,7 +269,7 @@ public class JavaModuleImpl extends ModuleImpl implements JavaModule {
           addLibrary(CodeAssistLibrary.forJar(check));
         }
       }
-    }
+//    }
   }
 
   public void addApiLibrary(@NonNull File libFolder) {
@@ -274,7 +279,7 @@ public class JavaModuleImpl extends ModuleImpl implements JavaModule {
     File checkResStaticFolder = new File(libFolder, "res.apk");
     File checkSymbolFile = new File(libFolder, "R.txt");
     File checkPublicRes = new File(libFolder, "public.txt");
-    List<File> jars = getJars(libFolder);
+    List<File> jars = new ArrayList<>(); //getJars(libFolder);
     CodeAssistAndroidLibrary lib = new CodeAssistAndroidLibrary();
     lib.setDeclaration(libFolder.getName());
 
@@ -294,9 +299,12 @@ public class JavaModuleImpl extends ModuleImpl implements JavaModule {
       //     isAar = true;
       lib.setPublicResources(checkPublicRes);
     }
-    if (!jars.isEmpty()) {
+//    if (!jars.isEmpty()) {
       if (isAar) {
-        lib.setCompileJarFiles(jars);
+        if (check.exists()) {
+          jars.add(check);
+          lib.setCompileJarFiles(jars);
+        }
         addApiLibrary(lib);
       } else {
         //    jars.forEach(it->addApiLibrary(CodeAssistLibrary.forJar(it)));
@@ -304,7 +312,7 @@ public class JavaModuleImpl extends ModuleImpl implements JavaModule {
           addApiLibrary(CodeAssistLibrary.forJar(check));
         }
       }
-    }
+//    }
   }
 
   private List<File> getJars(File dir) {

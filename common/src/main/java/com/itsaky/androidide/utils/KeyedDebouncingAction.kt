@@ -30,7 +30,11 @@ class KeyedDebouncingAction<T: Any>(
         val job: Job,
     ) {
         fun cancel() {
+            try{
             channel.close()
+            }catch (e: Exception){
+                e.printStackTrace()
+            }
             job.cancel()
         }
     }

@@ -70,6 +70,7 @@ import org.jetbrains.kotlin.config.jdkRelease
 import org.jetbrains.kotlin.config.languageVersionSettings
 import org.jetbrains.kotlin.config.messageCollector
 import org.jetbrains.kotlin.config.moduleName
+import org.jetbrains.kotlin.config.noJdk
 import org.jetbrains.kotlin.config.useFir
 import org.jetbrains.kotlin.load.kotlin.MetadataFinderFactory
 import org.jetbrains.kotlin.load.kotlin.VirtualFileFinderFactory
@@ -319,6 +320,7 @@ internal abstract class AbstractCompilationEnvironment(
             this.jdkHome = this@AbstractCompilationEnvironment.jdkHome.toFile()
             this.jdkRelease = this@AbstractCompilationEnvironment.jdkRelease
             this.messageCollector = createMessageCollector()
+            this.noJdk = true
         }
 
     override fun close() {

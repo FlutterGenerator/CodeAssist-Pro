@@ -162,7 +162,7 @@ class ComposeClasspathManager(private val context: Context) {
 
     fun getCompilerPlugin(): File {
 //        return File(composeDir, "compose-compiler-plugin.jar")
-        return BuildModule.getsComposePlugin()
+        return BuildModule.getComposePlugin()
     }
 
     fun getKotlinStdlib(): File? {
