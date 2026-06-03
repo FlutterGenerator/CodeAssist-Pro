@@ -16,6 +16,7 @@ import org.eclipse.jgit.lib.StoredConfig
 import com.tyron.common.SharedPreferenceKeys
 import android.content.SharedPreferences
 import com.tyron.code.ApplicationLoader
+import com.tyron.resources.databinding.LayoutAddRemoteBinding
 
 object GitRemoteTask {
       
@@ -25,7 +26,7 @@ object GitRemoteTask {
     
        val inflater = LayoutInflater.from(context).context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater        
        inflater.inflate(R.layout.base_textinput_layout, null)
-       
+
        val binding = BaseTextinputLayoutBinding.inflate(inflater,null,false)
        binding.textinputLayout.setHint(R.string.remote_name)
        val builder = MaterialAlertDialogBuilder(context)
@@ -41,12 +42,25 @@ object GitRemoteTask {
        ThreadUtils.runOnUiThread { Toast.makeText(context, context.getString(R.string.empty_remote), Toast.LENGTH_SHORT).show() }           
        } else {  
     
-       val userName  = sharedPreferences.getString(SharedPreferenceKeys.GIT_USER_NAME,"")  
-       val url : String = "git@github.com:"+ userName.toString()+"/" + project.getRootFile().getName()+ ".git"
-       val  config : StoredConfig = Git.open(project.getRootFile()).getRepository().getConfig()
-       config.setString("remote", remote, "url", url)
-       config.setString("remote", remote, "fetch", "+refs/heads/*:refs/remotes/" + remote +"/*");
-       config.save() 
+       val userName  = sharedPreferences.getString(SharedPreferenceKeys.GIT_USER_NAME,"")
+              if (userName.isNullOrBlank()){
+                     ThreadUtils.runOnUiThread {
+                            Toast.makeText(
+                                   context,
+                                   context.getString(R.string.empty_username),
+                                   Toast.LENGTH_SHORT
+                            ).show()
+                     }
+                     return@executeAsyncProvideError
+              }
+       val url : String = "git@github.com:"+ userName +"/" + project.rootFile.getName()+ ".git"
+        Git.open(project.rootFile).use { git ->
+              val config = git.repository.config
+              config.setString("remote", remote, "url", url)
+              config.setString("remote", remote, "fetch", "+refs/heads/*:refs/remotes/" + remote +"/*");
+              config.save()
+       }
+
              
        }
        

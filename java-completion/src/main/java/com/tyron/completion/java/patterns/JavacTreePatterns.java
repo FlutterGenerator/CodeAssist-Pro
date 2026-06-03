@@ -11,6 +11,9 @@ import org.jetbrains.kotlin.com.intellij.patterns.ElementPattern;
 import org.jetbrains.kotlin.com.intellij.patterns.InitialPatternConditionPlus;
 import org.jetbrains.kotlin.com.intellij.util.ProcessingContext;
 
+import java.util.Collections;
+import java.util.List;
+
 public class JavacTreePatterns {
 
   public static JavacTreePattern.Capture<Tree> tree() {
@@ -46,6 +49,11 @@ public class JavacTreePatterns {
     return new JavacTreePattern.Capture<>(
         new InitialPatternConditionPlus<LiteralTree>(LiteralTree.class) {
           @Override
+          public List<ElementPattern<?>> getPatterns() {
+            return Collections.emptyList();
+          }
+
+          @Override
           public boolean accepts(@Nullable Object o, ProcessingContext context) {
             return o instanceof LiteralTree
                 && (value == null || value.accepts(((LiteralTree) o).getValue(), context));
@@ -57,6 +65,11 @@ public class JavacTreePatterns {
       @Nullable final ElementPattern<?> value) {
     return new JavacTreeElementPattern.Capture<>(
         new InitialPatternConditionPlus<LiteralTree>(LiteralTree.class) {
+          @Override
+          public List<ElementPattern<?>> getPatterns() {
+            return Collections.emptyList();
+          }
+
           @Override
           public boolean accepts(@Nullable Object o, ProcessingContext context) {
             return o instanceof LiteralTree

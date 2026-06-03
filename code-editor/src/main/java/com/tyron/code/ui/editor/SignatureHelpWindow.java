@@ -6,9 +6,11 @@ import android.text.SpannableStringBuilder;
 import android.text.style.ForegroundColorSpan;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import com.tyron.common.util.ResourceUtilsKt;
-import com.tyron.completion.model.signatures.SignatureHelp;
-import com.tyron.completion.model.signatures.SignatureInformation;
+
+import com.itsaky.androidide.lsp.models.SignatureHelp;
+import com.itsaky.androidide.lsp.models.SignatureInformation;
+import com.itsaky.androidide.utils.ResourceUtilsKt;
+
 import io.github.rosemoe.sora.event.SelectionChangeEvent;
 import io.github.rosemoe.sora.widget.base.EditorPopupWindow;
 import org.slf4j.Logger;
@@ -111,7 +113,7 @@ public class SignatureHelpWindow extends BaseEditorWindow {
    * @param result The builder to append spanned text to.
    */
   private void formatSignature(
-      @NonNull SignatureInformation signature, int paramIndex, SpannableStringBuilder result) {
+          @NonNull SignatureInformation signature, int paramIndex, SpannableStringBuilder result) {
 
     String name = signature.getLabel();
     name = name.substring(0, name.indexOf("("));

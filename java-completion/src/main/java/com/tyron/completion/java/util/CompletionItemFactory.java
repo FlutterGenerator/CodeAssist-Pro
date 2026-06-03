@@ -5,6 +5,8 @@ import static com.tyron.completion.java.util.ElementUtil.simpleType;
 import static com.tyron.completion.progress.ProgressManager.checkCanceled;
 
 import androidx.annotation.NonNull;
+
+import com.itsaky.androidide.lsp.snippets.ISnippet;
 import com.sun.source.tree.MethodTree;
 import com.sun.source.util.TreePath;
 import com.tyron.completion.DefaultInsertHandler;
@@ -14,7 +16,6 @@ import com.tyron.completion.java.provider.JavacUtilitiesProvider;
 import com.tyron.completion.model.CompletionItem;
 import com.tyron.completion.model.DrawableKind;
 import com.tyron.completion.model.SnippetCompletionItem;
-import com.tyron.completion.model.snippets.ISnippet;
 import io.github.rosemoe.sora.lang.completion.SnippetDescription;
 import io.github.rosemoe.sora.lang.completion.snippet.CodeSnippet;
 import io.github.rosemoe.sora.lang.completion.snippet.parser.CodeSnippetParser;
@@ -30,11 +31,11 @@ import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.ExecutableType;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Types;
-import org.jetbrains.kotlin.com.intellij.psi.PsiMethod;
-import org.jetbrains.kotlin.com.intellij.psi.PsiNamedElement;
-import org.jetbrains.kotlin.com.intellij.psi.PsiParameter;
-import org.jetbrains.kotlin.com.intellij.psi.PsiParameterList;
-import org.jetbrains.kotlin.com.intellij.psi.PsiType;
+//import org.jetbrains.kotlin.com.intellij.psi.PsiMethod;
+//import org.jetbrains.kotlin.com.intellij.psi.PsiNamedElement;
+//import org.jetbrains.kotlin.com.intellij.psi.PsiParameter;
+//import org.jetbrains.kotlin.com.intellij.psi.PsiParameterList;
+//import org.jetbrains.kotlin.com.intellij.psi.PsiType;
 
 public class CompletionItemFactory {
 
@@ -44,22 +45,22 @@ public class CompletionItemFactory {
    * @param element The psi element
    * @return the completion item instance
    */
-  public static CompletionItem forPsiElement(PsiNamedElement element) {
-    if (element instanceof PsiMethod) {
-      return forPsiMethod(((PsiMethod) element));
-    }
-    return item(element.getName());
-  }
+//  public static CompletionItem forPsiElement(PsiNamedElement element) {
+//    if (element instanceof PsiMethod) {
+//      return forPsiMethod(((PsiMethod) element));
+//    }
+//    return item(element.getName());
+//  }
 
-  public static CompletionItem forPsiMethod(PsiMethod psiMethod) {
-    CompletionItem item = new CompletionItem();
-    item.label = getMethodLabel(psiMethod);
-    item.desc = psiMethod.getReturnType().getPresentableText();
-    item.commitText = psiMethod.getName();
-    item.cursorOffset = item.commitText.length();
-    item.iconKind = DrawableKind.Method;
-    return item;
-  }
+//  public static CompletionItem forPsiMethod(PsiMethod psiMethod) {
+//    CompletionItem item = new CompletionItem();
+//    item.label = getMethodLabel(psiMethod);
+//    item.desc = psiMethod.getReturnType().getPresentableText();
+//    item.commitText = psiMethod.getName();
+//    item.cursorOffset = item.commitText.length();
+//    item.iconKind = DrawableKind.Method;
+//    return item;
+//  }
 
   public static CompletionItem packageSnippet(Path file) {
     String name = "com.tyron.test";
@@ -162,19 +163,19 @@ public class CompletionItemFactory {
     return " throws " + types;
   }
 
-  public static String getMethodLabel(@NonNull PsiMethod psiMethod) {
-    String name = psiMethod.getName();
-    String parameters = "";
-    if (psiMethod.hasParameters()) {
-      PsiParameterList parameterList = psiMethod.getParameterList();
-      parameters =
-          Arrays.stream(parameterList.getParameters())
-              .map(PsiParameter::getType)
-              .map(PsiType::getPresentableText)
-              .collect(Collectors.joining(", "));
-    }
-    return name + "(" + parameters + ")";
-  }
+//  public static String getMethodLabel(@NonNull PsiMethod psiMethod) {
+//    String name = psiMethod.getName();
+//    String parameters = "";
+//    if (psiMethod.hasParameters()) {
+//      PsiParameterList parameterList = psiMethod.getParameterList();
+//      parameters =
+//          Arrays.stream(parameterList.getParameters())
+//              .map(PsiParameter::getType)
+//              .map(PsiType::getPresentableText)
+//              .collect(Collectors.joining(", "));
+//    }
+//    return name + "(" + parameters + ")";
+//  }
 
   public static String getMethodLabel(ExecutableElement element, ExecutableType type) {
     String name = element.getSimpleName().toString();

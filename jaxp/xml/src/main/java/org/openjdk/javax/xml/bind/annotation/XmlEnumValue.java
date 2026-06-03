@@ -1,43 +1,43 @@
 package org.openjdk.javax.xml.bind.annotation;
 
-import static java.lang.annotation.ElementType.FIELD;
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
-
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
+import static java.lang.annotation.ElementType.FIELD;
 
 /**
- * Maps an enum constant in {@link Enum} type to XML representation.
+ * Maps an enum constant in {@link Enum} type to XML representation.  
+ * 
+ * <p> <b>Usage</b> </p>
  *
- * <p><b>Usage</b>
- *
- * <p>The {@code @XmlEnumValue} annotation can be used with the following program elements:
- *
- * <ul>
- *   <li>enum constant
+ * <p> The {@code @XmlEnumValue} annotation can be used with the
+ *     following program elements:  
+ * <ul> 
+ *   <li>enum constant</li>
  * </ul>
  *
- * <p>See "Package Specification" in javax.xml.bind.package javadoc for additional common
- * information.
+ * <p>See "Package Specification" in javax.xml.bind.package javadoc for
+ * additional common information.</p>
  *
- * <p>This annotation, together with {@link XmlEnum} provides a mapping of enum type to XML
- * representation.
+ * <p>This annotation, together with {@link XmlEnum} provides a
+ * mapping of enum type to XML representation.
  *
- * <p>An enum type is mapped to a schema simple type with enumeration facets. The schema type is
- * derived from the Java type specified in {@code @XmlEnum.value()}. Each enum constant
- * {@code @XmlEnumValue} must have a valid lexical representation for the type
+ * <p>An enum type is mapped to a schema simple type with enumeration
+ * facets. The schema type is derived from the Java type specified in
+ * {@code @XmlEnum.value()}. Each enum constant {@code @XmlEnumValue}
+ * must have a valid lexical representation for the type
  * {@code @XmlEnum.value()}
  *
- * <p>In the absence of this annotation, {@link Enum#name()} is used as the XML representation.
+ * <p> In the absence of this annotation, {@link Enum#name()} is used
+ * as the XML representation.
  *
- * <p><b>Example 1: </b>Map enum constant name {@literal ->} enumeration facet
- *
+ * <p> <b>Example 1: </b>Map enum constant name {@literal ->} enumeration facet</p>
  * <pre>
  *     //Example: Code fragment
  *     &#64;XmlEnum(String.class)
  *     public enum Card { CLUBS, DIAMONDS, HEARTS, SPADES }
  * {@code
- *
+ * 
  *     <!-- Example: XML Schema fragment -->
  *     <xs:simpleType name="Card">
  *       <xs:restriction base="xs:string"/>
@@ -48,19 +48,18 @@ import java.lang.annotation.Target;
  *     </xs:simpleType>
  * }</pre>
  *
- * <p><b>Example 2: </b>Map enum constant name(value) {@literal ->} enumeration facet
- *
+ * <p><b>Example 2: </b>Map enum constant name(value) {@literal ->} enumeration facet </p>
  * <pre>
  *     //Example: code fragment
  *     &#64;XmlType
  *     &#64;XmlEnum(Integer.class)
- *     public enum Coin {
+ *     public enum Coin { 
  *         &#64;XmlEnumValue("1") PENNY(1),
  *         &#64;XmlEnumValue("5") NICKEL(5),
  *         &#64;XmlEnumValue("10") DIME(10),
  *         &#64;XmlEnumValue("25") QUARTER(25) }
  * {@code
- *
+ * 
  *     <!-- Example: XML Schema fragment -->
  *     <xs:simpleType name="Coin">
  *       <xs:restriction base="xs:int">
@@ -72,8 +71,8 @@ import java.lang.annotation.Target;
  *     </xs:simpleType>
  * }</pre>
  *
- * <p><b>Example 3: </b>Map enum constant name {@literal ->} enumeration facet
- *
+ * <p><b>Example 3: </b>Map enum constant name {@literal ->} enumeration facet </p>
+ * 
  * <pre>
  *     //Code fragment
  *     &#64;XmlType
@@ -83,7 +82,7 @@ import java.lang.annotation.Target;
  *         &#64;XmlEnumValue("2") TWO;
  *     }
  * {@code
- *
+ * 
  *     <!-- Example: XML Schema fragment -->
  *     <xs:simpleType name="Code">
  *       <xs:restriction base="xs:int">
@@ -98,5 +97,5 @@ import java.lang.annotation.Target;
 @Retention(RUNTIME)
 @Target({FIELD})
 public @interface XmlEnumValue {
-  String value();
+    String value();
 }

@@ -43,6 +43,7 @@ dependencies {
     api files('libs/aaptcompiler-7.4.0-alpha09.jar')
     api files('libs/converted-common-30.40.0-alpha09.jar')
     api files('libs/converted-data-binding.jar')
+    api(project(":kotlin-analysis-api"))
 
     implementation 'com.android.tools:annotations:30.4.0-alpha09'
     api("com.android.tools:sdk-common:30.4.0-alpha09") {

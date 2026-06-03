@@ -35,7 +35,8 @@ dependencies {
     implementation project(path: ':project')
 
     compileOnly project(path: ':android-stubs')
-    compileOnly project(path: ':kotlinc')
+    //compileOnly project(path: ':kotlinc')
+    compileOnly(project(":kotlin-analysis-api"))
     implementation("com.google.code.findbugs:jsr305:3.0.2")
     
     //lemminix

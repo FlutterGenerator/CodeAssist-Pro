@@ -1,5 +1,6 @@
 package com.tyron.completion.java.visitors;
 
+import com.itsaky.androidide.progress.ICancelChecker;
 import com.sun.source.tree.CompilationUnitTree;
 import com.sun.source.tree.MethodInvocationTree;
 import com.sun.source.tree.NewClassTree;
@@ -7,7 +8,6 @@ import com.sun.source.util.JavacTask;
 import com.sun.source.util.SourcePositions;
 import com.sun.source.util.TreePath;
 import com.sun.source.util.TreePathScanner;
-import com.tyron.common.progress.ICancelChecker;
 import dev.mutwakil.javac.*;
 
 public class FindInvocationAt extends TreePathScanner<TreePath, Long> {

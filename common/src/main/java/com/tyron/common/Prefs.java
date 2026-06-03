@@ -22,6 +22,10 @@ public class Prefs {
     return prefs;
   }
 
+  public static boolean useLegacyKotlinLsp(){
+    return get().getBoolean(SharedPreferenceKeys.LEGACY_KOTLIN_LSP, false);
+  }
+
   public static Application getApplication() {
     return application;
   }

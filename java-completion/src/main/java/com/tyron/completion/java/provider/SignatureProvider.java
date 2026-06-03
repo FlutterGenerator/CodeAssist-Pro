@@ -1,6 +1,12 @@
 package com.tyron.completion.java.provider;
 
 import androidx.annotation.NonNull;
+
+import com.itsaky.androidide.lsp.models.ParameterInformation;
+import com.itsaky.androidide.lsp.models.SignatureHelp;
+import com.itsaky.androidide.lsp.models.SignatureHelpParams;
+import com.itsaky.androidide.lsp.models.SignatureInformation;
+import com.itsaky.androidide.progress.ICancelChecker;
 import com.sun.source.tree.CompilationUnitTree;
 import com.sun.source.tree.ExpressionTree;
 import com.sun.source.tree.IdentifierTree;
@@ -16,16 +22,11 @@ import com.sun.source.util.Trees;
 import com.sun.tools.javac.api.JavacTaskImpl;
 import com.sun.tools.javac.tree.JCTree;
 import com.tyron.builder.project.api.Module;
-import com.tyron.common.progress.ICancelChecker;
 import com.tyron.completion.java.hover.ShortTypePrinter;
 import com.tyron.completion.java.parse.CompilationInfo;
 import com.tyron.completion.java.util.MarkdownHelper;
 import com.tyron.completion.java.util.ProjectUtil;
 import com.tyron.completion.java.visitors.FindInvocationAt;
-import com.tyron.completion.model.signatures.ParameterInformation;
-import com.tyron.completion.model.signatures.SignatureHelp;
-import com.tyron.completion.model.signatures.SignatureHelpParams;
-import com.tyron.completion.model.signatures.SignatureInformation;
 import dev.mutwakil.javac.*;
 import java.nio.file.Path;
 import java.util.ArrayList;

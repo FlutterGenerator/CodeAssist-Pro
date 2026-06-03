@@ -21,6 +21,7 @@ import com.caverock.androidsvg.SVG;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+import com.itsaky.colorpicker.ColorPickerDialog;
 import com.tyron.code.ui.project.ProjectManager;
 import com.tyron.common.util.SingleTextWatcher;
 import com.tyron.resources.R;
@@ -66,6 +67,7 @@ public class EditVectorDialogFragment extends DialogFragment {
     TextInputEditText height = (TextInputEditText) inflate.findViewById(R.id.height);
     TextInputEditText width = (TextInputEditText) inflate.findViewById(R.id.width);
     TextInputEditText color = (TextInputEditText) inflate.findViewById(R.id.color);
+    Button pickColor = (Button)inflate.findViewById(R.id.pickColor);
 
     ImageView icon = (ImageView) inflate.findViewById(R.id.icon);
     LinearLayout container = (LinearLayout) inflate.findViewById(R.id.container);
@@ -90,6 +92,15 @@ public class EditVectorDialogFragment extends DialogFragment {
             }
           }
         });
+    pickColor.setOnClickListener(v -> {
+      var colorPickerDialog = new ColorPickerDialog(requireActivity());
+      colorPickerDialog.setColorPickerCallback((pickedColor,hexColorCode)->{
+         textinput4.getEditText().setText(hexColorCode);
+         color.setText(hexColorCode);
+         color.callOnClick();
+      });
+      colorPickerDialog.show();
+    });
 
     builder.setView(inflate);
 

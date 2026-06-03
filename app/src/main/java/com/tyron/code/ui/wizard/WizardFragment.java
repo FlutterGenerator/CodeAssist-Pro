@@ -107,8 +107,11 @@ public class WizardFragment extends Fragment {
 
     setEnterTransition(new MaterialSharedAxis(MaterialSharedAxis.X, false));
     setExitTransition(new MaterialSharedAxis(MaterialSharedAxis.X, true));
+//      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+//          mUseInternalStorage = Environment.isExternalStorageManager();
+//      }
 
-    mPermissionLauncher =
+      mPermissionLauncher =
         registerForActivityResult(
             mPermissionsContract,
             isGranted -> {
@@ -170,6 +173,7 @@ public class WizardFragment extends Fragment {
 
     mAdapter = new WizardTemplateAdapter();
     mRecyclerView.setAdapter(mAdapter);
+//    PreferenceManager.getDefaultSharedPreferences(requireContext()).edit().putString(SharedPreferenceKeys.PROJECT_SAVE_PATH,"/storage/emulated/0/CodeAssistProjects").apply();
 
     initDetailsView();
 

@@ -26,8 +26,8 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import org.openjdk.javax.lang.model.element.TypeParameterElement;
-import org.openjdk.javax.lang.model.type.TypeMirror;
+import javax.lang.model.element.TypeParameterElement;
+import javax.lang.model.type.TypeMirror;
 
 public final class WildcardTypeName extends TypeName {
   public final List<TypeName> upperBounds;
@@ -100,12 +100,12 @@ public final class WildcardTypeName extends TypeName {
     return supertypeOf(TypeName.get(lowerBound));
   }
 
-  public static TypeName get(org.openjdk.javax.lang.model.type.WildcardType mirror) {
+  public static TypeName get(javax.lang.model.type.WildcardType mirror) {
     return get(mirror, new LinkedHashMap<TypeParameterElement, TypeVariableName>());
   }
 
   static TypeName get(
-      org.openjdk.javax.lang.model.type.WildcardType mirror,
+      javax.lang.model.type.WildcardType mirror,
       Map<TypeParameterElement, TypeVariableName> typeVariables) {
     TypeMirror extendsBound = mirror.getExtendsBound();
     if (extendsBound == null) {

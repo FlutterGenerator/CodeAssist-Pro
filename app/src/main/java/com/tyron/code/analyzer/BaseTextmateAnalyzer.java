@@ -197,7 +197,7 @@ public class BaseTextmateAnalyzer extends AsyncIncrementalAnalyzeManager<MyState
 
           // It's safe here to use raw data because the Content is only held by this thread
           var length = model.getColumnCount(startLine);
-          var chars = model.getLine(startLine).getBackingCharArray();
+          var chars = model.getLine(startLine);
 
           codeBlock.startColumn =
               IndentRange.computeStartColumn(chars, length, language.getTabSize());
@@ -285,7 +285,7 @@ public class BaseTextmateAnalyzer extends AsyncIncrementalAnalyzeManager<MyState
             lineTokens.getRuleStack(),
             cachedRegExp == null ? null : cachedRegExp.search(OnigString.of(line), 0),
             IndentRange.computeIndentLevel(
-                ((ContentLine) lineC).getBackingCharArray(),
+                lineC,
                 line.length() - 1,
                 language.getTabSize()),
             identifiers),

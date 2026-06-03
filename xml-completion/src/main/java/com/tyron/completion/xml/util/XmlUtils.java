@@ -364,11 +364,24 @@ public class XmlUtils {
     String text = parsed.getText();
     switch (type) {
       case TAG:
-        DOMNode nodeAt = parsed.findNodeAt((int) index);
-        if (nodeAt == null) {
-          return null;
+//        DOMNode nodeAt = parsed.findNodeAt((int) index);
+//        if (nodeAt == null) {
+//          return null;
+//        }
+//        return text.substring(nodeAt.getStart(), (int) index);
+        int start = (int) index;
+        while (start > 0) {
+          char c = text.charAt(start - 1);
+          if (c == '<') {
+            start--;
+            break;
+          }
+          if (c == '>' || Character.isWhitespace(c) || c == '"' || c == '\'') {
+            break;
+          }
+          start--;
         }
-        return text.substring(nodeAt.getStart(), (int) index);
+        return text.substring(start, (int) index);
       case ATTRIBUTE:
         DOMAttr attr = parsed.findAttrAt((int) index);
         if (attr == null) {

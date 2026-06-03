@@ -17,7 +17,7 @@
 
 package com.itsaky.androidide.eventbus.events.editor
 
-import com.tyron.completion.model.Range
+import com.itsaky.androidide.models.Range
 import java.net.URI
 import java.nio.file.Path
 

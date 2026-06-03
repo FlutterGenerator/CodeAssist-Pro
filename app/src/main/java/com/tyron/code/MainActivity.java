@@ -19,6 +19,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.view.WindowCompat;
+
+import com.tyron.builder.log.IDELogger;
+import com.tyron.code.ui.file.FilePermissionChecker;
 import com.tyron.code.ui.main.HomeFragment;
 import com.tyron.resources.R;
 
@@ -31,6 +34,7 @@ public class MainActivity extends AppCompatActivity {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.main);
     instance = this;
+    IDELogger.init(this);
     WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
     if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
         != PackageManager.PERMISSION_GRANTED) {
@@ -46,6 +50,7 @@ public class MainActivity extends AppCompatActivity {
             this, new String[] {Manifest.permission.FOREGROUND_SERVICE_DATA_SYNC}, 1001);
       }
     }
+//    FilePermissionChecker.INSTANCE.check(this);
     HomeFragment homeFragment = new HomeFragment();
     if (getSupportFragmentManager().findFragmentByTag(HomeFragment.TAG) == null) {
       getSupportFragmentManager()
@@ -110,6 +115,12 @@ public class MainActivity extends AppCompatActivity {
         activity.startActivity(appDetails);
       }
     }
+  }
+
+  @Override
+  protected void onResume() {
+    super.onResume();
+    FilePermissionChecker.INSTANCE.check(this);
   }
 
   public static void toast(String message) {

@@ -26,8 +26,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collector;
 import java.util.stream.StreamSupport;
-import org.openjdk.javax.lang.model.element.Element;
-import org.openjdk.javax.lang.model.type.TypeMirror;
+import javax.lang.model.element.Element;
+import javax.lang.model.type.TypeMirror;
 
 /**
  * A fragment of a .java file, potentially containing declarations, statements, and documentation.
@@ -50,8 +50,8 @@ import org.openjdk.javax.lang.model.type.TypeMirror;
  *       that. For example, {@code 6" sandwich} is emitted {@code "6\" sandwich"}.
  *   <li>{@code $T} emits a <em>type</em> reference. Types will be imported if possible. Arguments
  *       for types may be {@linkplain Class classes}, {@linkplain
- *       org.openjdk.javax.lang.model.type.TypeMirror ,* type mirrors}, and {@linkplain
- *       org.openjdk.javax.lang.model.element.Element elements}.
+ *       javax.lang.model.type.TypeMirror ,* type mirrors}, and {@linkplain
+ *       javax.lang.model.element.Element elements}.
  *   <li>{@code $$} emits a dollar sign.
  *   <li>{@code $W} emits a space or a newline, depending on its position on the line. This prefers
  *       to wrap lines before 100 columns.

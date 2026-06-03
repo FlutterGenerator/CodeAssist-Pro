@@ -1,25 +1,39 @@
+plugins {
+//    alias(libs.plugins.sentry)
+}
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'com.diffplug.spotless'
 
+def propsOrEnv(String name) {
+    return project.findProperty(name) ?: System.getenv(name) ?: ""
+}
+
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
     buildToolsVersion rootProject.ext.buildToolsVersion
-	namespace = rootProject.ext.applicationId 
-	
-	spotless {
-		java {
-			target "**/*.java"
-			googleJavaFormat()
-			}
-		}
-	
+    namespace = rootProject.ext.applicationId
+
+    Properties myProps = new Properties()
+        def propsFile = file("../local.properties")
+        if (propsFile.exists()) {
+            myProps.load(new FileInputStream(propsFile))
+        }
+
+
+    spotless {
+        java {
+            target "**/*.java"
+            googleJavaFormat()
+        }
+    }
+
     defaultConfig {
         targetSdkVersion rootProject.ext.targetSdkVersion
-		minSdkVersion rootProject.ext.minSdkVersion		
-		applicationId rootProject.ext.applicationId
-		versionCode rootProject.ext.versionCode
-		versionName rootProject.ext.versionName        	
+        minSdkVersion rootProject.ext.minSdkVersion
+        applicationId rootProject.ext.applicationId
+        versionCode rootProject.ext.versionCode
+        versionName rootProject.ext.versionName
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     compileOptions {
@@ -27,7 +41,7 @@ android {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
-    
+
     kotlinOptions {
         jvmTarget = '17'
     }
@@ -50,37 +64,40 @@ android {
             keyPassword 'codeassist'
         }
     }
-    
+
     buildTypes {
         release {
             signingConfig = signingConfigs.debug
             minifyEnabled false
             shrinkResources = false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            manifestPlaceholders["sentryDsn"] = myProps.getProperty("sentryDsnDebug")?: propsOrEnv("SENTRY_DSN_DEBUG")
         }
         debug {
             signingConfig = signingConfigs.debug
+            manifestPlaceholders["sentryDsn"] = myProps.getProperty("sentryDsnDebug")?: propsOrEnv("SENTRY_DSN_DEBUG")
         }
     }
-    
-    splits {
-        abi {
-            enable true
-            reset()
 
-            include "armeabi-v7a", "arm64-v8a", "x86", "x86_64"
+    // not needed
+//    splits {
+//        abi {
+//            enable true
+//            reset()
+//
+//            include "armeabi-v7a", "arm64-v8a", "x86", "x86_64"
+//
+//            universalApk true
+//        }
+//    }
 
-            universalApk true
-        }
-    }
-	
     buildFeatures {
-        viewBinding = true        
-        buildConfig = true	        
+        viewBinding = true
+        buildConfig = true
     }
-	
+
     packagingOptions {
-		jniLibs {
+        jniLibs {
             useLegacyPackaging = true
         }
         resources.excludes += "license/*"
@@ -88,7 +105,7 @@ android {
         exclude "plugin.xml"
         exclude "about.html"
         exclude ".api_description"
-		exclude 'api_database/*'
+        exclude 'api_database/*'
         exclude "about_files/*"
         exclude "META-INF/eclipse.inf"
         pickFirst "META-INF/native-image/reflect-config.json"
@@ -99,19 +116,25 @@ android {
         pickFirst "*/*/*.kotlin_builtins"
         pickFirst "*/*/*/*.kotlin_builtins"
         pickFirst "kotlin/concurrent/atomics/atomics.kotlin_builtins"
-		
+        pickFirst("META-INF/jandex.idx")
+        pickFirst("META-INF/gradle/incremental.annotation.processors")
+        pickFirst("META-INF/INDEX.LIST")
+        pickFirst("sun/tools/serialver/resources/*")
+
         //exclude 'com/sun/tools/javac/resources/legacy.properties'
-		
+
     }
-   
+
 }
 
 configurations.implementation {
-  //  exclude group: "org.jetbrains", module: "annotations"
+    //  exclude group: "org.jetbrains", module: "annotations"
     exclude group: 'com.android.tools', module: 'common'
-  //  exclude group: "it.unimi.dsi", module: "fastutil"
-  //  exclude group: "javax.inject", module: "javax.inject"
-  
+    exclude group: "org.jetbrains.kotlin", module: "kotlin-reflect"
+    exclude group: "com.google.protobuf", module: "protobuf-java"
+    //  exclude group: "it.unimi.dsi", module: "fastutil"
+    //  exclude group: "javax.inject", module: "javax.inject"
+
 }
 
 dependencies {
@@ -119,8 +142,8 @@ dependencies {
     // should be moved into its own module.
 
     // TODO: language processing should be on its own module
-	implementation fileTree(dir: 'libs', include: ['*.jar'])
-	    
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
     // TODO: completion providers should not be included on the main module
     implementation project(path: ':code-editor')
     implementation project(path: ':xml-completion')
@@ -129,25 +152,26 @@ dependencies {
     implementation project(path: ':xml-repository')
     implementation project(path: ':java-completion')
     implementation project(path: ':event-manager')
-    implementation project(path:':gradle-completion')
-	
+    implementation project(path: ':gradle-completion')
+
     // not used for compilation, but for analysis
     implementation project(path: ':javac')
-    implementation project(path: ':kotlinc')
+    // implementation project(path: ':kotlinc')
+    implementation(project(":kotlin-analysis-api"))
 
     implementation project(path: ':language-api')
+    implementation project(path: ':building-logic')
 
-    implementation project(path: ':build-logic')
     implementation project(path: ':manifmerger')
     implementation project(path: ':project')
     implementation project(path: ':logging')
     implementation project(path: ':jaxp:jaxp-internal')
     implementation project(path: ':jaxp:xml')
     implementation project(path: ':common')
-	implementation project(path: ':apksigner')    
+    implementation project(path: ':apksigner')
     implementation project(path: ':layout-preview')
     implementation project(path: ':kotlin-completion')
-    
+
     implementation project(path: ':dependency-resolver')
 
     implementation project(path: ':treeview')
@@ -157,32 +181,44 @@ dependencies {
     implementation project(path: ':actions-api')
     implementation project(path: ':editor-api')
     implementation project(path: ':fileeditor-api')
+    implementation(projects.editor)
 
     // formatters    
     implementation project(path: ':google-java-format')
     implementation project(path: ':ktfmt')
-    
+
     //resources
     implementation project(':resources')
-    
-	implementation ('androidx.lifecycle:lifecycle-extensions:2.2.0')
-    implementation ('androidx.lifecycle:lifecycle-livedata-core:2.10.0-rc01')
-    implementation ('androidx.lifecycle:lifecycle-viewmodel:2.10.0-rc01')
-    implementation ('androidx.lifecycle:lifecycle-viewmodel-ktx:2.10.0-rc01')
-    implementation ('androidx.lifecycle:lifecycle-livedata:2.10.0-rc01')
+
+    implementation('androidx.lifecycle:lifecycle-extensions:2.2.0')
+    implementation('androidx.lifecycle:lifecycle-livedata-core:2.10.0-rc01')
+    implementation('androidx.lifecycle:lifecycle-viewmodel:2.10.0-rc01')
+    implementation('androidx.lifecycle:lifecycle-viewmodel-ktx:2.10.0-rc01')
+    implementation('androidx.lifecycle:lifecycle-livedata:2.10.0-rc01')
 
     // image loading
-    implementation ('com.github.bumptech.glide:glide:4.16.0')
-    implementation ('com.caverock:androidsvg-aar:1.4')
+    implementation('com.github.bumptech.glide:glide:4.16.0')
+    implementation('com.caverock:androidsvg-aar:1.4')
 
-	implementation ('androidx.documentfile:documentfile:1.1.0')
-	
-	//lsp
-	implementation project(':event:eventbus')
-	implementation project(':event:eventbus-events') 
-	implementation project(':lsp:kotlin') 
-	implementation project(':lsp:kotlin-core')  
-	implementation project(':lsp:api') 
-      
+    implementation('androidx.documentfile:documentfile:1.1.0')
+
+    //lsp
+    implementation project(':event:eventbus')
+    implementation project(':event:eventbus-events')
+    implementation project(':lsp:kotlin')
+    implementation project(':lsp:api')
+    implementation(projects.utilities.lookup)
+    implementation(projects.lsp.indexing)
+    implementation(projects.lsp.jvmSymbolIndex)
+    implementation(projects.lsp.models)
+
+    implementation(projects.composePreview)
+
+//    provider
+    implementation(files("libs/mt-provider.jar"))
+
+    runtimeOnly(libs.protobuf.java)
+    implementation(libs.sentry.android.core)
+
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.5")
 }

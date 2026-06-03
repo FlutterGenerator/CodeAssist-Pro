@@ -53,10 +53,10 @@
         <SwitchPreferenceCompat
             android:defaultValue="true"
             app:iconSpaceReserved="false"
-            android:enabled="false"
-            android:key="fast_kotlin_lsp"
-            android:title="@string/use_fast_kotlin_lsp_title"
-            android:summary="@string/use_fast_kotlin_lsp_desc"/>
+            android:enabled="true"
+            android:key="legacy_kotlin_lsp"
+            android:title="@string/use_legacy_kotlin_lsp_title"
+            android:summary="@string/use_legacy_kotlin_lsp_desc"/>
         <EditTextPreference
             app:iconSpaceReserved="false"
             android:dialogTitle="@string/kotlin_max_items_count_title"

@@ -308,6 +308,7 @@ public class EditorContainerFragment extends Fragment
         FileManager fileManager = module.getFileManager();
         fileManager.removeSnapshotListener(this);
       }
+      projectManager.closeProject(currentProject);
     }
   }
 

@@ -52,4 +52,6 @@ fun severity(severity: Severity): Diagnostic.Kind =
         Severity.ERROR -> Diagnostic.Kind.ERROR
         Severity.WARNING -> Diagnostic.Kind.WARNING
         Severity.FIXED_WARNING -> Diagnostic.Kind.WARNING
+        Severity.STRONG_WARNING -> Diagnostic.Kind.WARNING
+
     }   

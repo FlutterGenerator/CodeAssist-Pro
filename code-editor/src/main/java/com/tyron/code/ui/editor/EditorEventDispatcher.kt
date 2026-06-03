@@ -23,9 +23,9 @@ import com.itsaky.androidide.eventbus.events.editor.DocumentEvent
 import com.itsaky.androidide.eventbus.events.editor.DocumentOpenEvent
 import com.itsaky.androidide.eventbus.events.editor.DocumentSaveEvent
 import com.itsaky.androidide.eventbus.events.editor.DocumentSelectedEvent
-import com.tyron.completion.lsp.util.FileManager.onDocumentClose
-import com.tyron.completion.lsp.util.FileManager.onDocumentContentChange
-import com.tyron.completion.lsp.util.FileManager.onDocumentOpen
+import com.itsaky.androidide.projects.FileManager.onDocumentClose
+import com.itsaky.androidide.projects.FileManager.onDocumentContentChange
+import com.itsaky.androidide.projects.FileManager.onDocumentOpen
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job

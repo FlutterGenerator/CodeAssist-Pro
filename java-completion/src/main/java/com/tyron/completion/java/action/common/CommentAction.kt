@@ -21,11 +21,6 @@ class CommentAction : AnAction() {
      
      if (!ActionPlaces.EDITOR.equals(event.place))return
      
-     val file = event.getData(CommonDataKeys.FILE)
-     if (file == null || !file.name.endsWith(".java")) {
-         return
-     }
-
      val editor = event.getData(CommonDataKeys.EDITOR)?: return
      presentation.setVisible(true)
      presentation.setText(event.dataContext.getString(R.string.menu_common_comment_title))

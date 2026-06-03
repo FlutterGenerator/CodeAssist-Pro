@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicReferenceFieldUpdater;
 import java.util.regex.Matcher;
@@ -29,7 +30,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.kotlin.com.intellij.openapi.util.Key;
 import org.jetbrains.kotlin.com.intellij.openapi.util.KeyWithDefaultValue;
 import org.jetbrains.kotlin.com.intellij.util.ReflectionUtil;
-// import com.intellij.util.concurrency.AtomicFieldUpdater;
+// import org.jetbrains.kotlin.com.intellij.util.concurrency.AtomicFieldUpdater;
 import org.jetbrains.kotlin.com.intellij.util.keyFMap.KeyFMap;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -87,6 +88,7 @@ public class ModuleImpl implements Module {
         kotlinSettings.put("isCompileRuntime", "false");
         kotlinSettings.put("isKotlinCompletionV2", "false");
         kotlinSettings.put("jvmTarget", "1.8");
+        kotlinSettings.put("language_version","1.9");
         kotlinSettings.put("applyKotlinFormat", "false");
         kotlinSettings.put("skipKotlinTask", "false");
         // kotlinSettings.put("languageVersion", "2.1");
@@ -113,17 +115,23 @@ public class ModuleImpl implements Module {
 
         JSONObject buildSettingsJson = new JSONObject(content);
 
+        if (buildSettingsJson.optJSONObject("dex")==null){
+          JSONObject dexSettings = new JSONObject();
+          dexSettings.put("isDexLibrariesOnPrebuild", "false");
+          dexSettings.put("excludedClassPaths", "9e7ee18a1a5dd5bf070c7e6f706ccc9c");
+          buildSettingsJson.put("dex",dexSettings);
+          FileWriter fileWriter = new FileWriter(buildSettings, true);
+          fileWriter.write(buildSettingsJson.toString(1));
+          fileWriter.close();
+        }
+
         String[] excludedClassPath =
-            buildSettingsJson
-                .optJSONObject("dex")
+            Objects.requireNonNull(buildSettingsJson
+                            .optJSONObject("dex"))
                 .optString("excludedClassPaths", "9e7ee18a1a5dd5bf070c7e6f706ccc9c")
                 .split(",");
-        if (excludedClassPath != null) {
           List<String> arrayListName = Arrays.asList(excludedClassPath);
-          if (arrayListName != null) {
-            excludedClassPaths.addAll(arrayListName);
-          }
-        }
+          excludedClassPaths.addAll(arrayListName);
 
       } catch (JSONException e) {
         e.printStackTrace();

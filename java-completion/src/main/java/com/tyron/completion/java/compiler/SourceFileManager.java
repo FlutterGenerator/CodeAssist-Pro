@@ -1,6 +1,9 @@
 package com.tyron.completion.java.compiler;
 
 import android.text.TextUtils;
+
+import com.itsaky.androidide.config.JavacConfigProvider;
+import com.itsaky.androidide.utils.Environment;
 import com.sun.tools.javac.api.JavacTool;
 import com.tyron.builder.model.SourceFileObject;
 import com.tyron.builder.project.Project;
@@ -35,6 +38,8 @@ public class SourceFileManager extends ForwardingJavaFileManager<StandardJavaFil
   public SourceFileManager(Project project) {
     super(createDelegateFileManager());
     mProject = project;
+    System.setProperty(JavacConfigProvider.PROP_ANDROIDIDE_JAVA_HOME, Environment.JAVA_HOME.getAbsolutePath());
+
   }
 
   private static StandardJavaFileManager createDelegateFileManager() {

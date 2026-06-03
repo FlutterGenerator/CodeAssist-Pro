@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.itsaky.androidide.utils.SourceClassTrie;
 import com.tyron.builder.model.CodeAssistAndroidLibrary;
 import com.tyron.builder.model.CodeAssistLibrary;
 import com.tyron.builder.project.api.ContentRoot;
@@ -16,6 +17,8 @@ import java.lang.reflect.Method;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -44,6 +47,7 @@ public class JavaModuleImpl extends ModuleImpl implements JavaModule {
   // the index of all the class files in this module
   private final PackageTrie mClassIndex = new PackageTrie();
   private final PackageTrie apiClassIndex = new PackageTrie();
+  private final SourceClassTrie compileJavaSourceClasses = new SourceClassTrie();
 
   protected final List<CodeAssistLibrary> libraries = new ArrayList<>();
   protected final Map<String, File> mKotlinFiles;
@@ -88,6 +92,11 @@ public class JavaModuleImpl extends ModuleImpl implements JavaModule {
   @Override
   public Map<String, File> getJavaFiles() {
     return mJavaFiles;
+  }
+
+  @Override
+  public SourceClassTrie getCompileJavaSourceClasses() {
+    return compileJavaSourceClasses;
   }
 
   @Override
@@ -227,7 +236,7 @@ public class JavaModuleImpl extends ModuleImpl implements JavaModule {
     File checkResStaticFolder = new File(libFolder, "res.apk");
     File checkSymbolFile = new File(libFolder, "R.txt");
     File checkPublicRes = new File(libFolder, "public.txt");
-    List<File> jars = getJars(libFolder);
+    List<File> jars = new ArrayList<>();//getJars(libFolder);
     CodeAssistAndroidLibrary lib = new CodeAssistAndroidLibrary();
     lib.setDeclaration(libFolder.getName());
 
@@ -247,9 +256,12 @@ public class JavaModuleImpl extends ModuleImpl implements JavaModule {
            isAar = true;
       lib.setPublicResources(checkPublicRes);
     }
-    if (!jars.isEmpty()) {
+//    if (!jars.isEmpty()) {
       if (isAar) {
-        lib.setCompileJarFiles(jars);
+        if (check.exists()) {
+         jars.add(check);
+          lib.setCompileJarFiles(jars);
+        }
         addLibrary(lib);
       } else {
         //    jars.forEach(it->addLibrary(CodeAssistLibrary.forJar(it)));
@@ -257,7 +269,7 @@ public class JavaModuleImpl extends ModuleImpl implements JavaModule {
           addLibrary(CodeAssistLibrary.forJar(check));
         }
       }
-    }
+//    }
   }
 
   public void addApiLibrary(@NonNull File libFolder) {
@@ -267,7 +279,7 @@ public class JavaModuleImpl extends ModuleImpl implements JavaModule {
     File checkResStaticFolder = new File(libFolder, "res.apk");
     File checkSymbolFile = new File(libFolder, "R.txt");
     File checkPublicRes = new File(libFolder, "public.txt");
-    List<File> jars = getJars(libFolder);
+    List<File> jars = new ArrayList<>(); //getJars(libFolder);
     CodeAssistAndroidLibrary lib = new CodeAssistAndroidLibrary();
     lib.setDeclaration(libFolder.getName());
 
@@ -287,9 +299,12 @@ public class JavaModuleImpl extends ModuleImpl implements JavaModule {
       //     isAar = true;
       lib.setPublicResources(checkPublicRes);
     }
-    if (!jars.isEmpty()) {
+//    if (!jars.isEmpty()) {
       if (isAar) {
-        lib.setCompileJarFiles(jars);
+        if (check.exists()) {
+          jars.add(check);
+          lib.setCompileJarFiles(jars);
+        }
         addApiLibrary(lib);
       } else {
         //    jars.forEach(it->addApiLibrary(CodeAssistLibrary.forJar(it)));
@@ -297,7 +312,7 @@ public class JavaModuleImpl extends ModuleImpl implements JavaModule {
           addApiLibrary(CodeAssistLibrary.forJar(check));
         }
       }
-    }
+//    }
   }
 
   private List<File> getJars(File dir) {
@@ -621,6 +636,7 @@ public class JavaModuleImpl extends ModuleImpl implements JavaModule {
         }
       }
     }
+    JavaModuleKt.indexSources(this);
   }
 
   @NonNull

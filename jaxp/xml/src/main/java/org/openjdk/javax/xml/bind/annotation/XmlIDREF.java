@@ -1,46 +1,54 @@
 package org.openjdk.javax.xml.bind.annotation;
 
+import java.lang.annotation.Target;
+import java.lang.annotation.Retention;
 import static java.lang.annotation.ElementType.*;
 import static java.lang.annotation.RetentionPolicy.*;
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.Target;
-
 /**
+ * <p>
  * Maps a JavaBean property to XML IDREF.
+ * 
+ * <p>
+ * To preserve referential integrity of an object graph across XML
+ * serialization followed by a XML deserialization, requires an object
+ * reference to be marshaled by reference or containment
+ * appropriately. Annotations {@code @XmlID} and {@code @XmlIDREF}
+ * together allow a customized mapping of a JavaBean property's
+ * type by containment or reference. 
  *
- * <p>To preserve referential integrity of an object graph across XML serialization followed by a
- * XML deserialization, requires an object reference to be marshaled by reference or containment
- * appropriately. Annotations {@code @XmlID} and {@code @XmlIDREF} together allow a customized
- * mapping of a JavaBean property's type by containment or reference.
- *
- * <p><b>Usage</b> The {@code @XmlIDREF} annotation can be used with the following program elements:
- *
- * <ul>
- *   <li>a JavaBean property
- *   <li>non static, non transient field
+ * <p><b>Usage</b> </p>
+ * The {@code @XmlIDREF} annotation can be used with the following
+ * program elements: 
+ * <ul> 
+ *   <li> a JavaBean property </li>
+ *   <li> non static, non transient field </li>
  * </ul>
+ * 
+ * <p>See "Package Specification" in javax.xml.bind.package javadoc for
+ * additional common information.</p>
  *
- * <p>See "Package Specification" in javax.xml.bind.package javadoc for additional common
- * information.
- *
- * <p>The usage is subject to the following constraints:
- *
+ * <p> The usage is subject to the following constraints:
  * <ul>
- *   <li>If the type of the field or property is a collection type, then the collection item type
- *       must contain a property or field annotated with {@code @XmlID}.
- *   <li>If the field or property is single valued, then the type of the property or field must
- *       contain a property or field annotated with {@code @XmlID}.
- *       <p>Note: If the collection item type or the type of the property (for non collection type)
- *       is java.lang.Object, then the instance must contain a property/field annotated with
- *       {@code @XmlID} attribute.
- *   <li>This annotation can be used with the following annotations: {@link XmlElement}, {@link
- *       XmlAttribute}, {@link XmlList}, and {@link XmlElements}.
+ *
+ *   <li> If the type of the field or property is a collection type,
+ *        then the collection item type must contain a property or
+ *        field annotated with {@code @XmlID}.  </li>
+ *   <li> If the field or property is single valued, then the type of
+ *        the property or field must contain a property or field
+ *        annotated with {@code @XmlID}.
+ *        <p>Note: If the collection item type or the type of the
+ *        property (for non collection type) is java.lang.Object, then
+ *        the instance must contain a property/field annotated with
+ *        {@code @XmlID} attribute.
+ *        </li>
+ *   <li> This annotation can be used with the following annotations:
+ *        {@link XmlElement}, {@link XmlAttribute}, {@link XmlList}, 
+ *        and {@link XmlElements}.</li>  
+ *
  * </ul>
- *
- * <p><b>Example:</b> Map a JavaBean property to {@code xs:IDREF} (i.e. by reference rather than by
- * containment)
- *
+ * <p><b>Example:</b> Map a JavaBean property to {@code xs:IDREF}
+ *   (i.e. by reference rather than by containment)</p>
  * <pre>
  *
  *   //EXAMPLE: Code fragment
@@ -50,7 +58,7 @@ import java.lang.annotation.Target;
  *       ....
  *    }
  * {@code
- *
+ * 
  *   <!-- Example: XML Schema fragment -->
  *   <xs:complexType name="Shipping">
  *     <xs:complexContent>
@@ -63,25 +71,27 @@ import java.lang.annotation.Target;
  *
  * }</pre>
  *
- * <p><b>Example 2: </b> The following is a complete example of containment versus reference.
  *
+ * <p><b>Example 2: </b> The following is a complete example of
+ * containment versus reference.
+ * 
  * <pre>
  *    // By default, Customer maps to complex type {@code xs:Customer}
  *    public class Customer {
- *
+ *        
  *        // map JavaBean property type to {@code xs:ID}
  *        &#64;XmlID public String getCustomerID();
  *        public void setCustomerID(String id);
  *
- *        // .... other properties not shown
+ *        // .... other properties not shown 
  *    }
  *
  *
  *   // By default, Invoice maps to a complex type {@code xs:Invoice}
  *   public class Invoice {
- *
+ *    
  *       // map by reference
- *       &#64;XmlIDREF public Customer getCustomer();
+ *       &#64;XmlIDREF public Customer getCustomer();       
  *       public void setCustomer(Customer customer);
  *
  *      // .... other properties not shown here
@@ -91,7 +101,7 @@ import java.lang.annotation.Target;
  *   public class Shipping {
  *
  *       // map by reference
- *       &#64;XmlIDREF public Customer getCustomer();
+ *       &#64;XmlIDREF public Customer getCustomer();       
  *       public void setCustomer(Customer customer);
  *   }
  *
@@ -102,14 +112,14 @@ import java.lang.annotation.Target;
  *       // map reference to Customer by containment by default.
  *       public Customer getCustomer();
  *
- *       // maps reference to Shipping by containment by default.
- *       public Shipping getShipping();
+ *       // maps reference to Shipping by containment by default. 
+ *       public Shipping getShipping();     
  *
- *       // maps reference to Invoice by containment by default.
- *       public Invoice getInvoice();
+ *       // maps reference to Invoice by containment by default. 
+ *       public Invoice getInvoice();     
  *   }
  * {@code
- *
+ * 
  *   <!-- XML Schema mapping for above code frament -->
  *
  *   <xs:complexType name="Invoice">
@@ -160,7 +170,7 @@ import java.lang.annotation.Target;
  *       <shipping customer="Alice">
  *           ....
  *       </shipping>
- *
+ *         
  *       <invoice customer="Alice">
  *           ....
  *       </invoice>
@@ -169,7 +179,6 @@ import java.lang.annotation.Target;
  * }</pre>
  *
  * <p><b>Example 3: </b> Mapping List to repeating element of type IDREF
- *
  * <pre>
  *     // Code fragment
  *     public class Shipping {
@@ -178,7 +187,7 @@ import java.lang.annotation.Target;
  *             public List customers;
  *     }
  * {@code
- *
+ * 
  *     <!-- XML schema fragment -->
  *     <xs:complexType name="Shipping">
  *       <xs:sequence>
@@ -190,7 +199,6 @@ import java.lang.annotation.Target;
  * }</pre>
  *
  * <p><b>Example 4: </b> Mapping a List to a list of elements of type IDREF.
- *
  * <pre>
  *     //Code fragment
  *     public class Shipping {
@@ -201,7 +209,7 @@ import java.lang.annotation.Target;
  *         public List customers;
  *     }
  * {@code
- *
+ * 
  *     <!-- XML Schema fragment -->
  *     <xs:complexType name="Shipping">
  *       <xs:sequence>
@@ -212,11 +220,10 @@ import java.lang.annotation.Target;
  *       </xs:sequence>
  *     </xs:complexType>
  * }</pre>
- *
- * @author Sekhar Vajjhala, Sun Microsystems, Inc.
+ * @author Sekhar Vajjhala, Sun Microsystems, Inc. 
  * @see XmlID
  * @since 1.6, JAXB 2.0
  */
-@Retention(RUNTIME)
-@Target({FIELD, METHOD})
+
+@Retention(RUNTIME) @Target({FIELD, METHOD})
 public @interface XmlIDREF {}

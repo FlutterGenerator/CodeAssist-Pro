@@ -88,22 +88,22 @@ public class KotlinAnalyzer extends DiagnosticTextmateAnalyzer {
   }
 
   private void doAnalysis() {
-    if (kotlinEnvironment == null) {
-      Module currentModule =
-          ProjectManager.getInstance().getCurrentProject().getModule(editor.getCurrentFile());
-      kotlinEnvironment = KotlinEnvironment.Companion.get(currentModule);
-      kotlinEnvironment.addIssueListener(
-          issue -> {
-            DiagnosticWrapper wrapper = new DiagnosticWrapper();
-            wrapper.setStartPosition(issue.getStartOffset());
-            wrapper.setEndPosition(issue.getEndOffset());
-            wrapper.setMessage(issue.getMessage());
-            wrapper.setKind(KotlinSeverityMapper.toKind(issue.getSeverity()));
-            if (wrapper.getKind() == null) return kotlin.Unit.INSTANCE;
-            diagnostics.add(wrapper);
-            editor.setDiagnostics(diagnostics);
-            return kotlin.Unit.INSTANCE;
-          });
-    }
+//    if (kotlinEnvironment == null) {
+//      Module currentModule =
+//          ProjectManager.getInstance().getCurrentProject().getModule(editor.getCurrentFile());
+//      kotlinEnvironment = KotlinEnvironment.Companion.get(currentModule);
+//      kotlinEnvironment.addIssueListener(
+//          issue -> {
+//            DiagnosticWrapper wrapper = new DiagnosticWrapper();
+//            wrapper.setStartPosition(issue.getStartOffset());
+//            wrapper.setEndPosition(issue.getEndOffset());
+//            wrapper.setMessage(issue.getMessage());
+//            wrapper.setKind(KotlinSeverityMapper.toKind(issue.getSeverity()));
+//            if (wrapper.getKind() == null) return kotlin.Unit.INSTANCE;
+//            diagnostics.add(wrapper);
+//            editor.setDiagnostics(diagnostics);
+//            return kotlin.Unit.INSTANCE;
+//          });
+//    }
   }
 }

@@ -35,7 +35,9 @@ android {
     }
     
     buildFeatures {
-        buildConfig = true	    
+        buildConfig = true
+        viewBinding = false
+        dataBinding = false
     }
 }
 

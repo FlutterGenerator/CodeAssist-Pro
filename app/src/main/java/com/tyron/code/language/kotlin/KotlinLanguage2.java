@@ -1,21 +1,33 @@
 package com.tyron.code.language.kotlin;
 
 import android.os.Bundle;
-import android.util.Log;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+
+import com.itsaky.androidide.lsp.drawable.CircleDrawable;
+import com.itsaky.androidide.lsp.editor.language.CompletionCancelChecker;
+import com.itsaky.androidide.lookup.Lookup;
+import com.itsaky.androidide.lsp.api.ILanguageServer;
+import com.itsaky.androidide.lsp.api.SignatureHelpLanguageKt;
 import com.itsaky.androidide.lsp.kotlin.KotlinLanguageServer;
+import com.itsaky.androidide.lsp.models.CompletionItemKind;
+import com.itsaky.androidide.lsp.models.CompletionParams;
+import com.itsaky.androidide.lsp.models.CompletionResult;
+import com.itsaky.androidide.lsp.models.SignatureHelp;
+import com.itsaky.androidide.lsp.models.SignatureHelpParams;
+import com.itsaky.androidide.lsp.util.CompletionItemKindExtsKt;
+import com.itsaky.androidide.models.Position;
+import com.itsaky.androidide.progress.ICancelChecker;
 import com.tyron.builder.model.DiagnosticWrapper;
+import com.tyron.code.ApplicationLoader;
 import com.tyron.code.language.LanguageManager;
 import com.tyron.code.language.textmate.EmptyTextMateLanguage;
+import com.tyron.common.SharedPreferenceKeys;
 import com.tyron.completion.CompletionParameters;
-import com.tyron.completion.lsp.api.ILanguageServer;
 import com.tyron.completion.lsp.api.LspLanguage;
-import com.tyron.completion.model.CompletionList;
-import com.tyron.completion.model.signatures.SignatureHelp;
-import com.tyron.completion.model.signatures.SignatureHelpLanguage;
-import com.tyron.completion.model.signatures.SignatureHelpLanguageKt;
-import com.tyron.completion.model.signatures.SignatureHelpParams;
+import com.itsaky.androidide.lsp.api.SignatureHelpLanguage;
+import com.tyron.completion.model.DrawableKind;
 import com.tyron.editor.Editor;
 import io.github.rosemoe.sora.lang.Language;
 import io.github.rosemoe.sora.lang.analysis.AnalyzeManager;
@@ -37,7 +49,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import org.jetbrains.kotlin.com.intellij.openapi.progress.ProcessCanceledException;
+//import org.jetbrains.kotlin.com.intellij.openapi.progress.ProcessCanceledException;
 //import com.tyron.completion.lsp.util.CompletionHelper;
 
 public class KotlinLanguage2 extends EmptyTextMateLanguage
@@ -91,6 +103,9 @@ public class KotlinLanguage2 extends EmptyTextMateLanguage
   @NonNull
   @Override
   public SignatureHelp signatureHelp(@NonNull SignatureHelpParams params) {
+    if (server == null) {
+      return SignatureHelpLanguageKt.unsupportedSignatureHelp();
+    }
     var signatureHelp = SignatureHelpLanguageKt.unsupportedSignatureHelp();
     if (!com.tyron.completion.java.provider.CompletionEngine.isIndexing()) {
       signatureHelp = ((KotlinLanguageServer) server).signatureHelpBlocking(params);
@@ -129,6 +144,10 @@ public class KotlinLanguage2 extends EmptyTextMateLanguage
     return delegate.getInterruptionLevel();
   }
 
+  private boolean isAutocompletionEnabled(){
+    return ApplicationLoader.getDefaultPreferences().getBoolean(SharedPreferenceKeys.KOTLIN_COMPLETIONS, false);
+  }
+
   @Override
   public void requireAutoComplete(
       @NonNull ContentReference content,
@@ -140,6 +159,9 @@ public class KotlinLanguage2 extends EmptyTextMateLanguage
 
       container.reset();
       diagnostics.clear();
+      if (!isAutocompletionEnabled()){
+        return;
+      }
 
       char c = content.charAt(position.getIndex() - 1);
       if (!isAutoCompleteChar(c)) {
@@ -159,14 +181,21 @@ public class KotlinLanguage2 extends EmptyTextMateLanguage
               .setContents(content.getReference().toString())
               .setPrefix(prefix)
               .build();
-      CompletionList completionList = server.complete(parameters);
+      var cancelChecker = new CompletionCancelChecker(publisher);
+      CompletionParams params = new CompletionParams(new Position(position.line,position.column,position.index),editor.getCurrentFile().toPath(), cancelChecker);
+      params.setPrefix(prefix);
+      params.setContent(content.getReference().toString());
+      CompletionResult completionList = server.complete(params);
         publisher.setUpdateThreshold(1);
         completionList
-                .getItems().forEach(publisher::addItem);
-    } catch (Exception e) {
-      if (!(e instanceof InterruptedException) && !(e instanceof ProcessCanceledException)) {
-        Log.e(TAG, "Completion failed", e);
-      }
+                .getItems().forEach(item ->{
+                  item.label = item.getIdeLabel();
+                  item.desc = item.getDetail();
+                  item.icon(new CircleDrawable(CompletionItemKindExtsKt.toDrawableKind(item.getCompletionKind())));
+          publisher.addItem(item);
+                });
+    } finally {
+      Lookup.getDefault().unregister(ICancelChecker.class);
     }
   }
 
@@ -205,5 +234,6 @@ public class KotlinLanguage2 extends EmptyTextMateLanguage
   public void destroy() {
     analyzer.destroy();
     delegate.destroy();
+    Lookup.getDefault().unregister(ICancelChecker.class);
   }
 }

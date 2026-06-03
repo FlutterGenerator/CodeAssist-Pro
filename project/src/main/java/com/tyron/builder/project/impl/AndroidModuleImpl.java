@@ -50,8 +50,8 @@ public class AndroidModuleImpl extends JavaModuleImpl implements AndroidModule {
     File contentRootDirectory = new File(getRootFile(), "src/main");
     AndroidContentRoot contentRoot = new AndroidContentRoot(contentRootDirectory);
     contentRoot.setJavaDirectories(
-        Arrays.asList(new File("src/main/java"), new File("src/main/kotlin")));
-    contentRoot.setResourceDirectories(Collections.singletonList(new File("src/main/res")));
+        Arrays.asList(new File(getRootFile(),"src/main/java"), new File(getRootFile(),"src/main/kotlin")));
+    contentRoot.setResourceDirectories(Collections.singletonList(new File(getRootFile(),"src/main/res")));
     addContentRoot(contentRoot);
   }
 
@@ -82,7 +82,8 @@ public class AndroidModuleImpl extends JavaModuleImpl implements AndroidModule {
           mLibraries.add(compileJarFile);
 
         } catch (IOException e) {
-          throw new UncheckedIOException(e);
+         // throw new UncheckedIOException(e);
+          return;
         }
       }
     } else {
@@ -146,6 +147,11 @@ public class AndroidModuleImpl extends JavaModuleImpl implements AndroidModule {
               viewBindingDir, FileFilterUtils.suffixFileFilter(".java"), TrueFileFilter.INSTANCE)
           .forEachRemaining(this::addJavaFile);
     }
+  }
+
+  @Override
+  public Boolean composeEnabled() {
+    return parseComposeEnabled(getGradleFile());
   }
 
   @Override
@@ -294,9 +300,39 @@ public class AndroidModuleImpl extends JavaModuleImpl implements AndroidModule {
     return false;
   }
 
+  private boolean parseComposeEnabled(File gradle) {
+    if (gradle != null && gradle.exists()) {
+      try {
+        String readString = FileUtils.readFileToString(gradle, Charset.defaultCharset());
+        return parseViewBindingEnabled(readString);
+      } catch (IOException e) {
+        // handle the exception here, if needed
+      }
+    }
+    return false;
+  }
+
   private boolean parseViewBindingEnabled(String readString) throws IOException {
     Pattern VIEW_BINDING_ENABLED =
         Pattern.compile("\\s*(viewBinding)\\s*()([a-zA-Z0-9.'/-:\\-]+)()");
+    Matcher matcher = VIEW_BINDING_ENABLED.matcher(readString);
+    while (matcher.find()) {
+      String declaration = matcher.group(3);
+      if (declaration != null && !declaration.isEmpty()) {
+        boolean viewBindingEnabled = Boolean.parseBoolean(String.valueOf(declaration));
+        if (viewBindingEnabled) {
+          return true;
+        } else {
+          return false;
+        }
+      }
+    }
+    return false;
+  }
+
+  private boolean parseComposeEnabled(String readString) throws IOException {
+    Pattern VIEW_BINDING_ENABLED =
+            Pattern.compile("\\s*(compose)\\s*()([a-zA-Z0-9.'/-:\\-]+)()");
     Matcher matcher = VIEW_BINDING_ENABLED.matcher(readString);
     while (matcher.find()) {
       String declaration = matcher.group(3);

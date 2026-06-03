@@ -33,8 +33,8 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-import org.openjdk.javax.lang.model.SourceVersion;
-import org.openjdk.javax.lang.model.element.Modifier;
+import javax.lang.model.SourceVersion;
+import javax.lang.model.element.Modifier;
 
 /**
  * Converts a {@link JavaFile} to a string suitable to both human- and javac-consumption. This

@@ -17,10 +17,10 @@
 
 package com.tyron.code.handlers
 
-import com.tyron.completion.lsp.api.ILanguageClient
-import com.tyron.completion.lsp.api.ILanguageServerRegistry
 //import com.itsaky.androidide.lsp.java.JavaLanguageServer
 //import com.itsaky.androidide.lsp.xml.XMLLanguageServer
+import com.itsaky.androidide.lsp.api.ILanguageClient
+import com.itsaky.androidide.lsp.api.ILanguageServerRegistry
 import com.itsaky.androidide.lsp.kotlin.KotlinLanguageServer
 
 /**
@@ -30,7 +30,7 @@ import com.itsaky.androidide.lsp.kotlin.KotlinLanguageServer
 object LspHandler {
 
   fun registerLanguageServers() {
-    ILanguageServerRegistry.getDefault().apply {
+    ILanguageServerRegistry.default.apply {
     //  getServer(JavaLanguageServer.SERVER_ID) ?: register(JavaLanguageServer())
     //  getServer(XMLLanguageServer.SERVER_ID) ?: register(XMLLanguageServer())
     getServer(KotlinLanguageServer.SERVER_ID) ?: register(KotlinLanguageServer()) 
@@ -38,13 +38,13 @@ object LspHandler {
   }
   
   fun connectClient(client: ILanguageClient) {
-    ILanguageServerRegistry.getDefault().connectClient(client)
+    ILanguageServerRegistry.default.connectClient(client)
   }
 
   fun destroyLanguageServers(isConfigurationChange: Boolean) {
     if (isConfigurationChange) {
       return
     }
-    ILanguageServerRegistry.getDefault().destroy()
+    ILanguageServerRegistry.default.destroy()
   }
 }

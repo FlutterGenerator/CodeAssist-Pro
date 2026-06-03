@@ -1,9 +1,11 @@
 > [!WELCOME]
 > This is an Active Repo for CodeAssist Pro.
+> join our Telegram channel for more updates.
+> https://t.me/codeassist_pro
 
 <p align='center'>
- <img width='300px%' height='300px' src='https://github.com/Wadamzmail/CodeAssist-Unofficial/blob/main/logo-dark.png#gh-dark-mode-only' >
-<img width='300px' height='300px' src='https://github.com/Wadamzmail/CodeAssist-Unofficial/blob/main/logo-light.png#gh-light-mode-only'>
+ <img width='300px%' height='300px' src='https://github.com/Wadamzmail/CodeAssist-Pro/blob/dev/logo-dark.png#gh-dark-mode-only' >
+<img width='300px' height='300px' src='https://github.com/Wadamzmail/CodeAssist-Pro/blob/dev/logo-light.png#gh-light-mode-only'>
 </p>
 
 <h2 align="center"><b>CodeAssist Pro</b></h2>
@@ -14,11 +16,11 @@ Forked of Official CodeAssist Version Alpha-0.2.9
 <div align='center'>
 
 [![stability-alpha](https://img.shields.io/badge/stability-alpha-f4d03f.svg)](https://github.com/mkenney/software-guides/blob/master/STABILITY-BADGES.md#alpha)
-![Repository Size](https://img.shields.io/github/repo-size/Wadamzmail/CodeAssist-Unofficial)
-![CI](https://github.com/Wadamzmail/CodeAssist-Unofficial/actions/workflows/debug.yml/badge.svg)
-[![Total downloads](https://img.shields.io/github/downloads/tyron12233/CodeAssist/total)](https://github.com/tyron12233/CodeAssist/releases)
-![Commit Activity](https://img.shields.io/github/commit-activity/m/Wadamzmail/CodeAssist-Unofficial)
-<img src="https://img.shields.io/github/v/release/tyron12233/CodeAssist?include_prereleases&amp;label=latest%20release" alt="Latest release">
+![Repository Size](https://img.shields.io/github/repo-size/Wadamzmail/CodeAssist-Pro)
+![CI](https://github.com/Wadamzmail/CodeAssist-Pro/actions/workflows/build-test-apk.yml/badge.svg)
+[![Total downloads](https://img.shields.io/github/downloads/Wadamzmail/CodeAssist-Pro/total)](https://github.com/Wadamzmail/CodeAssist-Pro/releases)
+![Commit Activity](https://img.shields.io/github/commit-activity/m/Wadamzmail/CodeAssist-Pro)
+<img src="https://img.shields.io/github/v/release/Wadamzmail/CodeAssist-Pro?include_prereleases&amp;label=latest%20release" alt="Latest release">
 
   <h2>A javac APIs-based code editor that supports building Android apps.</h2>
 
@@ -48,9 +50,9 @@ Forked of Official CodeAssist Version Alpha-0.2.9
 
 - [x] Custom AAB Signing Option
 
-- [x] Java 17 (Only Compile)
+- [x] Java 17 Compile (Experimental)
 
-- [x] Kotlin 21 (Only Compile)
+- [x] Kotlin 2.3.20 (Only Compile)
 
 - [x] Google Java Formatter
 
@@ -68,7 +70,7 @@ Forked of Official CodeAssist Version Alpha-0.2.9
 
 - [x] D8/R8/ProGuard
 
-- [x] Java Code Completions (1.8)
+- [x] Java Code Completions (17 Experimental)
 
 - [x] Kotlin Code Completions (1.8 Unstable)
 
@@ -92,7 +94,7 @@ Forked of Official CodeAssist Version Alpha-0.2.9
 
 ## CodeAssist Community
 
-English-language chat in Telegram: https://t.me/codeassist_app
+English-language chat in the channel discussions in Telegram: https://t.me/codeassist_pro
 
 ## Building - Android Studio
 
@@ -124,8 +126,4 @@ you find documentation under [docs](docs/) directory.
 
 - Ilyasse Salama
 
-# Contributors
-
-- Updated Templates By @SENPAi_203
-
-# CodeAssist-Unofficial
+- Deenbandhu Netam for the awesome CodeAssist-Unofficial

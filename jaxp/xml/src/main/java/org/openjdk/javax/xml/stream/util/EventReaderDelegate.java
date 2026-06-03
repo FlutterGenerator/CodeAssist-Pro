@@ -28,15 +28,18 @@
 
 package org.openjdk.javax.xml.stream.util;
 
+import org.openjdk.javax.xml.stream.events.XMLEvent;
 import org.openjdk.javax.xml.stream.XMLEventReader;
 import org.openjdk.javax.xml.stream.XMLStreamException;
-import org.openjdk.javax.xml.stream.events.XMLEvent;
 
 /**
- * This is the base class for deriving an XMLEventReader filter.
+ * This is the base class for deriving an XMLEventReader
+ * filter.
  *
- * <p>This class is designed to sit between an XMLEventReader and an application's XMLEventReader.
- * By default each method does nothing but call the corresponding method on the parent interface.
+ * This class is designed to sit between an XMLEventReader and an
+ * application's XMLEventReader.  By default each method
+ * does nothing but call the corresponding method on the
+ * parent interface.
  *
  * @version 1.0
  * @author Copyright (c) 2009 by Oracle Corporation. All Rights Reserved.
@@ -44,15 +47,17 @@ import org.openjdk.javax.xml.stream.events.XMLEvent;
  * @see StreamReaderDelegate
  * @since 1.6
  */
+
 public class EventReaderDelegate implements XMLEventReader {
   private XMLEventReader reader;
 
-  /** Construct an empty filter with no parent. */
-  public EventReaderDelegate() {}
+  /**
+   * Construct an empty filter with no parent.
+   */
+  public EventReaderDelegate(){}
 
   /**
    * Construct an filter with the specified parent.
-   *
    * @param reader the parent
    */
   public EventReaderDelegate(XMLEventReader reader) {
@@ -61,7 +66,6 @@ public class EventReaderDelegate implements XMLEventReader {
 
   /**
    * Set the parent of this instance.
-   *
    * @param reader the new parent
    */
   public void setParent(XMLEventReader reader) {
@@ -70,14 +74,15 @@ public class EventReaderDelegate implements XMLEventReader {
 
   /**
    * Get the parent of this instance.
-   *
    * @return the parent or null if none is set
    */
   public XMLEventReader getParent() {
     return reader;
   }
 
-  public XMLEvent nextEvent() throws XMLStreamException {
+  public XMLEvent nextEvent()
+    throws XMLStreamException
+  {
     return reader.nextEvent();
   }
 
@@ -85,27 +90,38 @@ public class EventReaderDelegate implements XMLEventReader {
     return reader.next();
   }
 
-  public boolean hasNext() {
+  public boolean hasNext()
+  {
     return reader.hasNext();
   }
 
-  public XMLEvent peek() throws XMLStreamException {
+  public XMLEvent peek()
+    throws XMLStreamException
+  {
     return reader.peek();
   }
 
-  public void close() throws XMLStreamException {
+  public void close()
+    throws XMLStreamException
+  {
     reader.close();
   }
 
-  public String getElementText() throws XMLStreamException {
+  public String getElementText()
+    throws XMLStreamException
+  {
     return reader.getElementText();
   }
 
-  public XMLEvent nextTag() throws XMLStreamException {
+  public XMLEvent nextTag()
+    throws XMLStreamException
+  {
     return reader.nextTag();
   }
 
-  public Object getProperty(java.lang.String name) throws java.lang.IllegalArgumentException {
+  public Object getProperty(java.lang.String name)
+    throws java.lang.IllegalArgumentException
+  {
     return reader.getProperty(name);
   }
 

@@ -1,4 +1,5 @@
 @file:OptIn(FrontendInternals::class)
+@file:Suppress("DEPRECATION", "DEPRECATION_ERROR")
 
 package com.tyron.kotlin.completion
 
@@ -89,6 +90,7 @@ import org.jetbrains.kotlin.descriptors.ValueParameterDescriptor
 import org.jetbrains.kotlin.descriptors.PackageFragmentDescriptor
 import org.jetbrains.kotlin.config.IrVerificationMode
 import com.tyron.builder.model.DiagnosticWrapper
+import org.jetbrains.kotlin.K1Deprecation
 import org.jetbrains.kotlin.cli.jvm.config.addJavaSourceRoot
 import org.jetbrains.kotlin.config.CommonConfigurationKeys
 
@@ -557,7 +559,7 @@ data class KotlinEnvironment(
                 "kotlin.coroutines.jvm.internal",
                 "kotlin.reflect.jvm.internal"
             )
-
+        @OptIn(K1Deprecation::class)
         fun with(classpath: List<File>, javaSourceRoots : List<File>): KotlinEnvironment {
             setIdeaIoUseFallback()
             setupIdeaStandaloneExecution()

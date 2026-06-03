@@ -59,7 +59,7 @@ import com.tyron.completion.java.provider.CompletionEngine;
 import com.tyron.completion.progress.ProgressManager;
 import com.tyron.fileeditor.api.FileEditor;
 import com.tyron.fileeditor.api.FileEditorSavedState;
-import com.tyron.resources.R;
+import dev.mutwakil.codeassist.R;
 import java.io.File;
 import java.time.Duration;
 import java.time.Instant;
@@ -106,6 +106,12 @@ public class MainFragment extends Fragment implements ProjectManager.OnProjectOp
   private LinearProgressIndicator mProgressBar;
   private BroadcastReceiver mLogReceiver;
 
+  private static MainFragment instance;
+
+  public static MainFragment getInstance(){
+    return instance;
+  }
+
   private final OnBackPressedCallback onBackPressedCallback =
       new OnBackPressedCallback(true) {
         @Override
@@ -133,6 +139,7 @@ public class MainFragment extends Fragment implements ProjectManager.OnProjectOp
   @Override
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
+    instance = this;
     setEnterTransition(new MaterialSharedAxis(MaterialSharedAxis.X, true));
     setExitTransition(new MaterialSharedAxis(MaterialSharedAxis.X, false));
 
@@ -506,7 +513,7 @@ public class MainFragment extends Fragment implements ProjectManager.OnProjectOp
     }
   }
 
-  private void compile(BuildType type) {
+  public void compile(BuildType type) {
     if (mServiceConnection.isCompiling() || CompletionEngine.isIndexing()) {
       return;
     }

@@ -1,6 +1,8 @@
 package com.tyron.builder.project.mock;
 
 import androidx.annotation.NonNull;
+
+import com.itsaky.androidide.utils.SourceClassTrie;
 import com.tyron.builder.model.CodeAssistLibrary;
 import com.tyron.builder.model.ModuleSettings;
 import com.tyron.builder.project.api.ContentRoot;
@@ -43,6 +45,11 @@ public class MockJavaModule extends MockModule implements JavaModule {
   @Override
   public Map<String, File> getJavaFiles() {
     return mJavaFiles;
+  }
+
+  @Override
+  public SourceClassTrie getCompileJavaSourceClasses() {
+    return null;
   }
 
   @Override

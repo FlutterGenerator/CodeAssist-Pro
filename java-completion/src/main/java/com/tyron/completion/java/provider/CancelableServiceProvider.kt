@@ -17,7 +17,8 @@
 
 package com.tyron.completion.java.provider
 
-import com.tyron.common.progress.ICancelChecker
+import com.itsaky.androidide.progress.ICancelChecker
+
 
 /**
  * A service provider which supports cancellation.

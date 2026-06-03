@@ -12,7 +12,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
-import com.tyron.common.util.ResourceUtilsKt;
+
+import com.itsaky.androidide.utils.ResourceUtilsKt;
 import com.tyron.resources.R;
 import io.github.rosemoe.sora.widget.base.EditorPopupWindow;
 

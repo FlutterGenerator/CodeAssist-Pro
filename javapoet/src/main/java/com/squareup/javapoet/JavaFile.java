@@ -34,12 +34,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
-import org.openjdk.javax.annotation.processing.Filer;
-import org.openjdk.javax.lang.model.element.Element;
-import org.openjdk.javax.lang.model.element.Modifier;
-import org.openjdk.javax.tools.JavaFileObject;
-import org.openjdk.javax.tools.JavaFileObject.Kind;
-import org.openjdk.javax.tools.SimpleJavaFileObject;
+import javax.annotation.processing.Filer;
+import javax.lang.model.element.Element;
+import javax.lang.model.element.Modifier;
+import javax.tools.JavaFileObject;
+import javax.tools.JavaFileObject.Kind;
+import javax.tools.SimpleJavaFileObject;
 
 /** A Java file containing a single top level class. */
 public final class JavaFile {

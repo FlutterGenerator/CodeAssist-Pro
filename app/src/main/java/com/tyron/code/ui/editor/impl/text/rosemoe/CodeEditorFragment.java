@@ -25,6 +25,8 @@ import com.google.android.material.snackbar.Snackbar;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
+import com.itsaky.androidide.lsp.api.ILanguageServer;
+import com.itsaky.androidide.lsp.api.ILanguageServerRegistry;
 import com.itsaky.androidide.lsp.kotlin.KotlinLanguageServer;
 import com.sun.tools.javac.util.JCDiagnostic;
 import com.tyron.actions.ActionManager;
@@ -66,14 +68,12 @@ import com.tyron.common.util.AndroidUtilities;
 import com.tyron.common.util.DebouncerStore;
 import com.tyron.completion.java.util.DiagnosticUtil;
 import com.tyron.completion.java.util.JavaDataContextUtil;
-import com.tyron.completion.lsp.api.ILanguageServer;
-import com.tyron.completion.lsp.api.ILanguageServerRegistry;
 import com.tyron.completion.lsp.api.LspLanguage;
 import com.tyron.completion.progress.ProgressManager;
 import com.tyron.diagnostics.DiagnosticProvider;
 import com.tyron.editor.CharPosition;
 import com.tyron.language.api.CodeAssistLanguage;
-import com.tyron.resources.R;
+import dev.mutwakil.codeassist.R;
 import io.github.rosemoe.sora.event.ClickEvent;
 import io.github.rosemoe.sora.event.ContentChangeEvent;
 import io.github.rosemoe.sora.event.EditorKeyEvent;
@@ -135,7 +135,7 @@ public class CodeEditorFragment extends Fragment
     String serverID = SERVER_MAP.get(getExtension(file));
     if (serverID == null) return null;
 
-    return ILanguageServerRegistry.getDefault().getServer(serverID);
+    return ILanguageServerRegistry.Companion.getDefault().getServer(serverID);
   }
 
   private static String getExtension(File file) {
@@ -217,6 +217,7 @@ public class CodeEditorFragment extends Fragment
   @Override
   public void onResume() {
     super.onResume();
+    mEditor.onEditorSelected();
   }
 
   private void onContentChange(com.tyron.editor.Content content) {
@@ -675,7 +676,8 @@ public class CodeEditorFragment extends Fragment
       mEditor.dispatchDocumentSaveEvent();
     }
     ApplicationLoader.getDefaultPreferences().unregisterOnSharedPreferenceChangeListener(this);
-    mEditor.dispatchDocumentCloseEvent();
+//    mEditor.dispatchDocumentCloseEvent();
+    mEditor.notifyClose();
   }
 
   @Override
@@ -691,7 +693,7 @@ public class CodeEditorFragment extends Fragment
   public void onLowMemory() {
     super.onLowMemory();
 
-    //    mEditor.setBackgroundAnalysisEnabled(false);
+        mEditor.setBackgroundAnalysisEnabled(false);
   }
 
   @Override

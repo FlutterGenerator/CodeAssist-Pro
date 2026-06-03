@@ -1,11 +1,18 @@
 package com.tyron.code.language.lsp;
 
 import androidx.annotation.Nullable;
+
+import com.itsaky.androidide.lsp.api.ILanguageClient;
+import com.itsaky.androidide.lsp.debug.IDebugClient;
+import com.itsaky.androidide.lsp.models.CodeActionItem;
+import com.itsaky.androidide.lsp.models.DiagnosticItem;
+import com.itsaky.androidide.lsp.models.DiagnosticResult;
+import com.itsaky.androidide.lsp.models.PerformCodeActionParams;
+import com.itsaky.androidide.lsp.models.ShowDocumentParams;
+import com.itsaky.androidide.lsp.models.ShowDocumentResult;
+import com.itsaky.androidide.lsp.util.DiagnosticUtil;
+import com.itsaky.androidide.models.Location;
 import com.tyron.code.ui.editor.EditorContainerFragment;
-import com.tyron.completion.lsp.api.ILanguageClient;
-import com.tyron.completion.lsp.util.DiagnosticUtil;
-import com.tyron.completion.model.DiagnosticItem;
-import com.tyron.completion.model.DiagnosticResult;
 import io.github.rosemoe.sora.lang.diagnostic.DiagnosticsContainer;
 import java.io.File;
 import java.util.HashMap;
@@ -62,6 +69,12 @@ public class SimpleLanguageClientImpl implements ILanguageClient {
     return mInstance != null;
   }
 
+  @Nullable
+  @Override
+  public IDebugClient getDebugClient() {
+    return ILanguageClient.super.getDebugClient();
+  }
+
   @Override
   public void publishDiagnostics(DiagnosticResult result) {
     if (result == DiagnosticResult.NO_UPDATE || !canUseActivity()) {
@@ -104,6 +117,31 @@ public class SimpleLanguageClientImpl implements ILanguageClient {
   @Override
   public DiagnosticItem getDiagnosticAt(final File file, final int line, final int column) {
     return DiagnosticUtil.binarySearchDiagnostic(this.diagnostics.get(file), line, column);
+  }
+
+  @Override
+  public void performCodeAction(PerformCodeActionParams params) {
+
+  }
+
+  @Override
+  public void performCodeAction(CodeActionItem actionItem) {
+    ILanguageClient.super.performCodeAction(actionItem);
+  }
+
+  @Override
+  public void performCodeAction(File file, CodeActionItem actionItem) {
+    ILanguageClient.super.performCodeAction(file, actionItem);
+  }
+
+  @Override
+  public ShowDocumentResult showDocument(ShowDocumentParams params) {
+    return null;
+  }
+
+  @Override
+  public void showLocations(List<Location> locations) {
+
   }
 
   private boolean canUseActivity() {

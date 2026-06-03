@@ -42,7 +42,7 @@ import com.tyron.code.util.ApkInstaller;
 import com.tyron.common.SharedPreferenceKeys;
 import com.tyron.editor.Caret;
 import com.tyron.fileeditor.api.FileEditorManager;
-import com.tyron.resources.R;
+import dev.mutwakil.codeassist.R;
 import io.github.rosemoe.sora.langs.textmate.TextMateColorScheme;
 import io.github.rosemoe.sora2.text.EditorUtil;
 import java.io.File;
@@ -258,63 +258,75 @@ public class AppLogFragment extends Fragment implements ProjectManager.OnProject
   private void process(List<DiagnosticWrapper> texts) {
     if (texts == null) return;
 
+    List<DiagnosticWrapper> snapshot = new ArrayList<>(texts);
+
     // Check if the log was cleared or restarted
-    if (texts.size() < mProcessedDiagnosticCount) {
-        mEditor.setText("");
-        mProcessedDiagnosticCount = 0;
-        diags.clear();
-        actionFab.setVisibility(View.GONE);
+    if (snapshot.size() < mProcessedDiagnosticCount) {
+      mEditor.setText("");
+      mProcessedDiagnosticCount = 0;
+      diags.clear();
+      actionFab.setVisibility(View.GONE);
     }
 
-    int newItemsCount = texts.size() - mProcessedDiagnosticCount;
-    if (newItemsCount <= 0) return;
+    int start = Math.min(mProcessedDiagnosticCount, snapshot.size());
 
-    List<DiagnosticWrapper> newDiagnostics = texts.subList(mProcessedDiagnosticCount, texts.size());
-    this.diags.addAll(newDiagnostics);
+    if (start >= snapshot.size()) {
+      return;
+    }
+
+    List<DiagnosticWrapper> newDiagnostics =
+            new ArrayList<>(snapshot.subList(start, snapshot.size()));
+
+    diags.addAll(newDiagnostics);
 
     SpannableStringBuilder combinedText = new SpannableStringBuilder();
 
     for (DiagnosticWrapper diagnostic : newDiagnostics) {
-      if (diagnostic != null) {
-        if (diagnostic.getKind() != null) {
-          combinedText.append(diagnostic.getKind().name()).append(": ");
-          addDiagnosticSpan(combinedText, diagnostic);
-          combinedText.append(' ');
-        }
 
-        if (diagnostic.getKind() == Diagnostic.Kind.ERROR) {
-          actionFab.setVisibility(View.VISIBLE);
-          actionFab.setImageResource(R.drawable.ic_error);
-          combinedText.append(diagnostic.getMessage(Locale.getDefault()));
-        } else {
-          String msg = diagnostic.getMessage(Locale.getDefault());
-          if (msg.contains("Generated APK has been saved")) {
-            actionFab.setVisibility(View.VISIBLE);
-            actionFab.setImageResource(R.drawable.apk_install);
-          }
-          combinedText.append(msg);
-        }
+      if (diagnostic == null) continue;
 
-        if (diagnostic.getSource() != null) {
-          combinedText.append(' ');
-        }
-        combinedText.append("\n");
+      if (diagnostic.getKind() != null) {
+        combinedText.append(diagnostic.getKind().name()).append(": ");
+        addDiagnosticSpan(combinedText, diagnostic);
+        combinedText.append(' ');
       }
+
+      if (diagnostic.getKind() == Diagnostic.Kind.ERROR) {
+        actionFab.setVisibility(View.VISIBLE);
+        actionFab.setImageResource(R.drawable.ic_error);
+        combinedText.append(diagnostic.getMessage(Locale.getDefault()));
+      } else {
+
+        String msg = diagnostic.getMessage(Locale.getDefault());
+
+        if (msg.contains("Generated APK has been saved")) {
+          actionFab.setVisibility(View.VISIBLE);
+          actionFab.setImageResource(R.drawable.apk_install);
+        }
+
+        combinedText.append(msg);
+      }
+
+      if (diagnostic.getSource() != null) {
+        combinedText.append(' ');
+      }
+
+      combinedText.append("\n");
     }
 
-    // Append only the newly processed text to the editor
     mEditor.post(() -> {
+
       int lastLine = mEditor.getLineCount() - 1;
       int endCol = mEditor.getText().getColumnCount(lastLine);
+
       try {
-          mEditor.getText().insert(lastLine, endCol, combinedText);
+        mEditor.getText().insert(lastLine, endCol, combinedText);
       } catch (Exception e) {
-          // Fallback in case the underlying Content doesn't support Spanned directly
-          mEditor.getText().insert(lastLine, endCol, combinedText.toString());
+        mEditor.getText().insert(lastLine, endCol, combinedText.toString());
       }
     });
 
-    mProcessedDiagnosticCount = texts.size();
+    mProcessedDiagnosticCount = snapshot.size();
   }
 
   @Override

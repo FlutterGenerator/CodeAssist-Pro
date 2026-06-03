@@ -9,12 +9,17 @@ import com.tyron.code.ApplicationLoader;
 import com.tyron.code.language.AbstractAutoCompleteProvider;
 import com.tyron.code.ui.project.ProjectManager;
 import com.tyron.common.SharedPreferenceKeys;
+import com.tyron.completion.model.CompletionItem;
 import com.tyron.completion.model.CompletionList;
 import com.tyron.editor.Editor;
 import com.tyron.kotlin.completion.KotlinEnvironment;
 import com.tyron.kotlin.completion.KotlinFile;
+//import com.tyron.kotlin.completion.KotlinEnvironment;
+//import com.tyron.kotlin.completion.KotlinFile;
 import org.jetbrains.kotlin.cli.jvm.compiler.KotlinCoreEnvironment;
 import org.jetbrains.kotlin.com.intellij.psi.PsiElement;
+
+import java.util.List;
 
 public class KotlinAutoCompleteProvider extends AbstractAutoCompleteProvider {
 
@@ -64,9 +69,9 @@ public class KotlinAutoCompleteProvider extends AbstractAutoCompleteProvider {
     KotlinFile updatedFile =
         kotlinEnvironment.updateKotlinFile(
             mEditor.getCurrentFile().getAbsolutePath(), mEditor.getContent().toString());
-    //  List<CompletionItem> itemList =
+//      List<CompletionItem> itemList =
     return kotlinEnvironment.complete(updatedFile, line, column);
-
+//return CompletionList.EMPTY;
     // return CompletionList.builder(prefix).addItems(itemList).build();
   }
 
