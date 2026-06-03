@@ -50,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
             this, new String[] {Manifest.permission.FOREGROUND_SERVICE_DATA_SYNC}, 1001);
       }
     }
-    FilePermissionChecker.INSTANCE.check(this);
+//    FilePermissionChecker.INSTANCE.check(this);
     HomeFragment homeFragment = new HomeFragment();
     if (getSupportFragmentManager().findFragmentByTag(HomeFragment.TAG) == null) {
       getSupportFragmentManager()

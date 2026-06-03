@@ -198,7 +198,7 @@ class ComposeClasspathManager(private val context: Context) {
 
     fun getFullClasspath(): List<File> {
         return buildList {
-            add(Environment.ANDROID_JAR)
+            add(BuildModule.getAndroidJar())
             addAll(getAllJars())
         }
     }

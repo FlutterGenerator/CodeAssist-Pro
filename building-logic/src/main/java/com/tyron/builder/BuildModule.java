@@ -1,6 +1,8 @@
 package com.tyron.builder;
 
 import android.content.Context;
+
+import com.itsaky.androidide.utils.Environment;
 import com.tyron.common.util.Decompress;
 import java.io.File;
 
@@ -70,13 +72,17 @@ public class BuildModule {
   }
 
   public static File getsComposePlugin() {
+    var oldPlugin = new File(Environment.COMPOSE_HOME, "compose-compiler-plugin.jar");
+    if (oldPlugin.exists()){
+      oldPlugin.delete();
+    }
     if (sComposePlugin == null) {
-      sComposePlugin = new File(BuildModule.getContext().getFilesDir(), "kotlin-compose-compiler-plugin-embeddable-2.3.20.jar");
+      sComposePlugin = new File(Environment.COMPOSE_HOME, "kotlin-compose-compiler-plugin-embeddable-2.3.20.jar");
 
       if (!sComposePlugin.exists()) {
         Decompress.unzipFromAssets(
                 BuildModule.getContext(),
-                "simple-jdk-module.zip",
+                "kotlin-compose-compiler-plugin-embeddable-2.3.20.jar",
                 sComposePlugin.getParentFile().getAbsolutePath());
       }
     }

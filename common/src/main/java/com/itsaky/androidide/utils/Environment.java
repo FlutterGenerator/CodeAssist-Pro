@@ -156,7 +156,7 @@ public final class Environment {
     PROJECTS_DIR = mkdirIfNotExists(new File(FileUtil.getExternalStorageDir(), PROJECTS_FOLDER));
     // NOTE: change location of android.jar from ANDROIDIDE_HOME to inside android-sdk
     // and don't create the dir if it doesn't exist
-    ANDROID_JAR = new File(ANDROID_JAR_HOME, "android.jar");
+    ANDROID_JAR = new File(context.getFilesDir(), "android.jar");
     TOOLING_API_JAR = new File(mkdirIfNotExists(new File(ANDROIDIDE_HOME, "tooling-api")),
             "tooling-api-all.jar");
     COGO_PLUGIN_JAR = new File(mkdirIfNotExists(new File(ANDROIDIDE_HOME, "plugin")),

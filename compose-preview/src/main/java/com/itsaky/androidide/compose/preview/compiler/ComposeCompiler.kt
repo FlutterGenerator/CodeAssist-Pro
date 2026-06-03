@@ -81,7 +81,7 @@ class ComposeCompiler(
 
             val classpath = classpathManager.getCompilationClasspath(additionalClasspaths)
 //            val kotlinCompiler = classpathManager.getKotlinCompiler()
-            val composePlugin = BuildModule.getsComposePlugin()
+            val composePlugin = classpathManager.getCompilerPlugin()
 //            val compilerBootstrapClasspath = classpathManager.getCompilerBootstrapClasspath()
 
 //            if (kotlinCompiler == null || !kotlinCompiler.exists()) {

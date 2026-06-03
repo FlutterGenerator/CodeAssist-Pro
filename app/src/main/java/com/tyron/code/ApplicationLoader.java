@@ -129,9 +129,6 @@ public class ApplicationLoader extends Application {
             BuildModule.getSimpleJdkModule();
             Environment.init(this);
 //            IJdkDistributionProvider.getInstance().loadDistributions();
-            System.setProperty("java.awt.headless", "true");
-            //uncomment it if you removed or disabled KotlinEnvironment class
-            CompatKt.setupIdeaStandaloneExecution();
             PreviewKotlinCompiler.init();
         }).start();
 

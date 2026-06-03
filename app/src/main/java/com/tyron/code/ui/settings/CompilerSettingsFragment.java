@@ -50,7 +50,7 @@ public class CompilerSettingsFragment extends PreferenceFragmentCompat {
         Preference openjdk = findPreference(SharedPreferenceKeys.OPENJDK);
         Toast.makeText(requireContext(),new File(Environment.JAVA_HOME,"openjdk-21.0.1").exists()+"",Toast.LENGTH_LONG).show();
         try {
-            Toast.makeText(requireContext(), IJdkDistributionProvider.getInstance().forJavaHome(Environment.DEFAULT_JAVA_HOME).toString(), Toast.LENGTH_LONG).show();
+//            Toast.makeText(requireContext(), IJdkDistributionProvider.getInstance().forJavaHome(Environment.DEFAULT_JAVA_HOME).toString(), Toast.LENGTH_LONG).show();
         }catch (Exception e){
             e.printStackTrace();
         }
