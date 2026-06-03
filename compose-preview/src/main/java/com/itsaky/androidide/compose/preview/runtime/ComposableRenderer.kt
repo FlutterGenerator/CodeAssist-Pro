@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.selection.selectable
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -108,7 +109,7 @@ class ComposableRenderer(
                     text = message,
                     style = MaterialTheme.typography.bodyMedium,
                     color = Color(0xFF666666),
-                    modifier = Modifier.padding(top = 8.dp)
+                    modifier = Modifier.padding(top = 8.dp).selectable(enabled = true, selected = true, onClick = {})
                 )
             }
         }

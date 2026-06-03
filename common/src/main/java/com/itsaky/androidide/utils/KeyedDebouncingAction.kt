@@ -18,7 +18,7 @@ import kotlin.coroutines.CoroutineContext
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 
-class KeyedDebouncingAction<T: Any>(
+class KeyedDebouncingAction<T : Any>(
     private val scope: CoroutineScope,
     private val debounceDuration: Duration = DEBOUNCE_DURATION_DEFAULT,
     private val actionContext: CoroutineContext = Dispatchers.Default,
@@ -30,12 +30,12 @@ class KeyedDebouncingAction<T: Any>(
         val job: Job,
     ) {
         fun cancel() {
-            try{
-            channel.close()
-            }catch (e: Exception){
+            try {
+                channel.close()
+                job.cancel()
+            } catch (e: Exception) {
                 e.printStackTrace()
             }
-            job.cancel()
         }
     }
 
@@ -62,12 +62,16 @@ class KeyedDebouncingAction<T: Any>(
                 var latestKey = channel.receive()
                 var debouncing = true
                 while (debouncing) {
-                    debouncing = select {
-                        onTimeout(debounceDuration) { false }
-                        channel.onReceive { newKey ->
-                            latestKey = newKey
-                            true
+                    try {
+                        debouncing = select {
+                            onTimeout(debounceDuration) { false }
+                            channel.onReceive { newKey ->
+                                latestKey = newKey
+                                true
+                            }
                         }
+                    }catch (e: Exception){
+                        e.printStackTrace()
                     }
                 }
 

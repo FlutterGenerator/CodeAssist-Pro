@@ -1,1 +1,4 @@
 src/main/assets/compose/
+/build/
+build/
+/build

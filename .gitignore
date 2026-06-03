@@ -94,3 +94,4 @@ lint/tmp/
 /lsp/kotlin-stdlib-generator/build/
 /lsp/kotlin-core/build/
 /lsp/kotlin/build/
+/compose-preview/build/
