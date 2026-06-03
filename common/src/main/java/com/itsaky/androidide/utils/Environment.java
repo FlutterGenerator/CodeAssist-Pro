@@ -197,6 +197,7 @@ public final class Environment {
 
     TEMPLATES_DIR = mkdirIfNotExists(new File(ANDROIDIDE_HOME, "templates"));
     SNIPPETS_DIR = mkdirIfNotExists(new File(ANDROIDIDE_HOME, "snippets"));
+    JAVA_HOME = new File(context.getFilesDir(),"simple-jdk-module");
 
     // required by Java and Kotlin LSP
     System.setProperty(JavacConfigProvider.PROP_ANDROIDIDE_JAVA_HOME, JAVA_HOME.getAbsolutePath());

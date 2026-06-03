@@ -4,7 +4,7 @@ import java.util.ArrayDeque;
 
 public class StartupManager {
 
-  private ArrayDeque<Runnable> mStartupActivities;
+  private final ArrayDeque<Runnable> mStartupActivities;
 
   public StartupManager() {
     mStartupActivities = new ArrayDeque<>();
