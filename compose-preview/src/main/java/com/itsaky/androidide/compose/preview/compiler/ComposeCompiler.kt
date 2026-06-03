@@ -60,6 +60,9 @@ internal fun buildCompilerArgs(
 
     add("-Xskip-metadata-version-check")
 
+//    add("language-version")
+//    add("1.9")
+
     sourceFiles.forEach { file ->
         add(file.absolutePath)
     }
