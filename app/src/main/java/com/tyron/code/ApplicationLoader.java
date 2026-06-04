@@ -13,8 +13,8 @@ import androidx.preference.PreferenceManager;
 import com.developer.crashx.config.CrashConfig;
 import com.google.android.material.color.DynamicColors;
 import com.itsaky.androidide.app.configuration.IJdkDistributionProvider;
-import com.itsaky.androidide.compose.preview.PreviewComposeAction;
-import com.itsaky.androidide.compose.preview.compiler.PreviewKotlinCompiler;
+//import com.itsaky.androidide.compose.preview.PreviewComposeAction;
+//import com.itsaky.androidide.compose.preview.compiler.PreviewKotlinCompiler;
 import com.itsaky.androidide.lsp.kotlin.completion.KotlinSnippetRepository;
 import com.itsaky.androidide.utils.Environment;
 import com.tyron.actions.ActionManager;
@@ -126,10 +126,10 @@ public class ApplicationLoader extends Application {
                 throw new RuntimeException(e);
             }
 
-            BuildModule.getSimpleJdkModule();
+//            BuildModule.getSimpleJdkModule();
             Environment.init(this);
-//            IJdkDistributionProvider.getInstance().loadDistributions();
-            PreviewKotlinCompiler.init();
+            IJdkDistributionProvider.getInstance().loadDistributions();
+//            PreviewKotlinCompiler.init();
         }).start();
 
         runStartup();
@@ -222,7 +222,7 @@ public class ApplicationLoader extends Application {
 
                     // kotlin actions
 //          KotlinCompletionModule.registerActions(manager);
-                    manager.registerAction(PreviewComposeAction.ID, new PreviewComposeAction());
+//                    manager.registerAction(PreviewComposeAction.ID, new PreviewComposeAction());
                     KotlinSnippetRepository.INSTANCE.init();
                 });
         startupManager.startup();

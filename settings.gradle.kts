@@ -125,6 +125,9 @@ include(
     "editor",
     ":jaxp",
     "subprojects:fuzzysearch",
-    "build-tools:compose-compiler-plugin",
-    ":compose-preview"
+    "build-tools:compose-compiler-plugin"
+//    ":compose-preview"
 )
+include(":toml-api")
+include(":toml-impl")
+include(":version-catalog")

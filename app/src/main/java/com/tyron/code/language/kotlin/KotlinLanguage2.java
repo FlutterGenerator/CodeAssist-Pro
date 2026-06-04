@@ -182,6 +182,7 @@ public class KotlinLanguage2 extends EmptyTextMateLanguage
               .setPrefix(prefix)
               .build();
       var cancelChecker = new CompletionCancelChecker(publisher);
+      Lookup.getDefault().update(ICancelChecker.class,cancelChecker);
       CompletionParams params = new CompletionParams(new Position(position.line,position.column,position.index),editor.getCurrentFile().toPath(), cancelChecker);
       params.setPrefix(prefix);
       params.setContent(content.getReference().toString());
@@ -234,6 +235,5 @@ public class KotlinLanguage2 extends EmptyTextMateLanguage
   public void destroy() {
     analyzer.destroy();
     delegate.destroy();
-    Lookup.getDefault().unregister(ICancelChecker.class);
   }
 }

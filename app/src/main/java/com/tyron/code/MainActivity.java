@@ -120,7 +120,7 @@ public class MainActivity extends AppCompatActivity {
   @Override
   protected void onResume() {
     super.onResume();
-    FilePermissionChecker.INSTANCE.check(this);
+//    FilePermissionChecker.INSTANCE.check(this);
   }
 
   public static void toast(String message) {

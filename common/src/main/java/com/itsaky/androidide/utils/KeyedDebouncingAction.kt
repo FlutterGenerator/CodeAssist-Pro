@@ -30,12 +30,8 @@ class KeyedDebouncingAction<T : Any>(
         val job: Job,
     ) {
         fun cancel() {
-            try {
                 channel.close()
                 job.cancel()
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
         }
     }
 
@@ -62,7 +58,6 @@ class KeyedDebouncingAction<T : Any>(
                 var latestKey = channel.receive()
                 var debouncing = true
                 while (debouncing) {
-                    try {
                         debouncing = select {
                             onTimeout(debounceDuration) { false }
                             channel.onReceive { newKey ->
@@ -70,9 +65,6 @@ class KeyedDebouncingAction<T : Any>(
                                 true
                             }
                         }
-                    }catch (e: Exception){
-                        e.printStackTrace()
-                    }
                 }
 
                 ensureActive()
