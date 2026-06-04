@@ -8,7 +8,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.google.common.base.Throwables;
-import com.itsaky.androidide.compose.preview.ui.BuildComposeEvent;
+//import com.itsaky.androidide.compose.preview.ui.BuildComposeEvent;
 import com.itsaky.androidide.eventbus.events.project.ProjectInitializedEvent;
 import com.itsaky.androidide.lsp.api.DefaultLanguageServerRegistry;
 import com.itsaky.androidide.lsp.api.ILanguageServerRegistry;
@@ -212,9 +212,9 @@ public class ProjectManager {
             mCurrentProject.getEventManager().dispatchEvent(new XmlReparsedEvent(event.getDeletedFile()));
         });
         // listen for newly created files and notify the resources repository
-        mCurrentProject.getEventManager().subscribeEvent(BuildComposeEvent.class,(event, unsubscribe) -> {
+       /*mCurrentProject.getEventManager().subscribeEvent(BuildComposeEvent.class,(event, unsubscribe) -> {
             MainFragment.getInstance().compile(BuildType.COMPOSE);
-        });
+        });*/
         mCurrentProject.getEventManager().subscribeEvent(FileCreatedEvent.class, (event, u) -> modifiedEventConsumer.accept(event.getFile()));
         mCurrentProject.getEventManager().subscribeEvent(XmlReparsedEvent.class,
                 (event, unsubscribe) -> DebouncerStore.DEFAULT.registerOrGetDebouncer("ResourceInjector").debounce(300, () -> ProgressManager.getInstance().runNonCancelableAsync(() -> {
