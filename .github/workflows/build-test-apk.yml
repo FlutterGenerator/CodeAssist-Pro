@@ -50,7 +50,7 @@ jobs:
 
       - name: Build Debug APK
         run: ./gradlew assembleDebug -Penable-updater && cp app/build/outputs/apk/debug/*.apk app/CodeAssist-Pro-${{ env.COMMIT_HASH }}.apk
-        continue-on-error: true
+        continue-on-error: false
 
       - name: Upload APK
         uses: actions/upload-artifact@v5
@@ -60,6 +60,8 @@ jobs:
           if-no-files-found: ignore
           
       - name: Send commit and action info to Telegram
+        if:
+         always()
         env:
          STATUS: ${{ job.status }}
          COMMIT_MSG: ${{ github.event.head_commit.message }}
