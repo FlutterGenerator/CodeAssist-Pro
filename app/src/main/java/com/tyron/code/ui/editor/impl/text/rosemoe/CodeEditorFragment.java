@@ -678,6 +678,7 @@ public class CodeEditorFragment extends Fragment
     ApplicationLoader.getDefaultPreferences().unregisterOnSharedPreferenceChangeListener(this);
 //    mEditor.dispatchDocumentCloseEvent();
     mEditor.notifyClose();
+    mEditor.release();
   }
 
   @Override
