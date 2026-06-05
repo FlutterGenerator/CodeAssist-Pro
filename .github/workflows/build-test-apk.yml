@@ -103,10 +103,11 @@ jobs:
          
          new Commit pushed ⚡
 
-         Commit: $COMMIT_MSG
+         Commit: 
+          $COMMIT_MSG
 
          Commit Hash:
-         $COMMIT_HASH
+          $COMMIT_HASH
 
          $EXTRA
 
