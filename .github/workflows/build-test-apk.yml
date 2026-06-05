@@ -79,9 +79,17 @@ jobs:
 
           Download:
            $NIGHTLY_LINK"
-         else
+         elif [ "$STATUS" = "failure" ]; then 
           EMOJI="❌"
           TEXT="Build Failed"
+          EXTRA_INFO=""
+         elif [ "$STATUS" = "cancelled" ]; then
+          EMOJI="⛔"
+          TEXT="Build Canceled"
+          EXTRA_INFO=""
+         else
+          EMOJI="⚠️"
+          TEXT="Unknown Status"
           EXTRA_INFO=""
          fi
 
