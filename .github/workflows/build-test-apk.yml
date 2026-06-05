@@ -45,7 +45,7 @@ jobs:
         run: chmod +x gradlew
 
       - name: Build Debug APKs
-        run: ./gradlew assembleDebug -Penable-updater
+        run: ./gradlew assembleDebug -Penable-updater && cp app/build/outputs/apk/debug/*.apk app/CodeAssist-Pro-${{ env.COMMIT_HASH }}.apk
 
       - name: List generated APK files
         run: |
@@ -59,3 +59,14 @@ jobs:
           name: CodeAssist-Pro
           path: app/build/outputs/apk/debug/*.apk
           if-no-files-found: ignore
+
+      - name: Send APK to Telegram
+        if: ${{ success() && github.event.head_commit.message != '' }}
+        env:
+          COMMIT_MSG: ${{ github.event.head_commit.message }}
+        run: |
+          curl -X POST "https://api.telegram.org/bot${{ secrets.TELEGRAM_TOKEN }}/sendDocument" \
+            -F chat_id="-1003885942868" \
+            -F message_thread_id="2302" \
+            -F document=@"app/CodeAssist-Pro-${{ env.COMMIT_HASH }}.apk" \
+            --form-string "caption=$COMMIT_MSG"
