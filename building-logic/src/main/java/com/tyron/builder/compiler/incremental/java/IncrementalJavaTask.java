@@ -260,7 +260,7 @@ public class IncrementalJavaTask extends Task<JavaModule> {
                         "-bootclasspath",
                         joinPath(Arrays.asList(BuildModule.getAndroidJar(), BuildModule.getLambdaStubs())));
 
-                options.add("-proc:none");
+               // options.add("-proc:none");
                 if (!sourceCompatibility.equals("1.8") || !targetCompatibility.equals("1.8")) {
                     Collections.addAll(options, "--enable-preview");
                 }
