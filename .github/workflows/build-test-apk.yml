@@ -100,6 +100,7 @@ jobs:
          fi
 
          MESSAGE=$(cat <<EOF
+         
          new Commit pushed ⚡
 
          Commit: $COMMIT_MSG
@@ -113,6 +114,7 @@ jobs:
           $EMOJI $TEXT
 
          $EXTRA_INFO
+         
          EOF
           )
 
