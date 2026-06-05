@@ -48,30 +48,52 @@ jobs:
         id: commit_hash
         run: echo "COMMIT_HASH=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
 
-      - name: Build Debug APKs
+      - name: Build Debug APK
         run: ./gradlew assembleDebug -Penable-updater && cp app/build/outputs/apk/debug/*.apk app/CodeAssist-Pro-${{ env.COMMIT_HASH }}.apk
-        continue-on-error: false
-        
-      - name: List generated APK files
-        run: |
-          echo "===== APK files ====="
-          ls -lh app/build/outputs/apk/debug/
-          echo "====================="
+        continue-on-error: true
 
       - name: Upload APK
         uses: actions/upload-artifact@v5
         with:
           name: CodeAssist-Pro
-          path: app/build/outputs/apk/debug/*.apk
+          path: app/CodeAssist-Pro-${{ env.COMMIT_HASH }}.apk
           if-no-files-found: ignore
-
-      - name: Send APK to Telegram
-        if: ${{ success() && github.event.head_commit.message != '' }}
+          
+      - name: Send build status to Telegram
+        if: always()
         env:
-          COMMIT_MSG: ${{ github.event.head_commit.message }}
-        run: |
-          curl -X POST "https://api.telegram.org/bot${{ secrets.TELEGRAM_TOKEN }}/sendDocument" \
-            -F chat_id="-1003885942868" \
-            -F message_thread_id="2302" \
-            -F document=@"app/CodeAssist-Pro-${{ env.COMMIT_HASH }}.apk" \
-            --form-string "caption=$COMMIT_MSG"
+         STATUS: ${{ job.status }}
+       #  COMMIT_HASH: ${{ github.sha }}
+         COMMIT_MSG: ${{ github.event.head_commit.message }}
+         RUN_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+         REF_NAME: ${{ github.ref_name }}
+         TAG_NAME: ${{ startsWith(github.ref, 'refs/tags/') && github.ref_name || '' }}
+       run: |
+        if [ "$STATUS" = "success" ]; then
+         EMOJI="✅"
+         TEXT="Build Successful"
+        else
+         EMOJI="❌"
+         TEXT="Build Failed"
+        fi
+        if [ -n "$TAG_NAME" ]; then
+         EXTRA="Tag: $TAG_NAME"
+        else
+         EXTRA="Branch: $REF_NAME"
+        fi
+
+        MESSAGE="$EMOJI $TEXT
+
+        $EXTRA
+       Commit: ${COMMIT_HASH:0:7}
+
+       Message:
+        $COMMIT_MSG
+
+       Action:
+        $RUN_URL"
+
+        curl -X POST "https://api.telegram.org/bot${{ secrets.TELEGRAM_TOKEN }}/sendMessage" \
+        -F chat_id="-1003885942868" \
+        -F message_thread_id="2302" \
+        --form-string text="$MESSAGE"   
