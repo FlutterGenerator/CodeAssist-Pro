@@ -52,7 +52,7 @@ Forked of Official CodeAssist Version Alpha-0.2.9
 
 - [x] Java 17 Compile (Experimental)
 
-- [x] Kotlin 2.3.20 (Only Compile)
+- [x] Kotlin 2.3.20 (Experimental)
 
 - [x] Google Java Formatter
 
@@ -72,7 +72,7 @@ Forked of Official CodeAssist Version Alpha-0.2.9
 
 - [x] Java Code Completions (17 Experimental)
 
-- [x] Kotlin Code Completions (1.8 Unstable)
+- [x] Kotlin Code Completions (2.3.20 Unstable)
 
 - [x] Quick fixes (Import missing class and Implement Abstract Methods)  
 
@@ -89,6 +89,25 @@ Forked of Official CodeAssist Version Alpha-0.2.9
 - [x] Git Integration
 
 - [x] Multiple Projects Support (Multi Mudule)
+
+- [ ] Tasks Executor
+
+- [ ] Modern Gradle Parser (Groovy DSL)
+
+- [ ] Modern Gradle Parser (Kotlin DSL)
+
+- [ ] Version Catalog Parser (libs.versions.toml)
+
+- [ ] Compose Preview 
+
+- [ ] Ksp task
+
+- [ ] Kapt task
+
+- [ ] Java inlayHints
+
+- [ ] access storage/emulated/0/CodeAssistProjects in Android 11+
+
 
 <img style=" width: 100%;" src=".github/resources/images/hr.jpg">
 
