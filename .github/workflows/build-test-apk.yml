@@ -60,14 +60,13 @@ jobs:
           if-no-files-found: ignore
           
       - name: Send build status to Telegram
-        if: always()
         env:
          STATUS: ${{ job.status }}
-       #  COMMIT_HASH: ${{ github.sha }}
          COMMIT_MSG: ${{ github.event.head_commit.message }}
          RUN_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
          REF_NAME: ${{ github.ref_name }}
          TAG_NAME: ${{ startsWith(github.ref, 'refs/tags/') && github.ref_name || '' }}
+         NIGHTLY_LINK: https://nightly.link/${{ github.repository }}/actions/runs/${{ github.run_id }}/CodeAssist-Pro.zip
        run: |
         if [ "$STATUS" = "success" ]; then
          EMOJI="✅"
@@ -76,24 +75,32 @@ jobs:
          EMOJI="❌"
          TEXT="Build Failed"
         fi
+
         if [ -n "$TAG_NAME" ]; then
          EXTRA="Tag: $TAG_NAME"
         else
          EXTRA="Branch: $REF_NAME"
         fi
 
-        MESSAGE="$EMOJI $TEXT
+        MESSAGE=$(cat <<EOF
+        MESSAGE=$(cat <<EOF
+        $EMOJI $TEXT
 
         $EXTRA
-       Commit: ${COMMIT_HASH:0:7}
+        Commit: $COMMIT_HASH
 
-       Message:
-        $COMMIT_MSG
+        Message:
+         $COMMIT_MSG
 
-       Action:
-        $RUN_URL"
+        Action:
+         $RUN_URL
+
+        Download:
+         $NIGHTLY_LINK
+         EOF
+        )     
 
         curl -X POST "https://api.telegram.org/bot${{ secrets.TELEGRAM_TOKEN }}/sendMessage" \
         -F chat_id="-1003885942868" \
         -F message_thread_id="2302" \
-        --form-string text="$MESSAGE"   
+        --form-string text="$MESSAGE"
