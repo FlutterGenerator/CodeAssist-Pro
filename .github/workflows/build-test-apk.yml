@@ -60,8 +60,7 @@ jobs:
           if-no-files-found: ignore
           
       - name: Send commit and action info to Telegram
-        if:
-         always()
+        if: always()
         env:
          STATUS: ${{ job.status }}
          COMMIT_MSG: ${{ github.event.head_commit.message }}
@@ -73,9 +72,17 @@ jobs:
          if [ "$STATUS" = "success" ]; then
           EMOJI="✅"
           TEXT="Build Successful"
+
+          EXTRA_INFO="
+          Action:
+           $RUN_URL
+
+          Download:
+           $NIGHTLY_LINK"
          else
           EMOJI="❌"
           TEXT="Build Failed"
+          EXTRA_INFO=""
          fi
 
          if [ -n "$TAG_NAME" ]; then
@@ -84,29 +91,24 @@ jobs:
           EXTRA="Branch: $REF_NAME"
          fi
 
-         MESSAGE=$(cat <<EOF  
+         MESSAGE=$(cat <<EOF
+         new Commit pushed ⚡
 
-         new Commit pushed ⚡ 
-         
          Commit: $COMMIT_MSG
 
          Commit Hash:
-          $COMMIT_HASH
+         $COMMIT_HASH
 
          $EXTRA
-         
-         Status:        
-          $EMOJI $TEXT        
 
-         Action:
-          $RUN_URL
+         Status:
+          $EMOJI $TEXT
 
-         Download:
-          $NIGHTLY_LINK
+         $EXTRA_INFO
          EOF
-         )     
+          )
 
          curl -X POST "https://api.telegram.org/bot${{ secrets.TELEGRAM_TOKEN }}/sendMessage" \
-         -F chat_id="-1003885942868" \
-         -F message_thread_id="2302" \
-         --form-string text="$MESSAGE"
+          -F chat_id="-1003885942868" \
+          -F message_thread_id="2302" \
+          --form-string "text=$MESSAGE"
