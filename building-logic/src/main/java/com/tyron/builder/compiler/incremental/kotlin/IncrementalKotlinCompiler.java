@@ -26,6 +26,7 @@ import org.jetbrains.kotlin.cli.common.messages.CompilerMessageSeverity;
 import org.jetbrains.kotlin.cli.common.messages.CompilerMessageSourceLocation;
 import org.jetbrains.kotlin.cli.common.messages.MessageCollector;
 import org.jetbrains.kotlin.cli.jvm.K2JVMCompiler;
+import org.jetbrains.kotlin.config.LanguageVersion;
 import org.jetbrains.kotlin.incremental.CompilerRunnerUtils;
 import org.json.JSONObject;
 
@@ -103,7 +104,7 @@ public class IncrementalKotlinCompiler extends Task<AndroidModule> {
                             buildSettingsJson.optJSONObject("kotlin").optString("isCompilerEnabled", "true"));
 
             String jvm_target = buildSettingsJson.optJSONObject("kotlin").optString("jvmTarget", "1.8");
-            String langVersion = buildSettingsJson.optJSONObject("kotlin").optString("language_version", "1.9");
+            String langVersion = buildSettingsJson.optJSONObject("kotlin").optString("language_version", LanguageVersion.LATEST_STABLE.getVersionString());
 
             File api_files = new File(getModule().getRootFile(), "/build/libraries/api_files/libs");
             File api_libs = new File(getModule().getRootFile(), "/build/libraries/api_libs");
@@ -200,7 +201,7 @@ public class IncrementalKotlinCompiler extends Task<AndroidModule> {
 //      args.setReportPerf(false);
 //      args.setReportOutputFiles(false);
 //      args.setDumpPerf(null);
-//      args.setLanguageVersion(LanguageVersion.LATEST_STABLE.getVersionString());
+      args.setLanguageVersion(langVersion);
 //       args.setLanguageVersion(langVersion);
             args.setUseFastJarFileSystem(
                     Prefs.get().getBoolean(SharedPreferenceKeys.USE_FAST_JAR_FILE_SYSTEM, true));

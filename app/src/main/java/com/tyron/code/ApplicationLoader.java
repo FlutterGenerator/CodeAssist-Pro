@@ -13,8 +13,6 @@ import androidx.preference.PreferenceManager;
 import com.developer.crashx.config.CrashConfig;
 import com.google.android.material.color.DynamicColors;
 import com.itsaky.androidide.app.configuration.IJdkDistributionProvider;
-//import com.itsaky.androidide.compose.preview.PreviewComposeAction;
-//import com.itsaky.androidide.compose.preview.compiler.PreviewKotlinCompiler;
 import com.itsaky.androidide.lsp.kotlin.completion.KotlinSnippetRepository;
 import com.itsaky.androidide.utils.Environment;
 import com.tyron.actions.ActionManager;
@@ -48,7 +46,6 @@ import com.tyron.completion.java.JavaCompletionProvider;
 import com.tyron.completion.main.CompletionEngine;
 import com.tyron.completion.xml.XmlCompletionModule;
 import com.tyron.completion.xml.XmlIndexProvider;
-import com.tyron.completion.xml.providers.LayoutXmlCompletionProvider;
 import com.tyron.completion.xml.v2.AndroidXmlCompletionProvider;
 import com.tyron.editor.selection.ExpandSelectionProvider;
 import com.tyron.language.fileTypes.FileTypeManager;
@@ -60,7 +57,6 @@ import com.tyron.selection.java.JavaExpandSelectionProvider;
 import com.tyron.selection.xml.XmlExpandSelectionProvider;
 
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
-import org.jetbrains.kotlin.cli.jvm.compiler.CompatKt;
 
 import java.security.Security;
 
@@ -93,7 +89,8 @@ public class ApplicationLoader extends Application {
                     PreferenceManager.getDefaultSharedPreferences(this).getBoolean("ca_logging", false);
             if (isLoggingEnabled) Logger.initialize(this);
         } catch (Exception e) {
-            Logger.initialize(this);
+            e.printStackTrace();
+//            Logger.initialize(this);
         }
         setupTheme();
 
@@ -181,8 +178,8 @@ public class ApplicationLoader extends Application {
                 () -> {
                     CompletionProvider.registerCompletionProvider(
                             JavaLanguage.INSTANCE, new JavaCompletionProvider());
-                    CompletionProvider.registerCompletionProvider(
-                            XmlLanguage.INSTANCE, new LayoutXmlCompletionProvider());
+//                    CompletionProvider.registerCompletionProvider(
+//                            XmlLanguage.INSTANCE, new LayoutXmlCompletionProvider());
                     CompletionProvider.registerCompletionProvider(
                             XmlLanguage.INSTANCE, new AndroidXmlCompletionProvider());
                 });

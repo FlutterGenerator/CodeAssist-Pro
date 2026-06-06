@@ -52,6 +52,7 @@ import org.jetbrains.kotlin.cli.common.messages.CompilerMessageSeverity;
 import org.jetbrains.kotlin.cli.common.messages.CompilerMessageSourceLocation;
 import org.jetbrains.kotlin.cli.common.messages.MessageCollector;
 import org.jetbrains.kotlin.cli.jvm.K2JVMCompiler;
+import org.jetbrains.kotlin.config.LanguageVersion;
 import org.jetbrains.kotlin.incremental.CompilerRunnerUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -1059,7 +1060,7 @@ public class IncrementalAssembleLibraryTask extends Task<AndroidModule> {
                             buildSettingsJson.optJSONObject("kotlin").optString("skipKotlinTask", "false"));
 
             String jvm_target = buildSettingsJson.optJSONObject("kotlin").optString("jvmTarget", "1.8");
-            String langVersion = buildSettingsJson.optJSONObject("kotlin").optString("language_version", "1.9");
+            String langVersion = buildSettingsJson.optJSONObject("kotlin").optString("language_version", LanguageVersion.LATEST_STABLE.getVersionString());
 
             // String language_version =
             //     buildSettingsJson.optJSONObject("kotlin").optString("languageVersion", "2.1");
@@ -1143,7 +1144,7 @@ public class IncrementalAssembleLibraryTask extends Task<AndroidModule> {
 //      args.setReportPerf(false);
 //      args.setReportOutputFiles(false);
 //      args.setDumpPerf(null);
-//      args.setLanguageVersion(LanguageVersion.LATEST_STABLE.getVersionString());
+      args.setLanguageVersion(langVersion);
 //      args.setLanguageVersion(langVersion);
             args.setUseFastJarFileSystem(
                     Prefs.get().getBoolean(SharedPreferenceKeys.USE_FAST_JAR_FILE_SYSTEM, true));

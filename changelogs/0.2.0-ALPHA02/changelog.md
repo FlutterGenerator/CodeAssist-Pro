@@ -5,7 +5,7 @@
 - added ` ColorPicker ` for Icon Manager
 - added some attribute snippets in `xml-completion`
 - integrated new Kotlin-lsp based on CodeOnTheGo Kotlin-lsp supports ( JetPack Compose )
-- integrated Compose Preview ( unstable )
+- add ability to use custom language version in kotlin compile task
 
 ### fixes
 - skipping compile kotlin files

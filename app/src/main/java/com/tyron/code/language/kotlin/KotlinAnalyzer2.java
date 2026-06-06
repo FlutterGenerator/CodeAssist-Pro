@@ -71,12 +71,20 @@ public class KotlinAnalyzer2 extends DiagnosticTextmateAnalyzer {
               .runLater(
                   () -> {
                     try {
+                      if (mEditor == null) {
+                        return;
+                      }
                       mEditor.setAnalyzing(true);
                       doAnalysis();
                     } catch (Exception e) {
                       Log.e(TAG, "Analysis failed", e);
                     }
-                    ProgressManager.getInstance().runLater(() -> mEditor.setAnalyzing(false), 300);
+                    ProgressManager.getInstance().runLater(() -> {
+                      if (mEditor == null) {
+                        return;
+                      }
+                      mEditor.setAnalyzing(false);
+                    }, 300);
                   },
                   900);
         }
@@ -85,6 +93,9 @@ public class KotlinAnalyzer2 extends DiagnosticTextmateAnalyzer {
   }
 
   private void doAnalysis() {
+    if (true) {
+      return;
+    }
     ((IDEEditor) editor).analyze();
   }
 }
