@@ -70,7 +70,6 @@ import org.jetbrains.kotlin.config.jdkRelease
 import org.jetbrains.kotlin.config.languageVersionSettings
 import org.jetbrains.kotlin.config.messageCollector
 import org.jetbrains.kotlin.config.moduleName
-import org.jetbrains.kotlin.config.noJdk
 import org.jetbrains.kotlin.config.useFir
 import org.jetbrains.kotlin.load.kotlin.MetadataFinderFactory
 import org.jetbrains.kotlin.load.kotlin.VirtualFileFinderFactory
@@ -173,11 +172,16 @@ internal abstract class AbstractCompilationEnvironment(
             libraryRoots: List<JavaRoot>,
         ) -> KtSymbolIndex,
     ) {
+        val configuration = createCompilerConfiguration()
         projectEnv = StandaloneProjectFactory.createProjectEnvironment(
             projectDisposable = disposable,
             applicationEnvironmentMode = applicationEnvironmentMode,
-            compilerConfiguration = createCompilerConfiguration(),
+            compilerConfiguration = configuration,
         )
+
+        if (applicationEnvironmentMode == KotlinCoreApplicationEnvironmentMode.Production) {
+            KotlinApplicationEnvironmentPin.ensure(configuration)
+        }
 
         project.registerRWLock()
 
@@ -198,8 +202,14 @@ internal abstract class AbstractCompilationEnvironment(
             ClassTypePointerFactory::class.java,
         )
 
-        appExtArea.getExtensionPoint(ClassTypePointerFactory.EP_NAME)
-            .registerExtension(PsiClassReferenceTypePointerFactory(), application)
+        val classTypePointerFactoryEp =
+            appExtArea.getExtensionPoint(ClassTypePointerFactory.EP_NAME)
+        if (classTypePointerFactoryEp.extensionList.isEmpty()) {
+            classTypePointerFactoryEp.registerExtension(
+                PsiClassReferenceTypePointerFactory(),
+                application,
+            )
+        }
 
         CoreApplicationEnvironment.registerExtensionPoint(
             appExtArea,
@@ -320,7 +330,6 @@ internal abstract class AbstractCompilationEnvironment(
             this.jdkHome = this@AbstractCompilationEnvironment.jdkHome.toFile()
             this.jdkRelease = this@AbstractCompilationEnvironment.jdkRelease
             this.messageCollector = createMessageCollector()
-            this.noJdk = true
         }
 
     override fun close() {
