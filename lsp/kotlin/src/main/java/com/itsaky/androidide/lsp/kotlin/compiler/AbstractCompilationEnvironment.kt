@@ -79,6 +79,7 @@ import org.jetbrains.kotlin.psi.KtPsiFactory
 import java.nio.file.Path
 import kotlin.io.path.pathString
 import org.jetbrains.kotlin.com.intellij.openapi.diagnostic.Logger
+import org.jetbrains.kotlin.config.noJdk
 
 /**
  * Base class shared by [CompilationEnvironment] (production) and the test-only
@@ -334,6 +335,7 @@ internal abstract class AbstractCompilationEnvironment(
             this.jdkHome = this@AbstractCompilationEnvironment.jdkHome.toFile()
             this.jdkRelease = this@AbstractCompilationEnvironment.jdkRelease
             this.messageCollector = createMessageCollector()
+            this.noJdk = true
         }
 
     override fun close() {
