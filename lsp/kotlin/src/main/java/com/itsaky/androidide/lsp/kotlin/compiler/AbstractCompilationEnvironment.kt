@@ -10,6 +10,7 @@ import com.itsaky.androidide.lsp.kotlin.compiler.services.JavaModuleAnnotationsP
 import com.itsaky.androidide.lsp.kotlin.compiler.services.KtLspService
 import com.itsaky.androidide.lsp.kotlin.compiler.services.WriteAccessGuard
 import com.itsaky.androidide.lsp.kotlin.compiler.services.latestLanguageVersionSettings
+import com.itsaky.androidide.lsp.kotlin.compiler.util.SLF4JLogger
 import org.jetbrains.kotlin.K1Deprecation
 import org.jetbrains.kotlin.analysis.api.platform.declarations.KotlinAnnotationsResolverFactory
 import org.jetbrains.kotlin.analysis.api.platform.declarations.KotlinDeclarationProviderFactory
@@ -77,6 +78,7 @@ import org.jetbrains.kotlin.metadata.jvm.deserialization.JvmProtoBufUtil
 import org.jetbrains.kotlin.psi.KtPsiFactory
 import java.nio.file.Path
 import kotlin.io.path.pathString
+import org.jetbrains.kotlin.com.intellij.openapi.diagnostic.Logger
 
 /**
  * Base class shared by [CompilationEnvironment] (production) and the test-only
@@ -99,6 +101,8 @@ internal abstract class AbstractCompilationEnvironment(
         init {
             System.setProperty("java.awt.headless", "true")
             setupIdeaStandaloneExecution()
+
+            Logger.setFactory { name -> SLF4JLogger(name) }
         }
     }
 
