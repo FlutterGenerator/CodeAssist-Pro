@@ -51,9 +51,9 @@
             app:iconSpaceReserved="false"
             android:title="@string/settings_code_completions"/>
         <SwitchPreferenceCompat
-            android:defaultValue="true"
+            android:defaultValue="false"
             app:iconSpaceReserved="false"
-            android:enabled="true"
+            android:enabled="false"
             android:key="legacy_kotlin_lsp"
             android:title="@string/use_legacy_kotlin_lsp_title"
             android:summary="@string/use_legacy_kotlin_lsp_desc"/>
