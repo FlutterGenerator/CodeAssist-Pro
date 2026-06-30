@@ -8,12 +8,12 @@ import com.itsaky.androidide.lsp.models.DiagnosticItem
 import com.itsaky.androidide.lsp.models.DiagnosticResult
 import com.itsaky.androidide.lsp.models.DiagnosticSeverity
 import com.itsaky.androidide.progress.ICancelChecker
-import com.tyron.builder.log.IDELogger
 import kotlinx.coroutines.CancellationException
 import org.jetbrains.kotlin.analysis.api.KaExperimentalApi
 import org.jetbrains.kotlin.analysis.api.components.KaDiagnosticCheckerFilter
 import org.jetbrains.kotlin.analysis.api.diagnostics.KaDiagnosticWithPsi
 import org.jetbrains.kotlin.analysis.api.diagnostics.KaSeverity
+import org.jetbrains.kotlin.analysis.api.fir.diagnostics.KaFirDiagnostic
 import org.jetbrains.kotlin.com.intellij.openapi.util.TextRange
 import org.jetbrains.kotlin.com.intellij.psi.PsiErrorElement
 import org.jetbrains.kotlin.com.intellij.psi.PsiFile
@@ -24,7 +24,14 @@ import java.nio.file.Path
 private val logger = LoggerFactory.getLogger("KotlinDiagnosticProvider")
 
 internal data class KotlinDiagnosticExtra(
-	val diagnostic: KaDiagnosticWithPsi<*>,
+	/**
+	 * The unresolved-reference name extracted from an [KaFirDiagnostic.UnresolvedReference]
+	 * diagnostic, or `null` for any other diagnostic. This is plain data extracted *inside* the
+	 * `analyze` block on purpose: storing the [KaDiagnosticWithPsi] (a `KaLifetimeOwner`) here and
+	 * reading its members later from a code action would access it outside an `analyze` context and
+	 * crash with `KaInaccessibleLifetimeOwnerAccessException`.
+	 */
+	val unresolvedReference: String?,
 	val compilationEnv: CompilationEnvironment,
 )
 
@@ -32,16 +39,13 @@ context(env: CompilationEnvironment)
 internal fun collectDiagnosticsFor(file: Path, cancelChecker: ICancelChecker): DiagnosticResult {
 	try {
 		logger.info("analyzing file: {}", file)
-		IDELogger.info("analyzing file: %s", file)
 		return doAnalyze(file, cancelChecker)
 	} catch (err: Throwable) {
 		if (err is CancellationException) {
 			logger.debug("analysis cancelled")
-			IDELogger.debug("analysis cancelled")
 			throw err
 		}
 		logger.error("an error occurred analyzing file: {}", file, err)
-		IDELogger.error("an error occurred analyzing file: %s", file, err)
 		return DiagnosticResult.NO_UPDATE
 	}
 }
@@ -57,7 +61,6 @@ private fun doAnalyze(file: Path, cancelChecker: ICancelChecker): DiagnosticResu
 
 	if (ktFile == null) {
 		logger.warn("File {} is not accessible", file)
-		IDELogger.warn("File %s is not accessible", file)
 		return DiagnosticResult.NO_UPDATE
 	}
 
@@ -84,8 +87,12 @@ private fun doAnalyze(file: Path, cancelChecker: ICancelChecker): DiagnosticResu
 				ktFile.collectDiagnostics(KaDiagnosticCheckerFilter.EXTENDED_AND_COMMON_CHECKERS)
 					.forEach { diagnostic ->
 						cancelChecker.abortIfCancelled()
+						// Extract plain data while still inside the analyze context; never let
+						// the KaLifetimeOwner diagnostic escape (see KotlinDiagnosticExtra).
+						val unresolvedReference =
+							(diagnostic as? KaFirDiagnostic.UnresolvedReference)?.reference
 						add(diagnostic.toDiagnosticItem().apply {
-							extra = KotlinDiagnosticExtra(diagnostic, env)
+							extra = KotlinDiagnosticExtra(unresolvedReference, env)
 						})
 					}
 			}
@@ -93,7 +100,6 @@ private fun doAnalyze(file: Path, cancelChecker: ICancelChecker): DiagnosticResu
 	}
 
 	logger.info("Found {} diagnostics", diagnostics.size)
-	IDELogger.info("Found %s diagnostics", diagnostics.size)
 
 	return DiagnosticResult(
 		file = file,
@@ -131,3 +137,4 @@ private fun KaSeverity.toDiagnosticSeverity(): DiagnosticSeverity {
 		KaSeverity.INFO -> DiagnosticSeverity.INFO
 	}
 }
+

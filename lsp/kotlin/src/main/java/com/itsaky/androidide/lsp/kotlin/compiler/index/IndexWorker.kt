@@ -1,13 +1,10 @@
 package com.itsaky.androidide.lsp.kotlin.compiler.index
 
-import android.widget.Toast
 import com.itsaky.androidide.lsp.kotlin.compiler.CompilationEnvironment
 import com.itsaky.androidide.lsp.kotlin.compiler.modules.backingFilePath
 import com.itsaky.androidide.lsp.kotlin.compiler.read
 import com.itsaky.androidide.progress.ICancelChecker
 import com.itsaky.androidide.utils.KeyedDebouncingAction
-import com.tyron.builder.log.IDELogger
-import com.tyron.common.Prefs
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.isActive
@@ -57,12 +54,16 @@ internal class IndexWorker(
 			debounceDuration = CompilationEnvironment.DEFAULT_FILE_MOD_EVENT_DEBOUNCE_DURATION
 		) { (path, ktFile), cancelChecker ->
 			logger.debug("Indexing modified file: {}", path)
-			IDELogger.debug("Indexing modified file: %s", path)
 			indexSourceFile(project, ktFile, fileIndex, sourceIndex, cancelChecker)
 			sourceIndexCount++
 		}
 
 		while (isActive) {
+			// Defensive guard: if the project was disposed out from under us (e.g. a disposal
+			// path that didn't first drain this worker), stop instead of calling PsiManager on a
+			// disposed project, which throws "Project is already disposed" (APPDEVFORALL-17R).
+			if (project.isDisposed) break
+
 			when (val cmd = queue.take()) {
 				is IndexCommand.RemoveFromIndex -> {
 					val filePath = cmd.path.pathString
@@ -73,9 +74,10 @@ internal class IndexWorker(
 				is IndexCommand.IndexSourceFile -> {
 					if (cmd.vf.fileSystem.protocol != "file") {
 						logger.warn("Unknown source file protocol: {}", cmd.vf.path)
-						IDELogger.warn("Unknown source file protocol: %s", cmd.vf.path)
 						continue
 					}
+
+					if (project.isDisposed) break
 
 					val ktFile = project.read {
 						PsiManager.getInstance(project)
@@ -113,16 +115,11 @@ internal class IndexWorker(
 						scanCount,
 						sourceIndexCount,
 					)
-					IDELogger.info(
-						"Indexing complete: scanned=%s, sourceIndexCount=%s",
-						scanCount,
-						sourceIndexCount,
-					)
-//					Toast.makeText(Prefs.getContext(),"Kotlin-Lsp, Indexing complete", Toast.LENGTH_SHORT).show()
-
 				}
 
 				is IndexCommand.ScanSourceFile -> {
+					if (project.isDisposed) break
+
 					val ktFile = project.read {
 						PsiManager.getInstance(project).findFile(cmd.vf) as? KtFile
 					}
@@ -140,7 +137,6 @@ internal class IndexWorker(
 
 				IndexCommand.SourceScanningComplete -> {
 					logger.info("Scanning complete. Found {} files to index.", scanCount)
-					IDELogger.info("Scanning complete. Found %s files to index.", scanCount)
 				}
 
 				IndexCommand.Stop -> break

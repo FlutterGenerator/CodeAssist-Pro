@@ -8,14 +8,14 @@ import org.jetbrains.kotlin.config.CompilerConfiguration
 @OptIn(K1Deprecation::class)
 internal object KotlinApplicationEnvironmentPin {
 
-    private var pinned = false
+	private var pinned = false
 
-    private val pin = Disposer.newDisposable("kotlin-lsp-application-environment-pin")
+	private val pin = Disposer.newDisposable("kotlin-lsp-application-environment-pin")
 
-    @Synchronized
-    fun ensure(configuration: CompilerConfiguration) {
-        if (pinned) return
-        acquireApplicationEnvironment(pin, configuration)
-        pinned = true
-    }
+	@Synchronized
+	fun ensure(configuration: CompilerConfiguration) {
+		if (pinned) return
+		acquireApplicationEnvironment(pin, configuration)
+		pinned = true
+	}
 }
